@@ -9,6 +9,12 @@ import { MessageSquare, Mail, Phone, Plus, Filter, Search } from "lucide-react";
 import Pagination from "@/components/ui/pagination";
 import { TransactionStatus } from "@/components/ui/transactionstatus";
 import { Input } from "@/components/ui/input";
+import {
+  SendIcon,
+  SmsIcon,
+  EmailIcon,
+  NotificationIcon,
+} from "@/public/assets/icons";
 
 export type StatusType =
   | "Active"
@@ -107,26 +113,27 @@ export default function Communications() {
             <div className="grid grid-cols-3 gap-2">
               <Button
                 variant="outline"
-                className="flex-col items-center justify-center rounded-md  border-primary-700 space-x-2 h-16"
+                className="flex-col items-center justify-center rounded-md  border-primary-700 space-x-2 h-18"
                 onClick={() => handleSendMessage("SMS")}
               >
-                <Phone className="h-5 w-5" />
+                <SmsIcon />
                 <span>SMS</span>
               </Button>
               <Button
                 variant="outline"
-                className="flex-col items-center justify-center rounded-md  border-primary-700 space-x-2 h-16"
+                className="flex-col items-center justify-center rounded-md  border-primary-700 space-x-2 h-18"
                 onClick={() => handleSendMessage("Notification")}
               >
-                <MessageSquare className="h-5 w-5" />
+                <NotificationIcon />
+
                 <span>Notification</span>
               </Button>
               <Button
                 variant="outline"
-                className="flex-col items-center justify-center rounded-md  border-primary-700 space-x-2 h-16"
+                className="flex-col items-center justify-center rounded-md  border-primary-700 space-x-2 h-18"
                 onClick={() => handleSendMessage("Email")}
               >
-                <Mail className="h-5 w-5" />
+                <EmailIcon />
                 <span>Email</span>
               </Button>
             </div>
@@ -175,9 +182,9 @@ export default function Communications() {
               />
             </div>
 
-            <div className="text-right space-x-2">
+            <div className="ml-auto flex space-x-2 w-fit items-center">
               <Button
-                leftIcon={<Mail className="h-4 w-4 text-white" />}
+                leftIcon={<SendIcon />}
                 className="flex-1 bg-primary-900 hover:bg-primary-700"
               >
                 Send

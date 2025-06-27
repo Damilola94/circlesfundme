@@ -7,4 +7,8 @@ export { default as ImportIcon } from "./ImportIcon";
 export { default as LoanIcon } from "./LoanIcon";
 export { default as OverdueIcon } from "./OverdueIcon";
 export { default as SubscriptionIcon } from "./SubscriptionIcon";
+export { default as EmailIcon } from "./EmailIcon";
+export { default as NotificationIcon } from "./NotificationIcon";
+export { default as SmsIcon } from "./SMSIcon";
 export { default as UserIcon } from "./UserIcon";
+export { default as SendIcon } from "./SendIcon";
