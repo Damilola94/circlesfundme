@@ -1,0 +1,117 @@
+{
+    "loans": [
+      {
+        "id": "1",
+        "name": "Olatunji Adeshina",
+        "status": "Active",
+        "scheme": "Monthly",
+        "eligibleLoan": "58,678.90",
+        "amountRepaid": "123,849.77",
+        "dateApplied": "20/05/2025"
+      },
+      {
+        "id": "2",
+        "name": "Olatunji Adeshina",
+        "status": "Active",
+        "scheme": "Monthly",
+        "eligibleLoan": "58,678.90",
+        "amountRepaid": "123,849.77",
+        "dateApplied": "20/05/2025"
+      },
+      {
+        "id": "3",
+        "name": "Olatunji Adeshina",
+        "status": "Pending",
+        "scheme": "Monthly",
+        "eligibleLoan": "58,678.90",
+        "amountRepaid": "123,849.77",
+        "dateApplied": "20/05/2025"
+      },
+      {
+        "id": "4",
+        "name": "Olatunji Adeshina",
+        "status": "Pending",
+        "scheme": "Weekly",
+        "eligibleLoan": "58,678.90",
+        "amountRepaid": "123,849.77",
+        "dateApplied": "20/05/2025"
+      },
+      {
+        "id": "5",
+        "name": "Olatunji Adeshina",
+        "status": "Waitlisted",
+        "scheme": "Weekly",
+        "eligibleLoan": "58,678.90",
+        "amountRepaid": "123,849.77",
+        "dateApplied": "20/05/2025"
+      },
+      {
+        "id": "6",
+        "name": "Olatunji Adeshina",
+        "status": "Rejected",
+        "scheme": "Monthly",
+        "eligibleLoan": "58,678.90",
+        "amountRepaid": "123,849.77",
+        "dateApplied": "20/05/2025"
+      },
+      {
+        "id": "7",
+        "name": "Olatunji Adeshina",
+        "status": "Active",
+        "scheme": "Weekly",
+        "eligibleLoan": "58,678.90",
+        "amountRepaid": "123,849.77",
+        "dateApplied": "20/05/2025"
+      },
+      {
+        "id": "8",
+        "name": "Olatunji Adeshina",
+        "status": "Active",
+        "scheme": "Asset-Finance",
+        "eligibleLoan": "58,678.90",
+        "amountRepaid": "123,849.77",
+        "dateApplied": "20/05/2025"
+      }
+    ],
+    "statusTabs": [
+      {
+        "id": "all-loans",
+        "label": "All Loans"
+      },
+      {
+        "id": "active",
+        "label": "Active"
+      },
+      {
+        "id": "pending",
+        "label": "Pending"
+      },
+      {
+        "id": "waitlisted",
+        "label": "Waitlisted"
+      },
+      {
+        "id": "rejected",
+        "label": "Rejected"
+      }
+    ],
+    "schemeTabs": [
+      {
+        "id": "all-scheme",
+        "label": "All Scheme"
+      },
+      {
+        "id": "weekly",
+        "label": "Weekly"
+      },
+      {
+        "id": "monthly",
+        "label": "Monthly"
+      },
+      {
+        "id": "asset-finance",
+        "label": "Asset Finance"
+      }
+    ]
+  }
+  

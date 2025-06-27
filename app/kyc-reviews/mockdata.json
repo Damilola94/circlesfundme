@@ -1,0 +1,113 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Olatunji Adeshina",
+      "dateJoined": "20/05/2025",
+      "scheme": "Monthly",
+      "contribution": "58,678.90",
+      "eligibleLoan": "123,849.77",
+      "amountRepaid": "123,849.77"
+    },
+    {
+      "id": "2",
+      "name": "Olatunji Adeshina",
+      "dateJoined": "20/05/2025",
+      "scheme": "Monthly",
+      "contribution": "58,678.90",
+      "eligibleLoan": "123,849.77",
+      "amountRepaid": "123,849.77"
+    },
+    {
+      "id": "3",
+      "name": "Olatunji Adeshina",
+      "dateJoined": "20/05/2025",
+      "scheme": "Monthly",
+      "contribution": "58,678.90",
+      "eligibleLoan": "123,849.77",
+      "amountRepaid": "123,849.77"
+    },
+    {
+      "id": "4",
+      "name": "Olatunji Adeshina",
+      "dateJoined": "20/05/2025",
+      "scheme": "Monthly",
+      "contribution": "58,678.90",
+      "eligibleLoan": "123,849.77",
+      "amountRepaid": "123,849.77"
+    },
+    {
+      "id": "5",
+      "name": "Olatunji Adeshina",
+      "dateJoined": "20/05/2025",
+      "scheme": "Monthly",
+      "contribution": "58,678.90",
+      "eligibleLoan": "123,849.77",
+      "amountRepaid": "123,849.77"
+    },
+    {
+      "id": "6",
+      "name": "Olatunji Adeshina",
+      "dateJoined": "20/05/2025",
+      "scheme": "Monthly",
+      "contribution": "58,678.90",
+      "eligibleLoan": "123,849.77",
+      "amountRepaid": "123,849.77"
+    }
+  ],
+  "loan": [
+    {
+      "id": "1",
+      "dateJoined": "20/05/2025",
+      "status": "Active",
+      "loanAmount": "58,678.90",
+      "amountRemaining": "123,849.77",
+      "amountRepaid": "123,849.77"
+    },
+    {
+     "id": "2",
+      "dateJoined": "20/05/2025",
+      "status": "Completed",
+      "loanAmount": "58,678.90",
+      "amountRemaining": "123,849.77",
+      "amountRepaid": "123,849.77"
+    },
+    {
+     "id": "3",
+      "dateJoined": "20/05/2025",
+      "status": "Pending",
+      "loanAmount": "58,678.90",
+      "amountRemaining": "123,849.77",
+      "amountRepaid": "123,849.77"
+    },
+    {
+      "id": "4",
+      "dateJoined": "20/05/2025",
+      "status": "Waitlisted",
+      "loanAmount": "58,678.90",
+      "amountRemaining": "123,849.77",
+      "amountRepaid": "123,849.77"
+    },
+    {
+     "id": "5",
+      "dateJoined": "20/05/2025",
+      "status": "Active",
+      "loanAmount": "58,678.90",
+      "amountRemaining": "123,849.77",
+      "amountRepaid": "123,849.77"
+    },
+    {
+     "id": "6",
+      "dateJoined": "20/05/2025",
+      "status": "Completed",
+      "loanAmount": "58,678.90",
+      "amountRemaining": "123,849.77",
+      "amountRepaid": "123,849.77"
+    }
+  ],
+  "tabs": [
+    { "id": "onboarded-users", "label": "Onboarded Users" },
+    { "id": "rejected-users", "label": "Rejected Users" },
+    { "id": "pending-approval", "label": "Pending Approval" }
+  ]
+}

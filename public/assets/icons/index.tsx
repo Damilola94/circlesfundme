@@ -1,0 +1,10 @@
+export { default as CommunicationIcon } from "./CommunicationIcon";
+export { default as DashboardIcon } from "./DashboardIcon";
+export { default as KYCIcon } from "./KYCIcon";
+export { default as KYCIconCopy7 } from "./ImportIcon";
+export { default as ExportIcon } from "./ExportIcon"
+export { default as ImportIcon } from "./ImportIcon";
+export { default as LoanIcon } from "./LoanIcon";
+export { default as OverdueIcon } from "./OverdueIcon";
+export { default as SubscriptionIcon } from "./SubscriptionIcon";
+export { default as UserIcon } from "./UserIcon";
