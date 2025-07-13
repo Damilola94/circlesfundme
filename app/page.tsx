@@ -1,44 +1,27 @@
-"use client";
+import Header from "@/components/website-ui/header";
+import HeroSection from "@/components/website-ui/hero-section";
+import LoanCalculatorSection from "@/components/website-ui/loan-calculator-section";
+import WhatWeProvideSection from "@/components/website-ui/what-we-provide-section";
+import WhyChooseUsSection from "@/components/website-ui/why-choose-us-section";
+import HowItWorksSection from "@/components/website-ui/how-it-works-section";
+import TestimonialsSection from "@/components/website-ui/testimonials-section";
+import FAQSection from "@/components/website-ui/faq-section";
+import CTASection from "@/components/website-ui/cta-section";
+import Footer from "@/components/website-ui/footer";
 
-import { Button } from "@/components/ui/button";
-import { Construction, LogIn } from "lucide-react";
-
-export default function LandingPage() {
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full text-center space-y-8">
-        <div className="flex justify-center">
-          <div className="p-4 bg-orange-100 rounded-full">
-            <Construction className="w-12 h-12 text-orange-600" />
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <h1 className="text-4xl font-bold text-slate-800">
-            Under Construction
-          </h1>
-          <p className="text-slate-600 text-lg">
-            {"We're working hard to bring you something amazing. Stay tuned!"}
-          </p>
-        </div>
-
-        <div className="pt-4">
-          <Button
-            size="lg"
-            className="w-full sm:w-auto px-8 py-3 text-base font-semibold"
-            onClick={() => {
-              window.location.href = "/login";
-            }}
-          >
-            <LogIn className="w-5 h-5 mr-2" />
-            Click Here to Login
-          </Button>
-        </div>
-
-        <div className="pt-8 text-sm text-slate-500">
-          <p>© 2025 CMG Tech Studio. All rights reserved.</p>
-        </div>
-      </div>
+    <div className="min-h-screen">
+      <Header />
+      <HeroSection />
+      <LoanCalculatorSection />
+      <WhatWeProvideSection />
+      <HowItWorksSection />
+      <WhyChooseUsSection />
+      <TestimonialsSection />
+      <FAQSection />
+      <CTASection />
+      <Footer />
     </div>
   );
 }

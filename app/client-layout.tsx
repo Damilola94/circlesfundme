@@ -5,11 +5,22 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { usePathname } from "next/navigation";
 import type React from "react";
 
+const noLayoutRoutes = [
+  "/",
+  "/login",
+  "/about",
+  "/contact",
+  "/schemes/weekly",
+  "/schemes/monthly",
+  "/schemes/auto-finance",
+];
+
 function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isLoginPage = pathname === "/login" || pathname === "/";
 
-  if (isLoginPage) {
+  const isNoLayout = noLayoutRoutes.includes(pathname);
+
+  if (isNoLayout) {
     return <>{children}</>;
   }
 
