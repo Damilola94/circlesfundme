@@ -3,12 +3,12 @@
 import { CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import {
-  AppStoreIcon,
   SecurityIcon,
   FlexiblePlanIcon,
   MoneyIcon,
+  PhoneIcon
 } from "@/public/assets/icons";
-import PhoneIcon from "@/public/assets/icons/PhoneIcon";
+
 export default function WhyChooseUsSection() {
   const features = [
     {

@@ -17,4 +17,4 @@ export { default as AppStoreIcon } from "./AppStoreIcon";
 export { default as FlexiblePlanIcon } from "./FlexiblePlanIcon";
 export { default as MoneyIcon } from "./MoneyIcon";
 export { default as SecurityIcon } from "./SecurityIcon";
-// export { default as AppStoreIcon } from "./AppStoreIcon";
+export { default as PhoneIcon } from "./PhoneIcon";
