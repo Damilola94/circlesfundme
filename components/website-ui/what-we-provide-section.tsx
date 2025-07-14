@@ -9,20 +9,21 @@ export default function WhatWeProvideSection() {
     {
       title: "Auto Finance",
       description:
-        "Get financing 100 times your weekly/monthly savings. Get your back loan in one year period.",
+        "Access up to 500x your weekly or monthly contributions as an auto finance loan (Hire Purchase) with just a 10% down payment and a minimum 3-month membership. This period is required for due diligence and to build a consistent savings habit.",
       image: "/assets/images/auto-finance-scheme.jpg",
       href: "/schemes/auto-finance",
     },
     {
       title: "Weekly Scheme",
-      description: "Save and secure your future and earn amazing returns.",
+      description:
+        "Secure your future today with safe savings and low-interest financial solutions.",
       image: "/assets/images/weekly-finance.jpg",
       href: "/schemes/weekly",
     },
     {
       title: "Monthly Scheme",
       description:
-        "Make your life easy, contribute weekly or monthly and get a lump sum of money as payout.",
+        "Make your life easy, contribute monthly and get a lump sum of money as payout.",
       image: "/assets/images/monthly-finance.jpg",
       href: "/schemes/monthly",
     },
@@ -32,7 +33,9 @@ export default function WhatWeProvideSection() {
     <section className="py-16 bg-primary-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 animate-fade-in">
-          <p className="text-accent-500 font-medium mb-2 font-outfit">What We Provide</p>
+          <p className="text-accent-500 font-medium mb-2 font-outfit">
+            What We Provide
+          </p>
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 font-outfit">
             Low Interest Loans, Auto Finance
           </h2>
@@ -57,7 +60,9 @@ export default function WhatWeProvideSection() {
                     <h3 className="text-xl font-semibold text-white mb-2 font-outfit">
                       {service.title}
                     </h3>
-                    <p className="text-sm text-gray-200 font-outfit">{service.description}</p>
+                    <p className="text-sm text-gray-200 font-outfit">
+                      {service.description}
+                    </p>
                   </div>
                 </div>
               </Card>

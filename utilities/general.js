@@ -5,3 +5,5 @@ export const logger = (...logs) =>
     ? // eslint-disable-next-line no-console
       console.log(...logs, `(Log time - ${moment().format("LLL")})`)
     : undefined;
+
+export const formatNumber = (val) => parseFloat(val.replace(/,/g, "")) || 0;

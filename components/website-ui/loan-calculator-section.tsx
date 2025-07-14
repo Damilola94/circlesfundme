@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { formatNumber } from "@/lib/utils";
+import { formatAmount, formatNumber } from "@/lib/utils";
 import handleFetch from "@/services/api/handleFetch";
 import { useMutation } from "react-query";
 import { Loader } from "../ui/Loader";
@@ -25,8 +25,6 @@ export default function LoanCalculatorSection() {
   const [income, setIncome] = useState("");
   const [contribution, setContribution] = useState("");
   const [assetCost, setAssetCost] = useState("");
-  const [additionalWeeklyContribution, setAdditionalWeeklyContribution] =
-    useState("");
   const [vehicleBreakdown, setVehicleBreakdown] = useState<any>({
     costOfVehicle: "",
     extraEngine: "",
@@ -47,6 +45,10 @@ export default function LoanCalculatorSection() {
 
   const maxPercentage = scheme === "Weekly Contribution Scheme" ? 0.2 : 0.3;
   const isValidContribution = contributionValue <= maxPercentage * incomeValue;
+  const vehicleEligibleLoan =
+    parseFloat(vehicleBreakdown.totalAssetValue.replace(/,/g, "")) -
+    parseFloat(vehicleBreakdown.downPayment.replace(/,/g, ""));
+  const formattedVehicleEligibleLoan = formatAmount(vehicleEligibleLoan, "N");
 
   const principalLoan =
     scheme === "Weekly Contribution Scheme"
@@ -56,10 +58,6 @@ export default function LoanCalculatorSection() {
   const eligibleLoan = principalLoan - loanMgtFee;
   const serviceCharge =
     scheme === "Weekly Contribution Scheme" ? 2500 / 4 : 2500;
-
-  const totalWeeklyContribution =
-    parseFloat(vehicleBreakdown.minimumWeeklyContribution || 0) +
-    parseFloat(additionalWeeklyContribution || "0");
 
   const breakdownMutation = useMutation({
     mutationFn: (body: any) =>
@@ -89,8 +87,6 @@ export default function LoanCalculatorSection() {
       toast.error(err?.message || "Something went wrong.");
     },
   });
-
-  console.log(vehicleBreakdown, "vehicleBreakdown");
 
   const { isLoading } = breakdownMutation;
 
@@ -189,18 +185,14 @@ export default function LoanCalculatorSection() {
                             User Contribution (Down Payment): ₦
                             {vehicleBreakdown.downPayment}
                           </p>
-                          <p>
-                            Eligible Loan: ₦
-                            {vehicleBreakdown.totalAssetValue -
-                              vehicleBreakdown.downPayment}
-                          </p>
+                          <p>Eligible Loan: ₦{formattedVehicleEligibleLoan}</p>
                           <p>
                             Loan Management Fee (4 years): ₦
                             {vehicleBreakdown.loanManagementFee}
                           </p>
-                          <p >
+                          <p>
                             Mimimum Weekly Contribution: ₦
-                            {vehicleBreakdown.minimumWeeklyContribution }
+                            {vehicleBreakdown.minimumWeeklyContribution}
                           </p>
                           <p>
                             Post-Loan Weekly Repayment: ₦

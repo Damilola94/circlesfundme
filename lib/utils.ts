@@ -10,3 +10,18 @@ export const formatNumber = (amount: number | undefined) => {
 
   return new Intl.NumberFormat("en-US").format(amount);
 };
+
+
+export const formatAmount = (amount: number | undefined, currency: string) => {
+  if (typeof amount !== "number") return "Invalid";
+
+  const isNegative = amount < 0;
+  const dividedAmount = Math.abs(amount) 
+
+  const formatted = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(dividedAmount);
+
+  return isNegative ? `(${formatted})` : `${formatted}`;
+};
