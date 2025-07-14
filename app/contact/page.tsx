@@ -44,8 +44,8 @@ export default function ContactPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="bg-white rounded-lg border border-primary/20 p-8">
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Contact Us</h1>
-              <p className="text-gray-600 mb-8">CirclesFundMe Digital Savings and Loans Cooperative Society</p>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2 font-outfit">Contact Us</h1>
+              <p className="text-gray-600 mb-8 font-outfit">CirclesFundMe Digital Savings and Loans Cooperative Society</p>
 
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
@@ -53,8 +53,8 @@ export default function ContactPage() {
                     <Phone className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Call Us</h3>
-                    <p className="text-gray-600 text-sm">+234 703 331 9394</p>
+                    <h3 className="font-semibold text-gray-900 mb-1 font-outfit">Call Us</h3>
+                    <p className="text-gray-600 text-sm font-outfit">+234 703 331 9394</p>
                   </div>
                 </div>
 
@@ -63,8 +63,8 @@ export default function ContactPage() {
                     <Mail className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Email Us</h3>
-                    <p className="text-gray-600 text-sm">info@circlesfundme.com</p>
+                    <h3 className="font-semibold text-gray-900 mb-1 font-outfit">Email Us</h3>
+                    <p className="text-gray-600 text-sm font-outfit">info@circlesfundme.com</p>
                   </div>
                 </div>
 
@@ -73,13 +73,13 @@ export default function ContactPage() {
                     <MapPin className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Visit Us</h3>
-                    <p className="text-gray-600 text-sm">Road 116,House 8, Gwarimpa, Abuja, Nigeria</p>
+                    <h3 className="font-semibold text-gray-900 mb-1 font-outfit">Visit Us</h3>
+                    <p className="text-gray-600 text-sm font-outfit">Road 116,House 8, Gwarimpa, Abuja, Nigeria</p>
                   </div>
                 </div>
 
                 <div className="pt-4">
-                  <h3 className="font-semibold text-gray-900 mb-4">Follow our social media</h3>
+                  <h3 className="font-semibold text-gray-900 mb-4 font-outfit">Follow our social media</h3>
                   <div className="flex space-x-3">
                     <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
                       <MessageCircle className="w-5 h-5 text-white" />
@@ -96,7 +96,7 @@ export default function ContactPage() {
             </div>
 
             <div className="bg-primary rounded-lg p-8">
-              <h2 className="text-2xl font-bold text-white mb-6">Send Us a Message</h2>
+              <h2 className="text-2xl font-bold text-white mb-6 font-outfit">Send Us a Message</h2>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">

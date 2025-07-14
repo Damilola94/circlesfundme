@@ -71,8 +71,8 @@ export default function FAQSection() {
     <section className="py-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 animate-fade-in">
-          <p className="text-accent-500 mb-2">FAQ</p>
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+          <p className="text-accent-500 mb-2 font-outfit">FAQ</p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-outfit">
             Frequently Asked Questions
           </h2>
         </div>

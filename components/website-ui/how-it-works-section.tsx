@@ -49,8 +49,8 @@ export default function HowItWorksSection() {
 
           <div className="space-y-8 animate-slide-in-right">
             <div className="text-center lg:text-left">
-              <p className="text-accent-500 font-medium mb-2">How It Works</p>
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+              <p className="text-accent-500 font-medium mb-2 font-outfit">How It Works</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 font-outfit">
                 How CirclesFundme Works
               </h2>
             </div>
@@ -65,11 +65,11 @@ export default function HowItWorksSection() {
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
                       <div className="flex-shrink-0">
-                        <div className="text-primary rounded-full flex items-center justify-center text-base font-bold">
+                        <div className="text-primary rounded-full flex items-center justify-center font-outfit text-base font-bold">
                           {step.number}
                         </div>
                       </div>
-                      <p className="text-gray-700 leading-relaxed">
+                      <p className="text-gray-700 leading-relaxed font-outfit">
                         {step.title}
                       </p>
                     </div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Facebook, Twitter, Instagram, Phone, MapPin, } from "lucide-react";
+import { Facebook, Twitter, Instagram, Phone, MapPin } from "lucide-react";
 import Image from "next/image";
 
 export default function Footer() {
@@ -18,7 +18,7 @@ export default function Footer() {
                 height={80}
               />
             </div>
-            <p className="text-gray-300 mb-6 leading-relaxed text-sm">
+            <p className="text-gray-300 mb-6 leading-relaxed text-sm font-outfit">
               CirclesFundMe is a fully licensed and innovative and registered
               cooperative society that is dedicated to providing the best
               financial services.
@@ -26,12 +26,14 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">Explore</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white font-outfit">
+              Explore
+            </h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
                   href="/"
-                  className="text-gray-300 hover:text-primary transition-colors"
+                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
                   Home
                 </Link>
@@ -39,31 +41,31 @@ export default function Footer() {
               <li>
                 <Link
                   href="/about"
-                  className="text-gray-300 hover:text-primary transition-colors"
+                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
                   About
                 </Link>
               </li>
               <li>
                 <Link
-                  href="#"
-                  className="text-gray-300 hover:text-primary transition-colors"
+                  href="/schemes/weekly"
+                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
                   Weekly Scheme
                 </Link>
               </li>
               <li>
                 <Link
-                  href="#"
-                  className="text-gray-300 hover:text-primary transition-colors"
+                  href="/schemes/monthly"
+                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
                   Monthly Scheme
                 </Link>
               </li>
               <li>
                 <Link
-                  href="#"
-                  className="text-gray-300 hover:text-primary transition-colors"
+                  href="/schemes/auto-finance"
+                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
                   Auto Finance
                 </Link>
@@ -72,12 +74,12 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">Socials</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white font-outfit">Socials</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
                   href="#"
-                  className="text-gray-300 hover:text-primary transition-colors"
+                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
                   Facebook
                 </Link>
@@ -85,7 +87,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-gray-300 hover:text-primary transition-colors"
+                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
                   Twitter
                 </Link>
@@ -93,7 +95,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-gray-300 hover:text-primary transition-colors"
+                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
                   WhatsApp
                 </Link>
@@ -101,7 +103,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-gray-300 hover:text-primary transition-colors"
+                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
                   Instagram
                 </Link>
@@ -110,18 +112,18 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">Contact</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white font-outfit">Contact</h3>
             <div className="space-y-3 text-sm">
               <div className="flex items-center text-gray-300">
-                <Phone className="h-4 w-4 mr-3 text-white flex-shrink-0" />
-                <span>+234 703 331 9394,</span>
+                <Phone className="h-4 w-4 mr-3 text-white flex-shrink-0 font-outfit" />
+                <span className="font-outfit">+234 703 331 9394,</span>
               </div>
               <div className="flex items-center text-gray-300">
-                <Phone className="h-4 w-4 mr-3 text-white flex-shrink-0" />
-                <span>+234 805 535 7592</span>
+                <Phone className="h-4 w-4 mr-3 text-white flex-shrink-0 font-outfit" />
+                <span className="font-outfit">+234 805 535 7592</span>
               </div>
-             
-              <div className="flex items-start text-gray-300">
+
+              <div className="flex items-start text-gray-300 font-outfit">
                 <MapPin className="h-4 w-4 mr-3 text-white flex-shrink-0 mt-0.5" />
                 <div>
                   <p>Address</p>
@@ -134,7 +136,7 @@ export default function Footer() {
 
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-gray-400 text-sm mb-4 md:mb-0">
+            <div className="text-gray-400 text-sm mb-4 md:mb-0 font-outfit">
               © {currentYear} CirclesFundMe. All rights reserved.
             </div>
 

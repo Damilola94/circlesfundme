@@ -34,25 +34,25 @@ export default function MonthlySchemePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="p-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-6">
+              <h1 className="text-3xl font-bold text-gray-900 mb-6 font-outfit">
                 Monthly Scheme
               </h1>
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-gray-700">Are you a salaried employee?</p>
+                  <p className="text-gray-700 font-outfit">Are you a salaried employee?</p>
                 </div>
               </div>
 
-              <p className="text-gray-600 leading-relaxed mb-4">
+              <p className="text-gray-600 leading-relaxed mb-4 font-outfit">
                 If so, the CirclesFundme Monthly Contribution Scheme may be the
                 perfect fit for you. This scheme is designed specifically for
                 individuals with a steady monthly income who are looking for a
                 personal loan.
               </p>
 
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-gray-600 leading-relaxed font-outfit">
                 With this scheme, you can borrow up to 12 times your monthly
                 contribution as your personal loan.
               </p>
@@ -75,16 +75,16 @@ export default function MonthlySchemePage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-16 mb-12">
             <div className="bg-primary/5 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6 font-outfit">
                 Eligibility Requirements
               </h2>
               <div className="space-y-4">
                 {eligibilityRequirements.map((requirement, index) => (
                   <div key={index} className="flex items-start space-x-3">
-                    <div className="w-6 h-6 text-primary rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 text-primary rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5 font-outfit">
                       {String(index + 1).padStart(2, "0")}
                     </div>
-                    <p className="text-gray-700 text-sm leading-relaxed">
+                    <p className="text-gray-700 text-sm leading-relaxed font-outfit">
                       {requirement}
                     </p>
                   </div>
@@ -93,16 +93,16 @@ export default function MonthlySchemePage() {
             </div>
 
             <div className="bg-primary/5 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6 font-outfit">
                 Terms of the Personal Capital Loan
               </h2>
               <div className="space-y-4">
                 {loanTerms.map((term, index) => (
                   <div key={index} className="flex items-start space-x-3">
-                    <div className="w-6 h-6 text-primary rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 text-primary rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5 font-outfit">
                       {String(index + 1).padStart(2, "0")}
                     </div>
-                    <p className="text-gray-700 text-sm leading-relaxed">
+                    <p className="text-gray-700 text-sm leading-relaxed font-outfit">
                       {term}
                     </p>
                   </div>
@@ -112,7 +112,7 @@ export default function MonthlySchemePage() {
           </div>
 
           <div className="text-center">
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6 font-outfit">
               If you meet these criteria and are ready to achieve your financial
               goals, consider signing up for the CirclesFundme Monthly
               Contribution Scheme!

@@ -6,10 +6,17 @@ import ClientLayout from "./client-layout";
 
 const inter = Inter({ subsets: ["latin"] });
 
+
 export const metadata: Metadata = {
-  title: "Circlesfundme Dashboard",
-  description: "Loan management and KYC review system",
-};
+  title: "CirclesFundMe - Your Trusted Financial Partner",
+  description:
+    "Get access to loans without stress. Join a trusted digital cooperative where your savings unlock opportunity, from loans to auto financing and more.",
+  keywords: "loans, finance, savings, cooperative, auto finance, weekly scheme, monthly scheme",
+  authors: [{ name: "CirclesFundMe" }],
+  creator: "CirclesFundMe",
+  publisher: "CirclesFundMe",
+  metadataBase: new URL("https://circlesfundme.com"),
+}
 
 export default function RootLayout({
   children,

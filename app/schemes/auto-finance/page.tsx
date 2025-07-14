@@ -42,15 +42,15 @@ export default function AutoFinancePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
             <div className="p-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-6">
+              <h1 className="text-3xl font-bold text-gray-900 mb-6 font-outfit">
                 Auto Finance
               </h1>
 
-              <p className="text-gray-600 leading-relaxed mb-4">
+              <p className="text-gray-600 leading-relaxed mb-4 font-outfit">
                 Are you in need of a vehicle for commercial or personal use?
               </p>
 
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-gray-600 leading-relaxed font-outfit">
                 With the CirclesFundme Auto Finance Contribution Scheme, you can
                 access up to 90% financing for purchasing a vehicle after
                 providing a 10% down payment, which is required to qualify for
@@ -75,16 +75,16 @@ export default function AutoFinancePage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
             <div className="bg-primary/5 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6 font-outfit">
                 Eligibility Requirements
               </h2>
               <div className="space-y-4">
                 {eligibilityRequirements.map((requirement, index) => (
                   <div key={index} className="flex items-start space-x-3">
-                    <div className="w-6 h-6  text-primary  flex items-center justify-center text-base font-bold flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6  text-primary  flex items-center justify-center text-base font-bold flex-shrink-0 mt-0.5 font-outfit">
                       {String(index + 1).padStart(2, "0")}
                     </div>
-                    <p className="text-gray-700 text-base leading-relaxed mt-0.5">
+                    <p className="text-gray-700 text-base leading-relaxed mt-0.5 font-outfit">
                       {requirement}
                     </p>
                   </div>
@@ -93,16 +93,16 @@ export default function AutoFinancePage() {
             </div>
 
             <div className="bg-primary/5 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6 font-outfit">
                 What the CirclesFundme Auto Finance Loan Will Cover
               </h2>
               <div className="space-y-4">
                 {loanCoverage.map((coverage, index) => (
                   <div key={index} className="flex items-start space-x-3">
-                    <div className="w-6 h-6  text-primary  flex items-center justify-center text-base font-bold flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6  text-primary  flex items-center justify-center text-base font-bold flex-shrink-0 mt-0.5 font-outfit">
                       {String(index + 1).padStart(2, "0")}
                     </div>
-                    <p className="text-gray-700 text-sm leading-relaxed mt-1">
+                    <p className="text-gray-700 text-sm leading-relaxed mt-1 font-outfit">
                       {coverage}
                     </p>
                   </div>
@@ -112,16 +112,16 @@ export default function AutoFinancePage() {
           </div>
 
           <div className="bg-primary/5 rounded-lg p-6 mb-12">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            <h2 className="text-xl font-outfit font-semibold text-gray-900 mb-6">
               Terms of the CirclesFundme Auto Finance Contribution Scheme
             </h2>
             <div className="space-y-4">
               {loanTerms.map((term, index) => (
                 <div key={index} className="flex items-start space-x-3">
-                  <div className="w-6 h-6  text-primary flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6  text-primary flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5 font-outfit">
                     {String(index + 1).padStart(2, "0")}
                   </div>
-                  <p className="text-gray-700 text-sm leading-relaxed mt-1">
+                  <p className="text-gray-700 text-sm leading-relaxed mt-1 font-outfit">
                     {term}
                   </p>
                 </div>
@@ -130,7 +130,7 @@ export default function AutoFinancePage() {
           </div>
 
           <div className="text-center">
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6 font-outfit">
               If you meet these criteria and are ready to take your business to
               the next level, consider signing up for the CirclesFundme Auto
               Finance Contribution Scheme!

@@ -32,8 +32,8 @@ export default function WhatWeProvideSection() {
     <section className="py-16 bg-primary-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 animate-fade-in">
-          <p className="text-accent-500 font-medium mb-2">What We Provide</p>
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+          <p className="text-accent-500 font-medium mb-2 font-outfit">What We Provide</p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 font-outfit">
             Low Interest Loans, Auto Finance
           </h2>
         </div>
@@ -52,16 +52,12 @@ export default function WhatWeProvideSection() {
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-110"
                   />
-
-                  {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent z-10" />
-
-                  {/* Text Overlay */}
                   <div className="absolute bottom-0 z-20 p-6">
-                    <h3 className="text-xl font-semibold text-white mb-2">
+                    <h3 className="text-xl font-semibold text-white mb-2 font-outfit">
                       {service.title}
                     </h3>
-                    <p className="text-sm text-gray-200">{service.description}</p>
+                    <p className="text-sm text-gray-200 font-outfit">{service.description}</p>
                   </div>
                 </div>
               </Card>

@@ -8,10 +8,10 @@ export default function CTASection() {
     <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16 bg-primary mb-20 rounded-3xl">
       <div className="">
         <div className="space-y-6 animate-fade-in">
-          <h2 className="text-3xl lg:text-4xl font-bold text-white">
+          <h2 className="text-3xl lg:text-4xl font-bold text-white font-outfit">
             Get Closer to the Funds You Need
           </h2>
-          <p className="text-lg text-white/90 max-w-2xl mx-auto">
+          <p className="text-lg text-white/90 max-w-2xl mx-auto font-outfit">
             Start saving today and unlock access to flexible, low-barrier
             financing when you need it.
           </p>

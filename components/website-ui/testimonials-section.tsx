@@ -39,8 +39,8 @@ export default function TestimonialsSection() {
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 animate-fade-in">
-          <p className="text-accent-500 mb-2">Customers Testimonials</p>
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+          <p className="text-accent-500 mb-2 font-outfit">Customers Testimonials</p>
+          <h2 className="text-3xl lg:text-4xl font-bold font-outfit text-gray-900 mb-4">
             What Our Customers Are Saying
           </h2>
         </div>
@@ -65,15 +65,15 @@ export default function TestimonialsSection() {
                   </div>
                 </div>
 
-                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                <p className="text-gray-600 text-sm leading-relaxed font-outfit mb-4">
                   {testimonial.content}
                 </p>
 
                 <div className="border-t pt-4">
-                  <h4 className="font-semibold text-gray-900">
+                  <h4 className="font-semibold text-gray-900 font-outfit">
                     {testimonial.name}
                   </h4>
-                  <p className="text-sm text-gray-500">{testimonial.role}</p>
+                  <p className="text-sm text-gray-500 font-outfit">{testimonial.role}</p>
                 </div>
               </CardContent>
             </Card>

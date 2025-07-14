@@ -40,12 +40,12 @@ export default function WhyChooseUsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
           <div className="space-y-6 animate-slide-in-left">
-          <p className="text-accent-500 font-medium mb-2">Why Choose Us</p>
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+          <p className="text-accent-500 font-medium mb-2 font-outfit">Why Choose Us</p>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight font-outfit">
               Trusted for Transparent and{" "}
               <span className="text-primary">Convenient Loans</span>
             </h2>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-600 leading-relaxed font-outfit">
               Over the years, we have built a reputation for making the dreams
               of our members come true as we provide them with business loans
               with minimal interest rates and convenient terms of payment. We
@@ -68,7 +68,7 @@ export default function WhyChooseUsSection() {
         </div>
 
         <div className="text-center mb-12 animate-fade-in mt-36">
-          <h3 className="text-2xl lg:text-3xl font-bold text-gray-900">
+          <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 font-outfit">
             Why Choose Us?
           </h3>
         </div>
@@ -85,14 +85,14 @@ export default function WhyChooseUsSection() {
             >
               <CardContent className="p-6">
                 <div className="flex justify-start   mb-4">
-                  <div className="p-2 border border-[#00A86B] bg-primary-50 rounded-xl">
+                  <div className="p-2 border border-[#00A86B] bg-primary-50 rounded-xl font-outfit">
                     {feature.icon}
                   </div>
                 </div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">
+                <h4 className="text-lg font-semibold text-gray-900 mb-3 font-outfit">
                   {feature.title}
                 </h4>
-                <p className="text-gray-600 text-sm leading-relaxed">
+                <p className="text-gray-600 text-sm leading-relaxed font-outfit">
                   {feature.description}
                 </p>
               </CardContent>

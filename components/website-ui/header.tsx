@@ -40,26 +40,26 @@ export default function Header() {
           <nav className="hidden md:flex items-center space-x-5">
             <Link
               href="/"
-              className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
+              className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors font-outfit"
             >
               Home
             </Link>
             <Link
               href="/about"
-              className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
+              className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors font-outfit"
             >
               About Us
             </Link>
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors">
-                Schemes
+              <DropdownMenuTrigger className="flex items-center text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors font-outfit">
+                Contribution Schemes
                 <ChevronDown className="ml-1 h-4 w-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 {schemes.map((scheme) => (
                   <DropdownMenuItem key={scheme.name}>
-                    <Link href={scheme.href} className="w-full">
+                    <Link href={scheme.href} className="w-full font-outfit">
                       {scheme.name}
                     </Link>
                   </DropdownMenuItem>
@@ -69,7 +69,7 @@ export default function Header() {
 
             <Link
               href="/contact"
-              className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
+              className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors font-outfit"
             >
               Contact Us
             </Link>
@@ -104,23 +104,23 @@ export default function Header() {
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
               <Link
                 href="/"
-                className="text-gray-700 hover:text-primary block px-3 py-2 text-base font-medium"
+                className="text-gray-700 hover:text-primary block px-3 py-2 text-base font-medium font-outfit"
               >
                 Home
               </Link>
               <Link
                 href="/about"
-                className="text-gray-700 hover:text-primary block px-3 py-2 text-base font-medium"
+                className="text-gray-700 hover:text-primary block px-3 py-2 text-base font-medium font-outfit"
               >
                 About Us
               </Link>
               <div className="px-3 py-2">
-                <div className="text-gray-700 font-medium mb-2">Schemes</div>
+                <div className="text-gray-700 font-medium mb-2 font-outfit">Contribution Schemes</div>
                 {schemes.map((scheme) => (
                   <Link
                     key={scheme.name}
                     href={scheme.href}
-                    className="text-gray-600 hover:text-primary block px-3 py-1 text-sm"
+                    className="text-gray-600 hover:text-primary block px-3 py-1 text-sm font-outfit"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {scheme.name}
@@ -129,7 +129,7 @@ export default function Header() {
               </div>
               <Link
                 href="/contact"
-                className="text-gray-700 hover:text-primary block px-3 py-2 text-base font-medium"
+                className="text-gray-700 hover:text-primary block px-3 py-2 text-base font-medium font-outfit"
               >
                 Contact Us
               </Link>

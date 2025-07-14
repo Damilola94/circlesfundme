@@ -1,27 +1,104 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Select } from "@/components/ui/select";
 import Image from "next/image";
 
-export default function LoanCalculatorSection() {
-  const [selected, setSelected] = useState("");
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { formatNumber } from "@/lib/utils";
+import handleFetch from "@/services/api/handleFetch";
+import { useMutation } from "react-query";
+import { Loader } from "../ui/Loader";
+import { toast } from "react-toastify";
 
-  const trustedLogos = [
-    { name: "Zenith Bank", src: "/assets/images/partners/partner-1.png" },
-    { name: "Leadway Insurance", src: "/assets/images/partners/partner-2.png" },
-    { name: "BRISCOE", src: "/assets/images/partners/partner-3.png" },
-    { name: "NURTW", src: "/assets/images/partners/partner-4.png" },
-    { name: "Rosaki", src: "/assets/images/partners/partner-5.png" },
-  ];
+const trustedLogos = [
+  { name: "Zenith Bank", src: "/assets/images/partners/partner-1.png" },
+  { name: "Leadway Insurance", src: "/assets/images/partners/partner-2.png" },
+  { name: "BRISCOE", src: "/assets/images/partners/partner-3.png" },
+  { name: "NURTW", src: "/assets/images/partners/partner-4.png" },
+  { name: "Rosaki", src: "/assets/images/partners/partner-5.png" },
+];
+export default function LoanCalculatorSection() {
+  const [scheme, setScheme] = useState("");
+  const [income, setIncome] = useState("");
+  const [contribution, setContribution] = useState("");
+  const [assetCost, setAssetCost] = useState("");
+  const [additionalWeeklyContribution, setAdditionalWeeklyContribution] =
+    useState("");
+  const [vehicleBreakdown, setVehicleBreakdown] = useState<any>({
+    costOfVehicle: "",
+    extraEngine: "",
+    extraTyre: "",
+    insurance: "",
+    processingFee: "",
+    totalAssetValue: "",
+    downPayment: "",
+    loanManagementFee: "",
+    minimumWeeklyContribution: "",
+    postLoanWeeklyContribution: "",
+  });
+
+  const isAssetFinance = scheme === "Auto Financing";
+  const incomeValue = parseFloat(income.replace(/,/g, ""));
+  const contributionValue = parseFloat(contribution.replace(/,/g, ""));
+  const assetCostValue = parseFloat(assetCost.replace(/,/g, ""));
+
+  const maxPercentage = scheme === "Weekly Contribution Scheme" ? 0.2 : 0.3;
+  const isValidContribution = contributionValue <= maxPercentage * incomeValue;
+
+  const principalLoan =
+    scheme === "Weekly Contribution Scheme"
+      ? contributionValue * 52
+      : contributionValue * 12;
+  const loanMgtFee = principalLoan * 0.06;
+  const eligibleLoan = principalLoan - loanMgtFee;
+  const serviceCharge =
+    scheme === "Weekly Contribution Scheme" ? 2500 / 4 : 2500;
+
+  const totalWeeklyContribution =
+    parseFloat(vehicleBreakdown.minimumWeeklyContribution || 0) +
+    parseFloat(additionalWeeklyContribution || "0");
+
+  const breakdownMutation = useMutation({
+    mutationFn: (body: any) =>
+      handleFetch({
+        endpoint: "contributionschemes/auto-finance-breakdown",
+        method: "POST",
+        body,
+      }),
+    onSuccess: (res: any) => {
+      if (res?.status === 200) {
+        const breakdown = res?.data;
+        setVehicleBreakdown({
+          costOfVehicle: breakdown.costOfVehicle,
+          extraEngine: breakdown.extraEngine,
+          extraTyre: breakdown.extraTyre,
+          insurance: breakdown.insurance,
+          processingFee: breakdown.processingFee,
+          totalAssetValue: breakdown.totalAssetValue,
+          downPayment: breakdown.downPayment,
+          loanManagementFee: breakdown.loanManagementFee,
+          minimumWeeklyContribution: breakdown.minimumWeeklyContribution,
+          postLoanWeeklyContribution: breakdown.postLoanWeeklyContribution,
+        });
+      }
+    },
+    onError: (err: { statusCode: string; message: string }) => {
+      toast.error(err?.message || "Something went wrong.");
+    },
+  });
+
+  console.log(vehicleBreakdown, "vehicleBreakdown");
+
+  const { isLoading } = breakdownMutation;
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 animate-fade-in">
-          <p className="text-base  mb-6 font-bold">
+          <p className="text-base  mb-6 font-semibold font-outfit">
             Trusted by Reputable Institutions That Believe in Financial Access
           </p>
           <div className="flex flex-wrap justify-center items-center gap-32 opacity-60">
@@ -44,12 +121,14 @@ export default function LoanCalculatorSection() {
 
         <div className="mt-32 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 animate-slide-in-left">
-          <p className="text-accent-500 font-medium mb-1">About Us  </p>
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+            <p className="text-accent-500 font-medium mb-1 font-outfit">
+              About Us{" "}
+            </p>
+            <h2 className="text-3xl lg:text-4xl font-bold font-outfit text-gray-900 leading-tight">
               Our Loans Will Make Your{" "}
               <span className="text-primary">Dreams Come True</span>
             </h2>
-            <div className="space-y-4 text-gray-600">
+            <div className="space-y-4 text-gray-600 font-outfit">
               <p>
                 At CirclesFundMe, we provide you with smart and reliable
                 pathways to achieve better results with your money. Join us
@@ -64,66 +143,132 @@ export default function LoanCalculatorSection() {
             </div>
           </div>
 
-          <div className="animate-slide-in-right">
-            <Card className="bg-primary/5 border-0 shadow-lg">
-              <CardContent className="p-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-6">
-                  Calculate Your Loan
-                </h3>
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Choose Loan Tenor
-                    </label>
-                    <Select
-                      options={[
-                        {
-                          value: "payment-reminder",
-                          label: "Payment Reminder",
-                        },
-                        {
-                          value: "payment-reminder",
-                          label: "Contribution Reminder",
-                        },
-                        { value: "payment-reminder", label: "Loan Reminder" },
-                      ]}
-                      className="mt-1"
-                      value={selected}
-                      onChange={setSelected}
-                    />
-                  </div>
+          <section className="">
+            <div className="max-w-4xl mx-auto px-4">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl lg:text-2xl font-bold font-outfit text-gray-900 leading-tight">
+                  Calculate Your <span className="text-primary">Loan</span>
+                </h2>
+              </div>
+              <Card className="bg-red- border shadow-md">
+                <CardContent className="p-8 space-y-6">
+                  <Select
+                    label="Contribution Scheme"
+                    value={scheme}
+                    onChange={setScheme}
+                    options={[
+                      {
+                        label: "Weekly Contribution Scheme",
+                        value: "Weekly Contribution Scheme",
+                      },
+                      {
+                        label: "Monthly Contribution Scheme",
+                        value: "Monthly Contribution Scheme",
+                      },
+                      { label: "Auto Financing", value: "Auto Financing" },
+                    ]}
+                  />
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Choose Savings Frequency
-                    </label>
-                    <Select
-                      options={[
-                        {
-                          value: "payment-reminder",
-                          label: "Payment Reminder",
-                        },
-                        {
-                          value: "payment-reminder",
-                          label: "Contribution Reminder",
-                        },
-                        { value: "payment-reminder", label: "Loan Reminder" },
-                      ]}
-                      className="mt-1"
-                      value={selected}
-                      onChange={setSelected}
-                    />
-                  </div>
+                  {isAssetFinance ? (
+                    <>
+                      <Input
+                        label="  Cost of Vehicle (₦)"
+                        value={assetCost}
+                        onChange={(e) => setAssetCost(e.target.value)}
+                        placeholder="Enter amount"
+                      />
+                      {vehicleBreakdown.costOfVehicle && (
+                        <div className="bg-gray-100 p-4 rounded space-y-2">
+                          <p>Extra Engine: ₦{vehicleBreakdown.extraEngine}</p>
+                          <p>Extra Tyre: ₦{vehicleBreakdown.extraTyre}</p>
+                          <p>Insurance: ₦{vehicleBreakdown.insurance}</p>
+                          <p>
+                            Processing Fee: ₦{vehicleBreakdown.processingFee}
+                          </p>
+                          <p>
+                            User Contribution (Down Payment): ₦
+                            {vehicleBreakdown.downPayment}
+                          </p>
+                          <p>
+                            Eligible Loan: ₦
+                            {vehicleBreakdown.totalAssetValue -
+                              vehicleBreakdown.downPayment}
+                          </p>
+                          <p>
+                            Loan Management Fee (4 years): ₦
+                            {vehicleBreakdown.loanManagementFee}
+                          </p>
+                          <p >
+                            Mimimum Weekly Contribution: ₦
+                            {vehicleBreakdown.minimumWeeklyContribution }
+                          </p>
+                          <p>
+                            Post-Loan Weekly Repayment: ₦
+                            {vehicleBreakdown.postLoanWeeklyContribution}
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <Input
+                        label={`${
+                          scheme.includes("Weekly") ? "Weekly" : "Monthly"
+                        } Income`}
+                        value={income}
+                        onChange={(e) => setIncome(e.target.value)}
+                        placeholder="Enter amount"
+                      />
+                      <Input
+                        label={`${
+                          scheme.includes("Weekly") ? "Weekly" : "Monthly"
+                        } Contribution`}
+                        value={contribution}
+                        onChange={(e) => setContribution(e.target.value)}
+                        placeholder="Enter amount"
+                      />
+                      {isValidContribution && contributionValue > 0 && (
+                        <div className="bg-gray-100 p-4 rounded-2xl space-y-2">
+                          <p>Principal Loan: ₦{principalLoan}</p>
+                          <p>Loan Management Fee (6%): ₦{loanMgtFee}</p>
+                          <p>Eligible Loan: ₦{eligibleLoan}</p>
+                          <p>
+                            Service Charge: ₦{serviceCharge}/
+                            {scheme.includes("Weekly") ? "week" : "month"}
+                          </p>
+                        </div>
+                      )}
 
-                  <Button className="w-full bg-primary hover:bg-primary/90 text-white py-3">
-                    Calculate Your Loan
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                      {!isValidContribution && !!contribution && (
+                        <p className="text-red-500 text-sm">
+                          You cannot contribute more than {maxPercentage * 100}%
+                          of your income.
+                        </p>
+                      )}
+                    </>
+                  )}
+
+                  {isAssetFinance && (
+                    <Button
+                      className="w-full mt-4"
+                      onClick={() => {
+                        if (assetCostValue) {
+                          breakdownMutation.mutate({
+                            costOfVehicle: assetCostValue,
+                          });
+                        }
+                      }}
+                    >
+                      Calculate
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </section>
         </div>
       </div>
+      {isLoading && <Loader />}
     </section>
   );
 }

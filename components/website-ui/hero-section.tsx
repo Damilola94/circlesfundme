@@ -11,11 +11,11 @@ export default function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 animate-slide-in-left">
             <div className="space-y-6">
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight font-outfit">
                 Get Access to Loans{" "}
                 <span className="text-primary-350">Without Stress</span>
               </h1>
-              <p className="text-lg text-gray-600 leading-relaxed max-w-lg">
+              <p className="text-lg text-gray-600 leading-relaxed max-w-lg font-outfit">
                 Join a trusted digital cooperative where your savings unlock
                 opportunity, from loans to auto financing and more.
               </p>

@@ -4,6 +4,18 @@ import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
 import { usePathname } from "next/navigation";
 import type React from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { ToastContainer } from "react-toastify";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
 
 const noLayoutRoutes = [
   "/",
@@ -17,21 +29,36 @@ const noLayoutRoutes = [
 
 function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-
   const isNoLayout = noLayoutRoutes.includes(pathname);
 
-  if (isNoLayout) {
-    return <>{children}</>;
-  }
-
   return (
-    <div className="flex h-screen bg-[#F5F5F5]">
-      <Sidebar />
-      <main className="flex-1 overflow-auto">
-        <Header />
-        {children}
-      </main>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      {isNoLayout ? (
+        <>{children}</>
+      ) : (
+        <div className="flex h-screen bg-[#F5F5F5]">
+          <Sidebar />
+          <main className="flex-1 overflow-auto">
+            <Header />
+            {children}
+          </main>
+        </div>
+      )}
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+    </QueryClientProvider>
   );
 }
 
