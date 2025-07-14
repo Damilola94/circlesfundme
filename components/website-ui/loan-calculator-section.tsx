@@ -168,42 +168,78 @@ export default function LoanCalculatorSection() {
                   {isAssetFinance ? (
                     <>
                       <Input
-                        label="  Cost of Vehicle (₦)"
+                        type="money"
+                        label="Cost of Vehicle (₦)"
                         value={assetCost}
                         onChange={(e) => setAssetCost(e.target.value)}
                         placeholder="Enter amount"
                       />
                       {vehicleBreakdown.costOfVehicle && (
-                        <div className="bg-gray-100 p-4 rounded space-y-2">
-                          <p>Extra Engine: ₦{vehicleBreakdown.extraEngine}</p>
-                          <p>Extra Tyre: ₦{vehicleBreakdown.extraTyre}</p>
-                          <p>Insurance: ₦{vehicleBreakdown.insurance}</p>
-                          <p>
-                            Processing Fee: ₦{vehicleBreakdown.processingFee}
-                          </p>
-                          <p>
-                            User Contribution (Down Payment): ₦
-                            {vehicleBreakdown.downPayment}
-                          </p>
-                          <p>Eligible Loan: ₦{formattedVehicleEligibleLoan}</p>
-                          <p>
-                            Loan Management Fee (4 years): ₦
-                            {vehicleBreakdown.loanManagementFee}
-                          </p>
-                          <p>
-                            Mimimum Weekly Contribution: ₦
-                            {vehicleBreakdown.minimumWeeklyContribution}
-                          </p>
-                          <p>
-                            Post-Loan Weekly Repayment: ₦
-                            {vehicleBreakdown.postLoanWeeklyContribution}
-                          </p>
+                        <div className="bg-gray-100 p-4 rounded space-y-2 font-outfit ">
+                          <div className="flex justify-between">
+                            <span>Extra Engine:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.extraEngine}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Extra Tyre:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.extraTyre}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Insurance:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.insurance}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Processing Fee:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.processingFee}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>
+                              User Contribution{" "}
+                              <span className="text-sm">(Down Payment):</span>
+                            </span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.downPayment}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Eligible Loan:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{formattedVehicleEligibleLoan}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Loan Mgt. Fee (4 years):</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.loanManagementFee}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Minimum Weekly Contribution:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.minimumWeeklyContribution}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Post-Loan Weekly Repayment:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.postLoanWeeklyContribution}
+                            </span>
+                          </div>
                         </div>
                       )}
                     </>
                   ) : (
                     <>
                       <Input
+                        type="money"
                         label={`${
                           scheme.includes("Weekly") ? "Weekly" : "Monthly"
                         } Income`}
@@ -212,6 +248,7 @@ export default function LoanCalculatorSection() {
                         placeholder="Enter amount"
                       />
                       <Input
+                        type="money"
                         label={`${
                           scheme.includes("Weekly") ? "Weekly" : "Monthly"
                         } Contribution`}
@@ -220,14 +257,32 @@ export default function LoanCalculatorSection() {
                         placeholder="Enter amount"
                       />
                       {isValidContribution && contributionValue > 0 && (
-                        <div className="bg-gray-100 p-4 rounded-2xl space-y-2">
-                          <p>Principal Loan: ₦{principalLoan}</p>
-                          <p>Loan Management Fee (6%): ₦{loanMgtFee}</p>
-                          <p>Eligible Loan: ₦{eligibleLoan}</p>
-                          <p>
-                            Service Charge: ₦{serviceCharge}/
-                            {scheme.includes("Weekly") ? "week" : "month"}
-                          </p>
+                        <div className="bg-gray-100 p-4 rounded-2xl space-y-2 font-outfit">
+                          <div className="flex justify-between">
+                            <span>Principal Loan:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{formatAmount(principalLoan, "N")}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Loan Mgt. Fee (6%):</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{formatAmount(loanMgtFee, "N")}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Eligible Loan:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{formatAmount(eligibleLoan, "N")}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Service Charge:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{formatAmount(serviceCharge, "N")}/
+                              {scheme.includes("Weekly") ? "week" : "month"}
+                            </span>
+                          </div>
                         </div>
                       )}
 

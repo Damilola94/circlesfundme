@@ -14,14 +14,14 @@ export default function WhatWeProvideSection() {
       href: "/schemes/auto-finance",
     },
     {
-      title: "Weekly Scheme",
+      title: "Weekly Contribution",
       description:
         "Secure your future today with safe savings and low-interest financial solutions.",
       image: "/assets/images/weekly-finance.jpg",
       href: "/schemes/weekly",
     },
     {
-      title: "Monthly Scheme",
+      title: "Monthly Contribution",
       description:
         "Make your life easy, contribute monthly and get a lump sum of money as payout.",
       image: "/assets/images/monthly-finance.jpg",

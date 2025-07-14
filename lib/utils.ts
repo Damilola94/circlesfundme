@@ -11,8 +11,13 @@ export const formatNumber = (amount: number | undefined) => {
   return new Intl.NumberFormat("en-US").format(amount);
 };
 
-
-export const formatAmount = (amount: number | undefined, currency: string) => {
+export   const formatMoney = (value: string) => {
+      const numericValue = value.replace(/[^0-9]/g, "");
+      if (!numericValue) return "";
+      return Number(numericValue).toLocaleString("en-NG");
+    };
+    
+export const formatAmount = (amount: number | undefined | string, currency: string) => {
   if (typeof amount !== "number") return "Invalid";
 
   const isNegative = amount < 0;
