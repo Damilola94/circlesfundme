@@ -22,14 +22,14 @@ export default function CTASection() {
               className="bg-white text-primary hover:bg-gray-100 px-8 py-3 flex items-center gap-2 rounded-full"
             >
               <PlayStoreIcon/>
-              Google Playstore
+              Playstore
             </Button>
             <Button
               size="lg"
               className="bg-white text-primary hover:bg-gray-100 px-8 py-3 flex items-center gap-2 rounded-full"
             >
               <AppStoreIcon />
-              App Store
+              Appstore
             </Button>
           </div>
         </div>

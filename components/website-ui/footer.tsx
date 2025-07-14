@@ -51,7 +51,7 @@ export default function Footer() {
                   href="/schemes/weekly"
                   className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
-                  Weekly Scheme
+                   Monthly Contribution
                 </Link>
               </li>
               <li>
@@ -59,7 +59,7 @@ export default function Footer() {
                   href="/schemes/monthly"
                   className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
-                  Monthly Scheme
+                  Monthly Contribution
                 </Link>
               </li>
               <li>
@@ -127,7 +127,7 @@ export default function Footer() {
                 <MapPin className="h-4 w-4 mr-3 text-white flex-shrink-0 mt-0.5" />
                 <div>
                   <p>Address</p>
-                  <p>Road 116,House 8, Gwarimpa, Abuja, Nigeria</p>
+                  <p>Road 116, House 8, Gwarimpa, Abuja, Nigeria</p>
                 </div>
               </div>
             </div>

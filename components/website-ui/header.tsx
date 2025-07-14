@@ -79,13 +79,13 @@ export default function Header() {
               className="w-full bg-primary-350  rounded-full hover:bg-primary/90 text-white"
             >
               <PlayStoreIcon color="#FFFFFF" />
-              PlayStore
+              Playstore
             </Button>
             <Button
               className="w-full bg-primary-350  rounded-full hover:bg-primary/90 text-white"
             >
               <AppStoreIcon color="#FFFFFF" />
-              AppStore
+              Appstore
             </Button>
           </div>
 

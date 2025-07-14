@@ -27,14 +27,14 @@ export default function HeroSection() {
                 className=" bg-primary-350 rounded-full hover:bg-primary/90 text-white"
               >
                 <PlayStoreIcon color="#FFFFFF" />
-                Google Playstore
+                Playstore
               </Button>
               <Button
                 size="lg"
                 className="bg-primary-350  rounded-full hover:bg-primary/90 text-white"
               >
                 <AppStoreIcon color="#FFFFFF" />
-                App Store
+                Appstore
               </Button>
             </div>
           </div>
