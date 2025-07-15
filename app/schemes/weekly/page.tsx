@@ -36,7 +36,7 @@ export default function WeeklySchemePage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="p-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-6 font-outfit">Weekly Scheme</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-6 font-outfit">Weekly Contribution Scheme</h1>
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-start space-x-3">

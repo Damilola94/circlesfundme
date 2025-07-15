@@ -43,7 +43,7 @@ export default function AutoFinancePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
             <div className="p-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-6 font-outfit">
-                Auto Finance
+                Auto Finance Scheme
               </h1>
 
               <p className="text-gray-600 leading-relaxed mb-4 font-outfit">

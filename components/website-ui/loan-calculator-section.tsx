@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import handleFetch from "@/services/api/handleFetch";
 import { useMutation } from "react-query";
 import { Loader } from "../ui/Loader";
 import { toast } from "react-toastify";
+import useGetQuery from "@/hooks/useGetQuery";
 
 const trustedLogos = [
   { name: "Zenith Bank", src: "/assets/images/partners/partner-1.png" },
@@ -35,7 +36,25 @@ export default function LoanCalculatorSection() {
     downPayment: "",
     loanManagementFee: "",
     minimumWeeklyContribution: "",
+    preLoanServiceCharge: "",
     postLoanWeeklyContribution: "",
+  });
+  const [regularBreakdown, setRegularBreakdown] = useState<{
+    principalLoan: "";
+    principalLoanDescription: "";
+    loanManagementFee: "";
+    loanManagementFeeDescription: "";
+    eligibleLoan: "";
+    eligibleLoanDescription: "";
+    serviceCharge: "";
+  }>({
+    principalLoan: "",
+    principalLoanDescription: "",
+    loanManagementFee: "",
+    loanManagementFeeDescription: "",
+    eligibleLoan: "",
+    eligibleLoanDescription: "",
+    serviceCharge: "",
   });
 
   const isAssetFinance = scheme === "Auto Financing";
@@ -50,14 +69,16 @@ export default function LoanCalculatorSection() {
     parseFloat(vehicleBreakdown.downPayment.replace(/,/g, ""));
   const formattedVehicleEligibleLoan = formatAmount(vehicleEligibleLoan, "N");
 
-  const principalLoan =
-    scheme === "Weekly Contribution Scheme"
-      ? contributionValue * 52
-      : contributionValue * 12;
-  const loanMgtFee = principalLoan * 0.06;
-  const eligibleLoan = principalLoan - loanMgtFee;
-  const serviceCharge =
-    scheme === "Weekly Contribution Scheme" ? 2500 / 4 : 2500;
+  const { data } = useGetQuery({
+    endpoint: "contributionschemes",
+    extra: "mini",
+    queryKey: ["contributionschemes-mini"],
+  });
+
+  const selectedSchemeId = data?.data?.find(
+    (item: { name: string; id: string }) =>
+      item.name.toLowerCase().includes(scheme.toLowerCase())
+  )?.id;
 
   const breakdownMutation = useMutation({
     mutationFn: (body: any) =>
@@ -79,6 +100,7 @@ export default function LoanCalculatorSection() {
           downPayment: breakdown.downPayment,
           loanManagementFee: breakdown.loanManagementFee,
           minimumWeeklyContribution: breakdown.minimumWeeklyContribution,
+          preLoanServiceCharge: breakdown.preLoanServiceCharge,
           postLoanWeeklyContribution: breakdown.postLoanWeeklyContribution,
         });
       }
@@ -88,7 +110,52 @@ export default function LoanCalculatorSection() {
     },
   });
 
+  const regualarBreakdownMutation = useMutation({
+    mutationFn: (body: any) =>
+      handleFetch({
+        endpoint: "contributionschemes/regular-finance-breakdown",
+        method: "POST",
+        body,
+      }),
+    onSuccess: (res: any) => {
+      console.log(res.data, "res");
+
+      const breakdown = res?.data;
+      setRegularBreakdown({
+        principalLoan: breakdown.principalLoan,
+        principalLoanDescription: breakdown.principalLoanDescription,
+        loanManagementFee: breakdown.loanManagementFee,
+        loanManagementFeeDescription: breakdown.loanManagementFeeDescription,
+        eligibleLoan: breakdown.eligibleLoan,
+        eligibleLoanDescription: breakdown.eligibleLoanDescription,
+        serviceCharge: breakdown.serviceCharge,
+      });
+    },
+    onError: (err: { statusCode: string; message: string }) => {
+      toast.error(err?.message || "Something went wrong.");
+    },
+  });
+
+  const handleAutoSubmit = () => {
+    if (assetCostValue) {
+      breakdownMutation.mutate({
+        costOfVehicle: assetCostValue,
+      });
+    }
+  };
+
+  const handleRegularSubmit = () => {
+    if (contribution) {
+      regualarBreakdownMutation.mutate({
+        contributionSchemeId: selectedSchemeId,
+        amount: contributionValue,
+      });
+    }
+  };
+
   const { isLoading } = breakdownMutation;
+  const { isLoading: regularIsLoading } = regualarBreakdownMutation;
+  console.log(regularBreakdown, "res");
 
   return (
     <section className="py-16">
@@ -222,9 +289,9 @@ export default function LoanCalculatorSection() {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Minimum Weekly Contribution:</span>
+                            <span>Pre-Loan Service Charge:</span>
                             <span className="font-outfit font-semibold">
-                              ₦{vehicleBreakdown.minimumWeeklyContribution}
+                              ₦{vehicleBreakdown.preLoanServiceCharge}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -241,8 +308,10 @@ export default function LoanCalculatorSection() {
                       <Input
                         type="money"
                         label={`${
-                          scheme.includes("Weekly") ? "Weekly" : "Monthly"
-                        } Income`}
+                          scheme.includes("Weekly")
+                            ? "Weekly Sales Revenue"
+                            : "Monthly Income"
+                        } `}
                         value={income}
                         onChange={(e) => setIncome(e.target.value)}
                         placeholder="Enter amount"
@@ -256,31 +325,40 @@ export default function LoanCalculatorSection() {
                         onChange={(e) => setContribution(e.target.value)}
                         placeholder="Enter amount"
                       />
-                      {isValidContribution && contributionValue > 0 && (
+                      {regularBreakdown.principalLoan && (
                         <div className="bg-gray-100 p-4 rounded-2xl space-y-2 font-outfit">
                           <div className="flex justify-between">
                             <span>Principal Loan:</span>
                             <span className="font-outfit font-semibold">
-                              ₦{formatAmount(principalLoan, "N")}
+                              {regularBreakdown.principalLoan}
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Loan Mgt. Fee (6%):</span>
                             <span className="font-outfit font-semibold">
-                              ₦{formatAmount(loanMgtFee, "N")}
+                              {regularBreakdown.loanManagementFee}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Repayment Duration:</span>
+                            <span className="font-outfit font-semibold">
+                              {`${
+                                scheme.includes("Weekly")
+                                  ? "52 weeks/1 yr"
+                                  : "12 months/1yr"
+                              } `}
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Eligible Loan:</span>
                             <span className="font-outfit font-semibold">
-                              ₦{formatAmount(eligibleLoan, "N")}
+                              {regularBreakdown.eligibleLoan}
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Service Charge:</span>
                             <span className="font-outfit font-semibold">
-                              ₦{formatAmount(serviceCharge, "N")}/
-                              {scheme.includes("Weekly") ? "week" : "month"}
+                              {regularBreakdown.serviceCharge}
                             </span>
                           </div>
                         </div>
@@ -295,20 +373,14 @@ export default function LoanCalculatorSection() {
                     </>
                   )}
 
-                  {isAssetFinance && (
-                    <Button
-                      className="w-full mt-4"
-                      onClick={() => {
-                        if (assetCostValue) {
-                          breakdownMutation.mutate({
-                            costOfVehicle: assetCostValue,
-                          });
-                        }
-                      }}
-                    >
-                      Calculate
-                    </Button>
-                  )}
+                  <Button
+                    className="w-full mt-4"
+                    onClick={
+                      isAssetFinance ? handleAutoSubmit : handleRegularSubmit
+                    }
+                  >
+                    Calculate
+                  </Button>
                 </CardContent>
               </Card>
             </div>
@@ -316,6 +388,7 @@ export default function LoanCalculatorSection() {
         </div>
       </div>
       {isLoading && <Loader />}
+      {regularIsLoading && <Loader />}
     </section>
   );
 }

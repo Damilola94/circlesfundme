@@ -35,13 +35,15 @@ export default function MonthlySchemePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="p-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-6 font-outfit">
-                Monthly Scheme
+                Monthly Contribution Scheme
               </h1>
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-gray-700 font-outfit">Are you a salaried employee?</p>
+                  <p className="text-gray-700 font-outfit">
+                    Are you a salaried employee?
+                  </p>
                 </div>
               </div>
 
