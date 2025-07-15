@@ -51,7 +51,7 @@ export default function Footer() {
                   href="/schemes/weekly"
                   className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
-                   Monthly Contribution
+                   Weekly Contribution
                 </Link>
               </li>
               <li>

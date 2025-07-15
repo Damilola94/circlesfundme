@@ -38,16 +38,9 @@ export default function LoanCalculatorSection() {
     minimumWeeklyContribution: "",
     preLoanServiceCharge: "",
     postLoanWeeklyContribution: "",
+    eligibleLoan: "",
   });
-  const [regularBreakdown, setRegularBreakdown] = useState<{
-    principalLoan: "";
-    principalLoanDescription: "";
-    loanManagementFee: "";
-    loanManagementFeeDescription: "";
-    eligibleLoan: "";
-    eligibleLoanDescription: "";
-    serviceCharge: "";
-  }>({
+  const [regularBreakdown, setRegularBreakdown] = useState<any>({
     principalLoan: "",
     principalLoanDescription: "",
     loanManagementFee: "",
@@ -65,9 +58,14 @@ export default function LoanCalculatorSection() {
   const maxPercentage = scheme === "Weekly Contribution Scheme" ? 0.2 : 0.3;
   const isValidContribution = contributionValue <= maxPercentage * incomeValue;
   const vehicleEligibleLoan =
-    parseFloat(vehicleBreakdown.totalAssetValue.replace(/,/g, "")) -
-    parseFloat(vehicleBreakdown.downPayment.replace(/,/g, ""));
-  const formattedVehicleEligibleLoan = formatAmount(vehicleEligibleLoan, "N");
+    parseFloat(vehicleBreakdown.eligibleLoan.replace(/,/g, "")) +
+    parseFloat(vehicleBreakdown.loanManagementFee.replace(/,/g, ""));
+  const serviceChargePerMonth = vehicleEligibleLoan * 0.0005; 
+  const totalInterestOver48Months = serviceChargePerMonth * 48;
+
+  const totalWithInterest = vehicleEligibleLoan + totalInterestOver48Months;
+
+  const formattedVehicleTotal = formatAmount(totalWithInterest, "N");
 
   const { data } = useGetQuery({
     endpoint: "contributionschemes",
@@ -102,6 +100,7 @@ export default function LoanCalculatorSection() {
           minimumWeeklyContribution: breakdown.minimumWeeklyContribution,
           preLoanServiceCharge: breakdown.preLoanServiceCharge,
           postLoanWeeklyContribution: breakdown.postLoanWeeklyContribution,
+          eligibleLoan: breakdown.eligibleLoan,
         });
       }
     },
@@ -118,8 +117,6 @@ export default function LoanCalculatorSection() {
         body,
       }),
     onSuccess: (res: any) => {
-      console.log(res.data, "res");
-
       const breakdown = res?.data;
       setRegularBreakdown({
         principalLoan: breakdown.principalLoan,
@@ -155,7 +152,6 @@ export default function LoanCalculatorSection() {
 
   const { isLoading } = breakdownMutation;
   const { isLoading: regularIsLoading } = regualarBreakdownMutation;
-  console.log(regularBreakdown, "res");
 
   return (
     <section className="py-16">
@@ -279,7 +275,7 @@ export default function LoanCalculatorSection() {
                           <div className="flex justify-between">
                             <span>Eligible Loan:</span>
                             <span className="font-outfit font-semibold">
-                              ₦{formattedVehicleEligibleLoan}
+                              ₦{vehicleBreakdown.eligibleLoan}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -298,6 +294,12 @@ export default function LoanCalculatorSection() {
                             <span>Post-Loan Weekly Repayment:</span>
                             <span className="font-outfit font-semibold">
                               ₦{vehicleBreakdown.postLoanWeeklyContribution}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Total Repayment:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{formattedVehicleTotal}
                             </span>
                           </div>
                         </div>
@@ -359,6 +361,12 @@ export default function LoanCalculatorSection() {
                             <span>Service Charge:</span>
                             <span className="font-outfit font-semibold">
                               {regularBreakdown.serviceCharge}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Total Repayment:</span>
+                            <span className="font-outfit font-semibold">
+                              {regularBreakdown.principalLoan}
                             </span>
                           </div>
                         </div>
