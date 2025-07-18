@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Loader } from "@/components/ui/Loader";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +33,7 @@ export default function Login() {
       <div className="flex-1 flex items-center justify-center bg-white">
         <div className="w-full space-y-8 max-w-2xl">
           <div className="flex items-center space-x-2 mb-15 -mt-10">
-            <div className="flex mb-4">
+            <div className="flex pt-10 pl-10 mb-4">
               <Link href="/">
                 <Image
                   src="/assets/images/logo.png"
@@ -129,6 +130,7 @@ export default function Login() {
           />
         </div>
       </div>
+         {isLoading && <Loader />}
     </div>
   );
 }
