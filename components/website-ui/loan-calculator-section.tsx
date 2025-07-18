@@ -50,7 +50,7 @@ export default function LoanCalculatorSection() {
     serviceCharge: "",
   });
 
-  const isAssetFinance = scheme === "Auto Financing";
+  const isAssetFinance = scheme === "Auto Financing Contribution";
   const incomeValue = parseFloat(income.replace(/,/g, ""));
   const contributionValue = parseFloat(contribution.replace(/,/g, ""));
   const assetCostValue = parseFloat(assetCost.replace(/,/g, ""));
@@ -224,7 +224,7 @@ export default function LoanCalculatorSection() {
                         label: "Monthly Contribution Scheme",
                         value: "Monthly Contribution Scheme",
                       },
-                      { label: "Auto Financing", value: "Auto Financing" },
+                      { label: "Auto Financing Contribution", value: "Auto Financing Contribution" },
                     ]}
                   />
 

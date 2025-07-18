@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function WhatWeProvideSection() {
   const services = [
     {
-      title: "Auto Finance",
+      title: "Auto Finance Contribution",
       description:
         "Access up to 500x your weekly or monthly contributions as an auto finance loan (Hire Purchase) with just a 10% down payment and a minimum 3-month membership. This period is required for due diligence and to build a consistent savings habit.",
       image: "/assets/images/auto-finance-scheme.jpg",

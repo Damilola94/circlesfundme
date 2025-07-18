@@ -19,9 +19,8 @@ export default function Footer() {
               />
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed text-sm font-outfit">
-              CirclesFundMe is a fully licensed and innovative and registered
-              cooperative society that is dedicated to providing the best
-              financial services.
+              CirclesFundMe is a fully licensed, innovative, registered
+              cooperative society providing the best financial services.
             </p>
           </div>
 
@@ -51,7 +50,7 @@ export default function Footer() {
                   href="/schemes/weekly"
                   className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
-                   Weekly Contribution
+                  Weekly Contribution
                 </Link>
               </li>
               <li>
@@ -67,14 +66,16 @@ export default function Footer() {
                   href="/schemes/auto-finance"
                   className="text-gray-300 hover:text-primary transition-colors font-outfit"
                 >
-                  Auto Finance
+                  Auto Finance Contribution
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white font-outfit">Socials</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white font-outfit">
+              Socials
+            </h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
@@ -112,7 +113,9 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white font-outfit">Contact</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white font-outfit">
+              Contact
+            </h3>
             <div className="space-y-3 text-sm">
               <div className="flex items-center text-gray-300">
                 <Phone className="h-4 w-4 mr-3 text-white flex-shrink-0 font-outfit" />

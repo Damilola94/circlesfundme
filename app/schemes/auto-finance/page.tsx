@@ -51,8 +51,7 @@ export default function AutoFinancePage() {
               </p>
 
               <p className="text-gray-600 leading-relaxed font-outfit">
-                With the CirclesFundme Auto Finance Contribution Scheme, you can
-                access up to 90% financing for purchasing a vehicle after
+                With the CirclesFundme Auto Finance Contribution Scheme, you can access up to 90% financing for purchasing a vehicle after
                 providing a 10% down payment, which is required to qualify for
                 the loan.
               </p>
