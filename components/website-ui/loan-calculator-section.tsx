@@ -53,7 +53,7 @@ export default function LoanCalculatorSection() {
   const isAssetFinance = scheme === "Auto Financing Contribution";
   const incomeValue = parseFloat(income.replace(/,/g, ""));
   const contributionValue = parseFloat(contribution.replace(/,/g, ""));
-  const assetCostValue = parseFloat(assetCost.replace(/,/g, ""));
+  const assetCostValue =   parseFloat(assetCost.replace(/,/g, ""));
 
   const maxPercentage = scheme === "Weekly Contribution Scheme" ? 0.2 : 0.3;
   const isValidContribution = contributionValue <= maxPercentage * incomeValue;
