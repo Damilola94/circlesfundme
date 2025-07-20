@@ -10,23 +10,57 @@ import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Loader } from "@/components/ui/Loader";
+import { useMutation } from "react-query";
+import handleFetch from "@/services/api/handleFetch";
+// import { useCookies } from "react-cookie";
+
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  // const [cookie, , removeCookie] = useCookies(["err"]);
+  // const [, setCookie] = useCookies(["data", "form"]);
+
+  const loginMutation = useMutation(handleFetch, {
+    onSuccess: (res: {
+      statusCode: string;
+      message: string;
+      data: { accessToken: string };
+    }) => {
+      if (res?.statusCode !== "200") {
+        toast.error(res?.message || "Something went wrong.");
+      } else {
+        toast.success("Login Successful");
+        // setCookie("data", res?.data, { secure: true, sameSite: true });
+        router.push("/dashboard");
+      }
+    },
+    onError: (err: { statusCode?: string; message: string }) => {
+      toast.error(err?.message || "Something went wrong.");
+    },
+  });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    setTimeout(() => {
-      setIsLoading(false);
-      router.push("/dashboard");
-    }, 1500);
+    if (!(email && password)) {
+      toast.error("Please, enter your email and password.");
+      return;
+    }
+    const body = {
+      email,
+      password,
+    };
+    loginMutation.mutate({
+      endpoint: "auth/login",
+      method: "POST",
+      body,
+    });
   };
+
+  const { isLoading } = loginMutation;
 
   return (
     <div className="min-h-screen flex">
@@ -34,7 +68,7 @@ export default function Login() {
         <div className="w-full space-y-8 max-w-2xl">
           <div className="flex items-center space-x-2 mb-15 -mt-10">
             <div className="flex pt-10 pl-10 mb-4">
-              <Link href="/">
+              <Link href="">
                 <Image
                   src="/assets/images/logo.png"
                   alt="logo"
@@ -44,13 +78,12 @@ export default function Login() {
               </Link>
             </div>
           </div>
-
           <Card className="border-0 shadow-none max-w-lg mx-auto">
             <CardHeader className="text-center pb-8">
               <CardTitle className="text-3xl font-bold text-gray-900">
                 Log In
               </CardTitle>
-              <p className="text-gray-600 mt-2 -m-6 text-sm">
+              <p className="text-gray-600 mt-2 -m-6 text-sm font-outfit">
                 Please fill the details below to sign into your account.
               </p>
             </CardHeader>
@@ -58,10 +91,9 @@ export default function Login() {
               <form onSubmit={handleLogin}>
                 <div className="space-y-4 mt-10">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Email Address or Phone Number
-                    </label>
                     <Input
+                      id="email"
+                      label="Email Address or Phone Number"
                       type="email"
                       placeholder="Enter Your Email Address or Phone Number"
                       value={email}
@@ -71,11 +103,10 @@ export default function Login() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Password
-                    </label>
                     <div className="relative">
                       <Input
+                        id="password"
+                        label="Password"
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter Your Password"
                         value={password}
@@ -86,7 +117,7 @@ export default function Login() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-3 top-[70%] -translate-y-1/2 text-gray-400 hover:text-gray-600"    
                       >
                         {showPassword ? (
                           <EyeOff className="h-6 w-6" />
@@ -97,16 +128,14 @@ export default function Login() {
                     </div>
                   </div>
                 </div>
-
                 <div className="text-right mb-12">
-                  <a
-                    href="#"
-                    className="text-sm text-primary-600 hover:text-primary-700"
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm text-primary-600 font-outfit hover:text-primary-700"
                   >
                     Forgotten Password?
-                  </a>
+                  </Link>
                 </div>
-
                 <Button
                   type="submit"
                   className="w-full h-12 bg-black hover:bg-primary-900 text-white"
@@ -119,7 +148,6 @@ export default function Login() {
           </Card>
         </div>
       </div>
-
       <div className="flex-1 bg-primary-900 flex items-center justify-center">
         <div className="relative w-80 h-80">
           <Image
@@ -130,7 +158,7 @@ export default function Login() {
           />
         </div>
       </div>
-         {isLoading && <Loader />}
+      {isLoading && <Loader />}
     </div>
   );
 }

@@ -5,10 +5,11 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
   stroke?: string;
 }
 
-const SubscriptionIcon = ({ fill = "none", stroke = "#004C42", ...props }: IconProps) => (
+const SubscriptionIcon = ({ fill = "none",className = "", stroke = "#004C42", ...props }: IconProps) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={24} height={25} fill={fill} {...props}>
     <path
       stroke={stroke}
+      className={className}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.5}
@@ -17,6 +18,7 @@ const SubscriptionIcon = ({ fill = "none", stroke = "#004C42", ...props }: IconP
     <path
       stroke={stroke}
       strokeLinecap="round"
+      className={className}
       strokeLinejoin="round"
       strokeWidth={1.5}
       d="M9.99 18.845a7.99 7.99 0 1 0 0-15.98 7.99 7.99 0 0 0 0 15.98ZM12.98 20.745c.9 1.27 2.37 2.1 4.05 2.1 2.73 0 4.95-2.22 4.95-4.95 0-1.66-.82-3.13-2.07-4.03"

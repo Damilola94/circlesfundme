@@ -110,8 +110,8 @@ export default function Dashboard() {
                 <div className="flex items-center space-x-3">
                   <div className="h-10 w-10 rounded-full bg-gray-300"></div>
                   <div>
-                    <p className="text-sm font-medium">{item.name}</p>
-                    <p className="text-xs text-gray-500">{item.time}</p>
+                    <p className="text-sm font-medium font-outfit">{item.name}</p>
+                    <p className="text-xs text-gray-500 font-outfit">{item.time}</p>
                   </div>
                 </div>
                 <Button
@@ -144,12 +144,12 @@ export default function Dashboard() {
                 <div className="flex items-center space-x-3">
                   <div className="h-10 w-10 rounded-full bg-gray-300"></div>
                   <div>
-                    <p className="text-sm font-medium">{item.name}</p>
-                    <p className="text-xs text-gray-500">{item.time}</p>
+                    <p className="text-sm font-medium font-outfit">{item.name}</p>
+                    <p className="text-xs text-gray-500 font-outfit">{item.time}</p>
                   </div>
                 </div>
 
-                <p className="text-lg font-medium">{item.amount}</p>
+                <p className="text-lg font-outfit font-medium">{item.amount}</p>
                 <Button
                   size="sm"
                   variant="outline"
@@ -166,7 +166,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-base">Subscription Parameters</CardTitle>
+            <CardTitle className="text-lg">Subscription Parameters</CardTitle>
             <Button
               variant="ghost"
               size="sm"
@@ -179,10 +179,10 @@ export default function Dashboard() {
           <CardContent className="space-y-4">
             {subParameters.map((item, index) => (
               <div key={index} className="flex justify-between items-center">
-                <span className="text-sm">{item.label}</span>
+                <span className="text-sm font-outfit">{item.label}</span>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium">{item.value}</span>
-                  <span className="text-sm text-gray-500">{item.unit}</span>
+                  <span className="text-sm font-medium font-outfit">{item.value}</span>
+                  <span className="text-sm text-gray-500 font-outfit">{item.unit}</span>
                 </div>
               </div>
             ))}
@@ -191,7 +191,7 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-base">Payment Monitoring</CardTitle>
+            <CardTitle className="text-lg">Payment Monitoring</CardTitle>
             <Button
               variant="ghost"
               size="sm"
@@ -203,7 +203,7 @@ export default function Dashboard() {
           <CardContent className="space-y-4">
             {paymentMonitoring.map((item, index) => (
               <div key={index} className="flex justify-between items-center">
-                <span className="text-sm">{item.label}</span>
+                <span className="text-sm font-outfit">{item.label}</span>
                 <Badge variant={item.variant}>{item.badge}</Badge>
               </div>
             ))}
@@ -212,7 +212,7 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-base">Bulk Communication</CardTitle>
+            <CardTitle className="text-lg">Bulk Communication</CardTitle>
             <Button
               variant="ghost"
               size="sm"
@@ -223,8 +223,8 @@ export default function Dashboard() {
           <hr className="border-gray-200 mb-2" />
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Message Type</label>
               <Select
+              label="Message Type"
                 options={[
                   { value: "payment-reminder", label: "Payment Reminder" },
                   { value: "payment-reminder", label: "Contribution Reminder" },
@@ -236,8 +236,8 @@ export default function Dashboard() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Target Group</label>
               <Select
+              label="Target Group"
                 options={[
                   { value: "all-users", label: "All Users" },
                   { value: "all-users", label: "Pending Users" },

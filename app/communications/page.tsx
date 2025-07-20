@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select } from "@/components/ui/select";
-import { MessageSquare, Mail, Phone, Plus, Filter, Search } from "lucide-react";
+import { Plus, Filter, Search } from "lucide-react";
 import Pagination from "@/components/ui/pagination";
+import { Textarea } from "@/components/ui/textarea";
+
 import { TransactionStatus } from "@/components/ui/transactionstatus";
 import { Input } from "@/components/ui/input";
 import {
@@ -138,47 +140,40 @@ export default function Communications() {
               </Button>
             </div>
 
-            <div>
-              <label className="text-sm font-medium text-gray-700 block mb-2">
-                Target Group
-              </label>
-              <Select
-                options={[
-                  { value: "all-users", label: "All Users" },
-                  { value: "active-borrowers", label: "Active Borrowers" },
-                  { value: "overdue-payments", label: "Overdue Payments" },
-                  { value: "pending-kyc", label: "Pending KYC" },
-                ]}
-                value={selectedTargetGroup}
-                onChange={setSelectedTargetGroup}
-              />
-            </div>
+            <Select
+              label="Select Target Group"
+              options={[
+                { value: "all-users", label: "All Users" },
+                { value: "active-borrowers", label: "Active Borrowers" },
+                { value: "overdue-payments", label: "Overdue Payments" },
+                { value: "pending-kyc", label: "Pending KYC" },
+              ]}
+              value={selectedTargetGroup}
+              onChange={setSelectedTargetGroup}
+            />
+
+            <Select
+              label="Select Message Type"
+              options={[
+                { value: "payment-reminder", label: "Payment Reminder" },
+                { value: "welcome-message", label: "Welcome Message" },
+                { value: "loan-approval", label: "Loan Approval" },
+                { value: "kyc-reminder", label: "KYC Reminder" },
+              ]}
+              value={selectedMessageType}
+              onChange={setSelectedMessageType}
+            />
 
             <div>
-              <label className="text-sm font-medium text-gray-700 block mb-2">
-                Message Type
-              </label>
-              <Select
-                options={[
-                  { value: "payment-reminder", label: "Payment Reminder" },
-                  { value: "welcome-message", label: "Welcome Message" },
-                  { value: "loan-approval", label: "Loan Approval" },
-                  { value: "kyc-reminder", label: "KYC Reminder" },
-                ]}
-                value={selectedMessageType}
-                onChange={setSelectedMessageType}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700 block mb-2">
+              <label className="text-sm font-medium text-gray-700 block mb-2 ">
                 Message Content
               </label>
-              <textarea
-                className="w-full h-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              <Textarea
                 placeholder="Enter your message here..."
                 value={messageContent}
                 onChange={(e) => setMessageContent(e.target.value)}
+                className="w-full h-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent font-outfit"
+                required
               />
             </div>
 
@@ -216,7 +211,7 @@ export default function Communications() {
               <div key={template.id} className=" p-4 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-1">
-                    <h4 className="font-medium">{template.name}</h4>
+                    <h4 className="font-medium font-outfit">{template.name}</h4>
                     <div className="flex space-x-2">
                       <Badge variant="secondary">{template.type}</Badge>
                     </div>
@@ -239,7 +234,7 @@ export default function Communications() {
                   </div>
                 </div>
                 <div className="border p-3 rounded-lg">
-                  <p className="text-sm text-gray-900">{template.content}</p>
+                  <p className="text-sm text-gray-900 font-outfit">{template.content}</p>
                 </div>
               </div>
             ))}
@@ -248,7 +243,7 @@ export default function Communications() {
       </div>
 
       <div className="flex justify-between items-end">
-        <p className="text-lg">Communication History</p>
+        <p className="text-lg font-outfit">Communication History</p>
         <div className="flex items-center justify-between space-x-2">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -266,7 +261,7 @@ export default function Communications() {
         </div>
       </div>
 
-      <div className="grid grid-cols-5 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg">
+      <div className="grid grid-cols-5 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
         <div>Title</div>
         <div>Type</div>
         <div>Recipients</div>
@@ -279,10 +274,18 @@ export default function Communications() {
           <Card key={item.id} className="shadow-sm bg-white">
             <CardContent className="p-6">
               <div className="grid grid-cols-5 gap-4 items-center">
-                <div className="text-sm text-gray-600">{item.title}</div>
-                <div className="text-sm text-gray-600">{item.type}</div>
-                <div className="text-sm text-gray-600">{item.recipients}</div>
-                <div className="text-sm text-gray-600">{item.date}</div>
+                <div className="text-sm text-gray-600 font-outfit ">
+                  {item.title}
+                </div>
+                <div className="text-sm text-gray-600 font-outfit ">
+                  {item.type}
+                </div>
+                <div className="text-sm text-gray-600 font-outfit ">
+                  {item.recipients}
+                </div>
+                <div className="text-sm text-gray-600 font-outfit ">
+                  {item.date}
+                </div>
                 <TransactionStatus status={item.status as StatusType} />
               </div>
             </CardContent>

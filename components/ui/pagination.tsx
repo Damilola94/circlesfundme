@@ -86,7 +86,7 @@ export default function Pagination({
             ) : (
               <button
                 onClick={() => onPageChange(page as number)}
-                className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
+                className={`flex font-outfit items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
                   current === page
                     ? "border-2 border-gray-300 text-black"
                     : "text-gray-700 hover:bg-gray-100"

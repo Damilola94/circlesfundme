@@ -49,7 +49,7 @@ export default function LoanManagement() {
               onClick={() => setStatusFilter(tab.id)}
               className={`px-4 py-2 text-sm font-medium transition-colors ${
                 statusFilter === tab.id
-                  ? "border-b-2 border-primary-700 text-primary-700"
+                  ? "border-b-2 font-outfit border-primary-700 text-primary-700"
                   : "text-gray-600 hover:text-gray-900"
               }`}
             >
@@ -80,7 +80,7 @@ export default function LoanManagement() {
             <button
               key={tab.id}
               onClick={() => setSchemeFilter(tab.id)}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
+              className={`px-4 py-2 text-sm font-medium transition-colors font-outfit ${
                 schemeFilter === tab.id
                   ? "border-b-2 border-primary-700 text-primary-700"
                   : "text-gray-600 hover:text-gray-900"
@@ -92,7 +92,7 @@ export default function LoanManagement() {
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg">
+      <div className="grid grid-cols-7 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
         <div>Name</div>
         <div>Status</div>
         <div>Scheme</div>
@@ -108,15 +108,15 @@ export default function LoanManagement() {
             <CardContent className="p-6">
               <div className="grid grid-cols-7 gap-4 items-center">
                 <div className="flex items-center space-x-3">
-                  <span className="font-medium text-gray-900">{loan.name}</span>
+                  <span className="font-medium text-gray-900 font-outfit">{loan.name}</span>
                 </div>
                 <div>
                   <TransactionStatus status={loan.status as StatusType} />
                 </div>
-                <div className="text-sm text-gray-600">{loan.scheme}</div>
-                <div className="text-sm text-gray-600">{loan.eligibleLoan}</div>
-                <div className="text-sm text-gray-600">{loan.amountRepaid}</div>
-                <div className="text-sm text-gray-600">{loan.dateApplied}</div>
+                <div className="text-sm text-gray-600 font-outfit">{loan.scheme}</div>
+                <div className="text-sm text-gray-600 font-outfit">{loan.eligibleLoan}</div>
+                <div className="text-sm text-gray-600 font-outfit">{loan.amountRepaid}</div>
+                <div className="text-sm text-gray-600 font-outfit">{loan.dateApplied}</div>
                 <div className="w-full ">
                   <Link href={`/loan-management/${loan.id}`}>
                     <Button

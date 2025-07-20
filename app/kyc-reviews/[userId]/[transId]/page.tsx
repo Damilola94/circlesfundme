@@ -81,15 +81,15 @@ export default function UserProfilePage() {
       </div>
 
       <div className="flex justify-between items-end">
-        <p className="text-lg">Transaction History</p>
+        <p className="text-lg font-outfit">Transaction History</p>
         <div className="flex items-center justify-between space-x-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 font-outfit" />
             <Input
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-64 pl-10"
+              className="w-64 pl-10 font-outfit"
             />
           </div>
           <Button className="bg-primary-900 hover:bg-primary-700">
@@ -99,7 +99,7 @@ export default function UserProfilePage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-5 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg">
+      <div className="grid grid-cols-5 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
         <div>Date</div>
         <div>Action</div>
         <div>Amount (₦)</div>
@@ -112,10 +112,10 @@ export default function UserProfilePage() {
           <Card key={item.id} className="shadow-sm bg-white">
             <CardContent className="p-6">
               <div className="grid grid-cols-5 gap-4 items-center">
-                <div className="text-sm text-gray-600">{item.date}</div>
+                <div className="text-sm text-gray-600 font-outfit">{item.date}</div>
                 <TransactionType actionType={item.action as ActionType} />
-                <div className="text-sm text-gray-600">{item.amount}</div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600 font-outfit">{item.amount}</div>
+                <div className="text-sm text-gray-600 font-outfit">
                   {item.withdrawalCharge}
                 </div>
                 <TransactionStatus status={item.status as StatusType} />

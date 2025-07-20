@@ -11,7 +11,7 @@ const Badge = forwardRef<HTMLDivElement, BadgeProps>(({ className, variant = "de
     <div
       ref={ref}
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+        "inline-flex items-center font-outfit rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
         {
           "bg-gray-900 text-gray-50": variant === "default",
           "bg-green-100 text-green-800": variant === "success",

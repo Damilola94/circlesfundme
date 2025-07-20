@@ -20,6 +20,8 @@ const queryClient = new QueryClient({
 const noLayoutRoutes = [
   "/",
   "/login",
+  "/forgot-password",
+  "/reset-password",
   "/about",
   "/contact",
   "/schemes/weekly",

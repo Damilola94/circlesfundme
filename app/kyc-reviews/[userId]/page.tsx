@@ -44,7 +44,7 @@ export default function UserProfilePage() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
-        <h1 className="text-xl font-semibold">
+        <h1 className="text-xl font-semibold font-outfit text-gray-900">
           User Management - View Profile
         </h1>
       </div>
@@ -60,7 +60,7 @@ export default function UserProfilePage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-6 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg">
+      <div className="grid grid-cols-6 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
         <div>Date Applied</div>
         <div>Status</div>
         <div>Loan Amount (₦)</div>
@@ -74,13 +74,19 @@ export default function UserProfilePage() {
           <Card key={loan.id} className="shadow-sm bg-white">
             <CardContent className="p-6">
               <div className="grid grid-cols-6 gap-4 items-center">
-                <div className="text-sm text-gray-600">{loan.dateJoined}</div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600  font-outfit">
+                  {loan.dateJoined}
+                </div>
+                <div className="text-sm text-gray-600 font-outfit">
                   <TransactionStatus status={loan.status as StatusType} />
                 </div>
-                <div className="text-sm text-gray-600">{loan.loanAmount}</div>
-                <div className="text-sm text-gray-600">{loan.amountRepaid}</div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600 font-outfit">
+                  {loan.loanAmount}
+                </div>
+                <div className="text-sm text-gray-600 font-outfit">
+                  {loan.amountRepaid}
+                </div>
+                <div className="text-sm text-gray-600 font-outfit">
                   {loan.amountRemaining}
                 </div>
                 <div className="text-right">

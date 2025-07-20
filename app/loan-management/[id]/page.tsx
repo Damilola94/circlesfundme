@@ -80,7 +80,7 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
-        <h1 className="text-xl font-semibold">Loan Request Details</h1>
+        <h1 className="text-xl font-semibold font-outfit">Loan Request Details</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -97,8 +97,8 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
                 key={item.label}
                 className="flex justify-between text-sm pb-5"
               >
-                <span className="text-gray-600">{item.label}</span>
-                <span className="font-medium">{item.value}</span>
+                <span className="text-gray-600 font-outfit">{item.label}</span>
+                <span className="font-medium font-outfit">{item.value}</span>
               </div>
             ))}
           </CardContent>
@@ -115,10 +115,10 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
             {loanRequestDetails.map((item) => (
               <div
                 key={item.label}
-                className="flex justify-between text-sm pb-5"
+                className="flex justify-between text-sm pb-5 font-outfit"
               >
-                <span className="text-gray-600">{item.label}</span>
-                <span className="font-medium">{item.value}</span>
+                <span className="text-gray-600 font-outfit">{item.label}</span>
+                <span className="font-medium font-outfit">{item.value}</span>
               </div>
             ))}
 

@@ -5,10 +5,22 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
   stroke?: string;
 }
 
-const LoanIcon = ({ fill = "none", stroke = "#00A86B", ...props }: IconProps) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={29} height={30} fill={fill} {...props}>
+const LoanIcon = ({
+  fill = "none",
+  className = "",
+  stroke = "#00A86B",
+  ...props
+}: IconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={29}
+    height={30}
+    fill={fill}
+    {...props}
+  >
     <path
       stroke={stroke}
+      className={className}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.773}
@@ -16,6 +28,7 @@ const LoanIcon = ({ fill = "none", stroke = "#00A86B", ...props }: IconProps) =>
     />
     <path
       stroke={stroke}
+      className={className}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.773}
@@ -23,6 +36,7 @@ const LoanIcon = ({ fill = "none", stroke = "#00A86B", ...props }: IconProps) =>
     />
     <path
       stroke={stroke}
+      className={className}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.773}
@@ -30,6 +44,7 @@ const LoanIcon = ({ fill = "none", stroke = "#00A86B", ...props }: IconProps) =>
     />
     <path
       stroke={stroke}
+      className={className}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.773}

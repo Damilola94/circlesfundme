@@ -47,13 +47,13 @@ export function TransactionType({ actionType = "Contribution", className }: Acti
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 px-4 py-2 rounded-full w-fit text-sm font-medium border bg-white",
+        "inline-flex font-outfit items-center gap-2 px-4 py-2 rounded-full w-fit text-sm font-medium border bg-white",
         config.border,
         config.text,
         className
       )}
     >
-      <Icon className={cn("w-4 h-4", config.iconColor)} />
+      <Icon className={cn("w-5 h-5", config.iconColor)} />
       {actionType}
     </div>
   )

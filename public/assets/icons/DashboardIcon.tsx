@@ -5,10 +5,11 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
   stroke?: string;
 }
 
-const DashboardIcon = ({ fill = "none", stroke = "#004C42", ...props }: IconProps) => (
+const DashboardIcon = ({ fill = "none", stroke = "#004C42", className = "",...props }: IconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={24}
+    className={className}
     height={25}
     fill={fill}
     stroke={stroke}

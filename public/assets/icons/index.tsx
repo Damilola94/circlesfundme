@@ -18,3 +18,4 @@ export { default as FlexiblePlanIcon } from "./FlexiblePlanIcon";
 export { default as MoneyIcon } from "./MoneyIcon";
 export { default as SecurityIcon } from "./SecurityIcon";
 export { default as PhoneIcon } from "./PhoneIcon";
+export { default as LogoutIcon } from "./LogoutIcon";

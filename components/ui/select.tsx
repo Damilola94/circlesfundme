@@ -32,14 +32,14 @@ export function Select({
   return (
     <div className={cn("w-full space-y-2", className)}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-gray-700 font-outfit">
           {label}
         </label>
       )}
       <Listbox value={value} onChange={onChange}>
         <div className="relative">
           <Listbox.Button className="relative w-full cursor-pointer rounded-full border border-gray-300 bg-white py-2 pl-4 pr-10 text-left text-sm shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500">
-            <span className="block truncate text-gray-900">
+            <span className="block truncate text-gray-900 font-outfit">
               {selectedOption?.label || placeholder}
             </span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
@@ -60,7 +60,7 @@ export function Select({
                   value={option.value}
                   className={({ active }) =>
                     cn(
-                      "cursor-pointer select-none py-2 px-4",
+                      "cursor-pointer select-none py-2 px-4 font-outfit",
                       active ? "bg-teal-100 text-teal-900" : "text-gray-900"
                     )
                   }

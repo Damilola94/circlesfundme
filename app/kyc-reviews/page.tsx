@@ -29,7 +29,7 @@ export default function KYCReviews() {
             <button
               key={tab.id}
               onClick={() => setSelectedTab(tab.id)}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
+              className={`px-4 py-2 text-sm font-medium transition-colors font-outfit ${
                 selectedTab === tab.id
                   ? "border-b-2 border-primary-700 text-primary-700"
                   : "text-gray-600 hover:text-gray-900"
@@ -57,7 +57,7 @@ export default function KYCReviews() {
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg">
+      <div className="grid grid-cols-7 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
         <div>Name</div>
         <div>Date Joined</div>
         <div>Scheme</div>
@@ -71,7 +71,7 @@ export default function KYCReviews() {
         {filteredUsers.map((user) => (
           <Card key={user.id} className="shadow-sm bg-white">
             <CardContent className="p-6">
-              <div className="grid grid-cols-7 gap-4 items-center">
+              <div className="grid grid-cols-7 gap-4 items-center font-outfit">
                 <div className="flex items-center space-x-3">
                   <span className="font-medium text-gray-900">{user.name}</span>
                 </div>

@@ -71,7 +71,7 @@ export default function SubscriptionCard() {
                   key={paramIndex}
                   className="flex justify-between items-center border-b pb-3"
                 >
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-muted-foreground font-outfit">
                     {param.label}
                   </span>
                   <div className="flex items-center space-x-2">
@@ -83,7 +83,7 @@ export default function SubscriptionCard() {
                       }
                       className="w-16 h-8 text-center"
                     />
-                    <span className="text-sm text-muted-foreground w-8">
+                    <span className="text-sm text-muted-foreground w-8 font-outfit">
                       {param.unit}
                     </span>
                   </div>

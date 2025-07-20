@@ -58,7 +58,7 @@ export function TransactionStatus({ status, className }: StatusProps) {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 px-3 py-1.5 rounded-full w-fit text-xs font-medium",
+        "inline-flex font-outfit items-center gap-2 px-3 py-1.5 rounded-full w-fit text-xs font-medium",
         config.bg,
         config.text,
         className,
