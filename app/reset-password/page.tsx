@@ -1,8 +1,8 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,8 +20,6 @@ export default function ResetPasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
 
   const resetPasswordMutation = useMutation(handleFetch, {
     onSuccess: (res: { statusCode: string; message: string }) => {
@@ -61,13 +59,7 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    if (!token) {
-      toast.error("Invalid or missing reset token.");
-      return;
-    }
-
     const body = {
-      token,
       password,
       confirmPassword,
     };
@@ -124,7 +116,7 @@ export default function ResetPasswordPage() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-[70%] -translate-y-1/2 text-gray-400 hover:text-gray-600" 
+                        className="absolute right-3 top-[70%] -translate-y-1/2 text-gray-400 hover:text-gray-600"
                       >
                         {showPassword ? (
                           <EyeOff className="h-6 w-6" />
@@ -151,7 +143,7 @@ export default function ResetPasswordPage() {
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
                         }
-                        className="absolute right-3 top-[70%] -translate-y-1/2 text-gray-400 hover:text-gray-600" 
+                        className="absolute right-3 top-[70%] -translate-y-1/2 text-gray-400 hover:text-gray-600"
                       >
                         {showConfirmPassword ? (
                           <EyeOff className="h-6 w-6" />
