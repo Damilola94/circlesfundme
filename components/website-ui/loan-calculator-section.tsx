@@ -39,6 +39,7 @@ export default function LoanCalculatorSection() {
     preLoanServiceCharge: "",
     postLoanWeeklyContribution: "",
     eligibleLoan: "",
+    totalRepayment: "",
   });
   const [regularBreakdown, setRegularBreakdown] = useState<any>({
     principalLoan: "",
@@ -53,19 +54,10 @@ export default function LoanCalculatorSection() {
   const isAssetFinance = scheme === "Auto Financing Contribution";
   const incomeValue = parseFloat(income.replace(/,/g, ""));
   const contributionValue = parseFloat(contribution.replace(/,/g, ""));
-  const assetCostValue =   parseFloat(assetCost.replace(/,/g, ""));
+  const assetCostValue = parseFloat(assetCost.replace(/,/g, ""));
 
   const maxPercentage = scheme === "Weekly Contribution Scheme" ? 0.2 : 0.3;
   const isValidContribution = contributionValue <= maxPercentage * incomeValue;
-  const vehicleEligibleLoan =
-    parseFloat(vehicleBreakdown.eligibleLoan.replace(/,/g, "")) +
-    parseFloat(vehicleBreakdown.loanManagementFee.replace(/,/g, ""));
-  const serviceChargePerMonth = vehicleEligibleLoan * 0.0005; 
-  const totalInterestOver48Months = serviceChargePerMonth * 48;
-
-  const totalWithInterest = vehicleEligibleLoan + totalInterestOver48Months;
-
-  const formattedVehicleTotal = formatAmount(totalWithInterest, "N");
 
   const { data } = useGetQuery({
     endpoint: "contributionschemes",
@@ -101,6 +93,7 @@ export default function LoanCalculatorSection() {
           preLoanServiceCharge: breakdown.preLoanServiceCharge,
           postLoanWeeklyContribution: breakdown.postLoanWeeklyContribution,
           eligibleLoan: breakdown.eligibleLoan,
+          totalRepayment: breakdown.totalRepayment,
         });
       }
     },
@@ -224,7 +217,10 @@ export default function LoanCalculatorSection() {
                         label: "Monthly Contribution Scheme",
                         value: "Monthly Contribution Scheme",
                       },
-                      { label: "Auto Financing Contribution", value: "Auto Financing Contribution" },
+                      {
+                        label: "Auto Financing Contribution",
+                        value: "Auto Financing Contribution",
+                      },
                     ]}
                   />
 
@@ -299,7 +295,7 @@ export default function LoanCalculatorSection() {
                           <div className="flex justify-between">
                             <span>Total Repayment:</span>
                             <span className="font-outfit font-semibold">
-                              ₦{formattedVehicleTotal}
+                              ₦{vehicleBreakdown.totalRepayment}
                             </span>
                           </div>
                         </div>
