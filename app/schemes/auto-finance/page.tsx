@@ -24,6 +24,9 @@ export default function AutoFinancePage() {
     "Four years of comprehensive insurance.",
     "One additional engine.",
     "Two complete sets of tires.",
+    "A life insurance coverage of #2 ,500,000 in event of death .",
+    "A credit life insurance that will cover your outstanding debt in the event of death.",
+    "An Annual health insurance benefit of #1 million for 4 years .",
   ];
 
   const loanTerms = [
@@ -51,9 +54,9 @@ export default function AutoFinancePage() {
               </p>
 
               <p className="text-gray-600 leading-relaxed font-outfit">
-                With the CirclesFundme Auto Finance Contribution Scheme, you can access up to 90% financing for purchasing a vehicle after
-                providing a 10% down payment, which is required to qualify for
-                the loan.
+                With the CirclesFundme Auto Finance Contribution Scheme, you can
+                access up to 90% financing for purchasing a vehicle after saving
+                a 10% down payment, which is required to qualify for ;the loan.
               </p>
             </div>
 

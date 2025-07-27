@@ -20,9 +20,9 @@ export default function MonthlySchemePage() {
   ];
 
   const loanTerms = [
-    "The loan incurs a management fee of 4% per annum.",
+    "The loan incurs a management fee of 6% per annum.",
     "The repayment duration is twelve months, using your monthly contributions.",
-    "There is a monthly membership fee of N2500.",
+    "There is a monthly membership service charge of 0.208% of the principal loan.",
   ];
 
   return (

@@ -16,14 +16,14 @@ export default function WeeklySchemePage() {
     "Proof of a physical business premises.",
     "A good credit history.",
     "A direct debit setup for your corporate account.",
-    "A corporate account demonstrating weekly sales revenue of at least five times your weekly contribution for at least one month.",
+    "A corporate account demonstrating weekly sales revenue of at least five times your weekly contribution for at least one year.",
     "Ownership of collateral, such as a shop or store in a market, which can be used as collateral against deliberate default in repayment.",
   ]
 
   const loanTerms = [
-    "A loan management fee of 4% per annum.",
+    "A loan management fee of 6% per annum.",
     "The repayment duration is 52 weeks, utilizing your weekly contributions.",
-    "A monthly membership fee of N2500 applies.",
+    "A weekly membership service fee of 0.052% of the principal loan applies.",
   ]
 
   return (
@@ -58,7 +58,7 @@ export default function WeeklySchemePage() {
 
               <p className="text-gray-600 leading-relaxed font-outfit">
                 By signing up for the CirclesFundme Weekly Contribution Scheme, you can access a loan amount of up to 52
-                times your weekly contributions as working capital.
+                times your weekly contributions as working capital loan. 
               </p>
             </div>
 

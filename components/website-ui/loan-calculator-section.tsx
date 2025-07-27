@@ -21,6 +21,7 @@ const trustedLogos = [
   { name: "NURTW", src: "/assets/images/partners/partner-4.png" },
   { name: "Rosaki", src: "/assets/images/partners/partner-5.png" },
 ];
+
 export default function LoanCalculatorSection() {
   const [scheme, setScheme] = useState("");
   const [income, setIncome] = useState("");
@@ -49,6 +50,7 @@ export default function LoanCalculatorSection() {
     eligibleLoan: "",
     eligibleLoanDescription: "",
     serviceCharge: "",
+    totalRepayment: "",
   });
 
   const isAssetFinance = scheme === "Auto Financing Contribution";
@@ -119,6 +121,7 @@ export default function LoanCalculatorSection() {
         eligibleLoan: breakdown.eligibleLoan,
         eligibleLoanDescription: breakdown.eligibleLoanDescription,
         serviceCharge: breakdown.serviceCharge,
+        totalRepayment: breakdown.totalRepayment,
       });
     },
     onError: (err: { statusCode: string; message: string }) => {
@@ -362,7 +365,7 @@ export default function LoanCalculatorSection() {
                           <div className="flex justify-between">
                             <span>Total Repayment:</span>
                             <span className="font-outfit font-semibold">
-                              {regularBreakdown.principalLoan}
+                              {regularBreakdown.totalRepayment || "₦0.00"}
                             </span>
                           </div>
                         </div>
