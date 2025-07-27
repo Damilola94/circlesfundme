@@ -31,9 +31,9 @@ export default function AutoFinancePage() {
 
   const loanTerms = [
     "Access to a 90% auto finance loan.",
-    "An annual loan management fee of 4%.",
+    "An annual loan management fee of 6%.",
     "An auto finance loan repayment duration of 208 weeks (4 years).",
-    "A monthly membership fee ranging starting at ₦2,500, depending on the amount of the work loan a member is seeking to access.",
+    "A monthly membership service charge of 0.05% of the 90% loan.",
   ];
 
   return (
