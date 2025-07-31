@@ -205,7 +205,7 @@ export default function LoanCalculatorSection() {
                   Calculate Your <span className="text-primary">Loan</span>
                 </h2>
               </div>
-              <Card className="bg-red- border shadow-md">
+              <Card className="bg-primary-50 border shadow-md ">
                 <CardContent className="p-8 space-y-6">
                   <Select
                     label="Contribution Scheme"

@@ -22,22 +22,39 @@ export default function Dashboard() {
     { name: "Angelina Jolie", time: "20 mins", avatar: "/placeholder.svg" },
   ];
 
+  const recentInflow = [
+    { name: "Subscription Charge", amount: "₦5,000" },
+    { name: "Service Charge", amount: "₦5,000" },
+    { name: "Penalty Charge", amount: "₦5,000" },
+    { name: "Loan Repayment", amount: "₦5,000" },
+    { name: "Loan Management Fee", amount: "₦5,000" },
+    { name: "Contribution", amount: "₦5,000" },
+  ];
+
+  const recentOutflow = [
+    { name: "Loan Payment", amount: "₦58,678.90" },
+    { name: "Withdrawal", amount: "₦58,678.90" },
+  ];
+
+  const totalInflow = 10000;
+  const totalOutflow = 100000000;
+
   const loanRequests = [
     {
       name: "Angelina Jolie",
-      amount: "10,000,000",
+      amount: "₦10,000,000",
       time: "Monthly",
       avatar: "/placeholder.svg",
     },
     {
       name: "Angelina Jolie",
-      amount: "500,000",
+      amount: "₦500,000",
       time: "Monthly",
       avatar: "/placeholder.svg",
     },
     {
       name: "Angelina Jolie",
-      amount: "1,000,000",
+      amount: "₦1,000,000",
       time: "Monthly",
       avatar: "/placeholder.svg",
     },
@@ -110,8 +127,12 @@ export default function Dashboard() {
                 <div className="flex items-center space-x-3">
                   <div className="h-10 w-10 rounded-full bg-gray-300"></div>
                   <div>
-                    <p className="text-sm font-medium font-outfit">{item.name}</p>
-                    <p className="text-xs text-gray-500 font-outfit">{item.time}</p>
+                    <p className="text-sm font-medium font-outfit">
+                      {item.name}
+                    </p>
+                    <p className="text-xs text-gray-500 font-outfit">
+                      {item.time}
+                    </p>
                   </div>
                 </div>
                 <Button
@@ -144,8 +165,12 @@ export default function Dashboard() {
                 <div className="flex items-center space-x-3">
                   <div className="h-10 w-10 rounded-full bg-gray-300"></div>
                   <div>
-                    <p className="text-sm font-medium font-outfit">{item.name}</p>
-                    <p className="text-xs text-gray-500 font-outfit">{item.time}</p>
+                    <p className="text-sm font-medium font-outfit">
+                      {item.name}
+                    </p>
+                    <p className="text-xs text-gray-500 font-outfit">
+                      {item.time}
+                    </p>
                   </div>
                 </div>
 
@@ -159,6 +184,62 @@ export default function Dashboard() {
                 </Button>
               </div>
             ))}
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="h-fit p-0">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-lg">Recent Inflow</CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
+            >
+              Today
+            </Button>
+          </CardHeader>
+          <hr className="border-gray-200 mb-2" />
+          <CardContent className="space-y-6 p-0">
+            {recentInflow.map((item, index) => (
+              <div key={index} className="flex justify-between space-y-4 px-6">
+                <p className="text-sm font-outfit font-medium">{item.name}</p>
+                <p className="text-sm font-outfit font-medium">{item.amount}</p>
+              </div>
+            ))}
+            <div className="flex justify-between font-outfit font-semibold border-t p-4">
+              <p className="text-sm">TOTAL</p>
+              <p className="text-sm">{`₦${totalInflow.toLocaleString()}`}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="h-fit p-0">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-lg">Recent Outflow</CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
+            >
+              Today
+            </Button>
+          </CardHeader>
+          <hr className="border-gray-200 mb-2" />
+          <CardContent className="space-y-6 p-0">
+            {recentOutflow.map((item, index) => (
+              <div key={index} className="space-y-4 px-6 flex justify-between">
+                <p className="text-sm font-outfit font-medium">{item.name}</p>
+                <p className="text-sm font-outfit font-medium">{item.amount}</p>
+              </div>
+            ))}
+            <div className="flex justify-between font-outfit font-semibold border-t p-4">
+              <p className="text-sm">TOTAL</p>
+              <p className="text-sm">
+              <p className="text-sm">{`₦${totalOutflow.toLocaleString()}`}</p>
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -181,8 +262,12 @@ export default function Dashboard() {
               <div key={index} className="flex justify-between items-center">
                 <span className="text-sm font-outfit">{item.label}</span>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium font-outfit">{item.value}</span>
-                  <span className="text-sm text-gray-500 font-outfit">{item.unit}</span>
+                  <span className="text-sm font-medium font-outfit">
+                    {item.value}
+                  </span>
+                  <span className="text-sm text-gray-500 font-outfit">
+                    {item.unit}
+                  </span>
                 </div>
               </div>
             ))}
@@ -224,7 +309,7 @@ export default function Dashboard() {
           <CardContent className="space-y-4">
             <div>
               <Select
-              label="Message Type"
+                label="Message Type"
                 options={[
                   { value: "payment-reminder", label: "Payment Reminder" },
                   { value: "payment-reminder", label: "Contribution Reminder" },
@@ -237,7 +322,7 @@ export default function Dashboard() {
             </div>
             <div>
               <Select
-              label="Target Group"
+                label="Target Group"
                 options={[
                   { value: "all-users", label: "All Users" },
                   { value: "all-users", label: "Pending Users" },
