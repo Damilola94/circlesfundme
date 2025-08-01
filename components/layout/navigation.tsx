@@ -18,8 +18,8 @@ export const navigation = [
     ),
   },
   {
-    name: "KYC Reviews",
-    href: "/kyc-reviews",
+    name: "User Management",
+    href: "/user-management",
     icon: (isActive: boolean, hoverClass = "") => (
       <KYCIcon
         stroke={isActive ? "#004C42" : "#ffffff"}
