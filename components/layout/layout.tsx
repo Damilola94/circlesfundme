@@ -1,16 +1,20 @@
-import { Header } from "./header";
-import { Sidebar } from "./sidebar";
+import type React from "react"
+import { Header } from "./header"
+import { Sidebar } from "./sidebar"
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div style={{ display: "flex" }}>
+    <div className="flex h-screen">
       <Sidebar />
-      <div style={{ flex: 1 }}>
+      <div className="flex-1 overflow-auto">
         <Header />
-        <main>{children}</main>
+        <div className="mt-40"/>
+        <main className="mt-40">
+          {children}
+        </main>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout

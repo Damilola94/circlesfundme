@@ -3,14 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-
 import { navigation } from "./navigation";
 import Image from "next/image";
 import { LogoutIcon } from "@/public/assets/icons";
 
 export function Sidebar() {
   const pathname = usePathname();
-
   return (
     <div className="flex h-screen w-64 flex-col bg-primary-900">
       <div className="flex h-16 items-center px-6">
@@ -21,13 +19,11 @@ export function Sidebar() {
           height={100}
         />
       </div>
-
       <nav className="flex-1 space-y-4 pl-4 py-4">
         {navigation.map((item) => {
           const isActive =
             pathname === item.href ||
             (item.href !== "/" && pathname.startsWith(item.href));
-
           return (
             <Link
               key={item.name}
@@ -47,15 +43,14 @@ export function Sidebar() {
           );
         })}
       </nav>
-
       <div className="pl-4 py-4">
         <Link href={`/login`}>
-          <button className="group flex w-full items-center px-4 py-3 text-sm font-medium rounded-l-2xl  text-white hover:bg-white hover:text-primary-900 transition-colors font-outfit">
+          <button className="group flex w-full items-center px-4 py-3 text-sm font-medium rounded-l-2xl text-white hover:bg-white hover:text-primary-900 transition-colors font-outfit">
             <LogoutIcon
               className="group-hover:stroke-primary-900"
               stroke={"#ffffff"}
             />
-            <span className="mr-3"/> 
+            <span className="mr-3" />
             Log Out
           </button>
         </Link>

@@ -1,25 +1,24 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Search, Bell } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { useState } from "react"
+import { Search, Bell } from "lucide-react"
+import { Input } from "@/components/ui/input"
 
 export function Header() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
   return (
-    <header className="flex h-16 items-center justify-between px-6 mb-5">
+    <header
+      className=" bg-[#F5F5F5] flex h-16 items-center justify-between px-6"
+ 
+    >
       <div className="">
-        <h1 className="text-2xl font-semibold text-gray-900 font-outfit">
-          Welcome back, Rotimi!
-        </h1>
+        <h1 className="text-2xl font-semibold text-gray-900 font-outfit">Welcome back, Rotimi!</h1>
         <p className="text-sm text-gray-500 font-outfit">Keep track of everything here</p>
       </div>
-
       <div className="flex items-center space-x-4">
         <div className="relative">
           {!isSearchOpen ? (
-          <div className="flex items-center rounded-full  bg-white">
+            <div className="flex items-center rounded-full bg-white">
               <button
                 onClick={() => setIsSearchOpen(true)}
                 className="p-2 text-gray-400 hover:text-gray-500 transition-colors"
@@ -37,25 +36,23 @@ export function Header() {
                 onBlur={() => setIsSearchOpen(false)}
                 onKeyDown={(e) => {
                   if (e.key === "Escape") {
-                    setIsSearchOpen(false);
+                    setIsSearchOpen(false)
                   }
                 }}
               />
             </div>
           )}
         </div>
-
-        <button className="relative p-2 text-gray-400 hover:text-gray-500 flex items-center rounded-full  bg-white">
+        <button className="relative p-2 text-gray-400 hover:text-gray-500 flex items-center rounded-full bg-white">
           <Bell className="h-5 w-5" />
           <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-xs text-white flex items-center justify-center font-outfit">
             3
           </span>
         </button>
-
         <div className="flex items-center space-x-2 border border-1 rounded-full p-2 border-gray-300">
           <span className="text-sm text-gray-700 font-outfit">rotimishittu@gmail.com</span>
         </div>
       </div>
     </header>
-  );
+  )
 }

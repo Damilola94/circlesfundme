@@ -13,9 +13,12 @@ import {
   KYCIcon,
   OverdueIcon,
 } from "@/public/assets/icons";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const [selected, setSelected] = useState("");
+  const router = useRouter();
+
   const kycQueue = [
     { name: "Angelina Jolie", time: "20 mins", avatar: "/placeholder.svg" },
     { name: "Angelina Jolie", time: "20 mins", avatar: "/placeholder.svg" },
@@ -80,6 +83,22 @@ export default function Dashboard() {
     { label: "Due Today", badge: "Send Notice", variant: "secondary" },
   ];
 
+  const handleKYCReviewViewAll = async () => {
+    router.push(`/user-management`);
+  };
+
+  const handleKYCReview = async () => {
+    router.push(`/user-management/1`);
+  };
+
+  const handleLoanReviewViewAll = async () => {
+    router.push(`/loan-management`);
+  };
+
+  const handleLoanReview = async () => {
+    router.push(`/loan-management/1`);
+  };
+
   return (
     <div className="flex-1 space-y-6 p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -108,8 +127,9 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg">KYC Review Queue</CardTitle>
+            <CardTitle className="text-lg">Pending KYC</CardTitle>
             <Button
+              onClick={handleKYCReviewViewAll}
               variant="ghost"
               size="sm"
               className=" text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
@@ -137,6 +157,7 @@ export default function Dashboard() {
                 </div>
                 <Button
                   size="sm"
+                  onClick={handleKYCReview}
                   variant="outline"
                   className="border-[#00A86B26] text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
                 >
@@ -153,6 +174,7 @@ export default function Dashboard() {
             <Button
               variant="ghost"
               size="sm"
+              onClick={handleLoanReviewViewAll}
               className=" text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
             >
               View All
@@ -178,6 +200,7 @@ export default function Dashboard() {
                 <Button
                   size="sm"
                   variant="outline"
+                  onClick={handleLoanReview}
                   className="border-[#00A86B26] text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
                 >
                   View Request
@@ -237,7 +260,7 @@ export default function Dashboard() {
             <div className="flex justify-between font-outfit font-semibold border-t p-4">
               <p className="text-sm">TOTAL</p>
               <p className="text-sm">
-              <p className="text-sm">{`₦${totalOutflow.toLocaleString()}`}</p>
+                <p className="text-sm">{`₦${totalOutflow.toLocaleString()}`}</p>
               </p>
             </div>
           </CardContent>
