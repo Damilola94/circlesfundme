@@ -51,6 +51,7 @@ export default function LoanCalculatorSection() {
     eligibleLoanDescription: "",
     serviceCharge: "",
     totalRepayment: "",
+    repaymentTerm: "",
   });
 
   const isAssetFinance = scheme === "Auto Financing Contribution";
@@ -122,6 +123,7 @@ export default function LoanCalculatorSection() {
         eligibleLoanDescription: breakdown.eligibleLoanDescription,
         serviceCharge: breakdown.serviceCharge,
         totalRepayment: breakdown.totalRepayment,
+        repaymentTerm: breakdown.repaymentTerm,
       });
     },
     onError: (err: { statusCode: string; message: string }) => {
@@ -366,6 +368,12 @@ export default function LoanCalculatorSection() {
                             <span>Total Repayment:</span>
                             <span className="font-outfit font-semibold">
                               {regularBreakdown.totalRepayment || "₦0.00"}
+                            </span>
+                          </div>
+                           <div className="flex justify-between">
+                            <span>Repayment term:</span>
+                            <span className="font-outfit font-semibold">
+                              {regularBreakdown.repaymentTerm || "₦0.00"}
                             </span>
                           </div>
                         </div>
