@@ -239,7 +239,7 @@ export default function LoanCalculatorSection() {
                         placeholder="Enter amount"
                       />
                       {vehicleBreakdown.costOfVehicle && (
-                        <div className="bg-gray-100 p-4 rounded space-y-2 font-outfit ">
+                        <div className="bg-gray-50 p-4 rounded space-y-2 font-outfit ">
                           <div className="flex justify-between">
                             <span>Extra Engine:</span>
                             <span className="font-outfit font-semibold">
@@ -329,7 +329,7 @@ export default function LoanCalculatorSection() {
                         placeholder="Enter amount"
                       />
                       {regularBreakdown.principalLoan && (
-                        <div className="bg-gray-100 p-4 rounded-2xl space-y-2 font-outfit">
+                        <div className="bg-gray-50 p-4 rounded-2xl space-y-2 font-outfit">
                           <div className="flex justify-between">
                             <span>Principal Loan:</span>
                             <span className="font-outfit font-semibold">

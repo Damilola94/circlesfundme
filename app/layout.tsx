@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   creator: "CirclesFundMe",
   publisher: "CirclesFundMe",
   metadataBase: new URL("https://circlesfundme.com"),
+   icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({
