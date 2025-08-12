@@ -1,13 +1,16 @@
 import { cn } from "@/lib/utils";
 
 export type StatusType =
-  | "Active"
-  | "Completed"
+  | "Approved"
   | "Pending"
-  | "Rejected"
   | "Waitlisted"
+  | "Completed"
+  | "Rejected"
+  | "Active"
   | "Successful"
-  | "Failed";
+  | "Failed"
+  | "Awaiting"
+  | "Abandoned";
 
 interface StatusProps {
   status: StatusType;
@@ -15,17 +18,17 @@ interface StatusProps {
 }
 
 const statusConfig: Record<StatusType, { bg: string; text: string; dot: string }> = {
-  Active: {
+  Approved: {
     bg: "bg-green-100",
     text: "text-green-800",
     dot: "bg-green-500",
   },
-  Completed: {
-    bg: "bg-blue-100",
-    text: "text-blue-800",
-    dot: "bg-blue-500",
-  },
   Pending: {
+    bg: "bg-yellow-100",
+    text: "text-yellow-800",
+    dot: "bg-yellow-500",
+  },
+   Awaiting: {
     bg: "bg-yellow-100",
     text: "text-yellow-800",
     dot: "bg-yellow-500",
@@ -40,12 +43,27 @@ const statusConfig: Record<StatusType, { bg: string; text: string; dot: string }
     text: "text-red-800",
     dot: "bg-red-800",
   },
+  Completed: {
+    bg: "bg-blue-100",
+    text: "text-blue-800",
+    dot: "bg-blue-500",
+  },
   Successful: {
     bg: "bg-emerald-100",
     text: "text-emerald-800",
     dot: "bg-emerald-600",
   },
+  Active: {
+    bg: "bg-green-100",
+    text: "text-green-800",
+    dot: "bg-green-500",
+  },
   Failed: {
+    bg: "bg-rose-100",
+    text: "text-rose-800",
+    dot: "bg-rose-600",
+  },
+   Abandoned: {
     bg: "bg-rose-100",
     text: "text-rose-800",
     dot: "bg-rose-600",

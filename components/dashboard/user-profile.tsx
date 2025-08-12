@@ -1,6 +1,12 @@
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {  Download } from "lucide-react";
+import { Download } from "lucide-react";
+
+interface DocumentItem {
+  documentType: string;
+  url: string;
+  name: string | null;
+}
 
 interface UserProfileProps {
   user: {
@@ -13,34 +19,34 @@ interface UserProfileProps {
     scheme: string;
     contribution: string;
     bvn: string;
+    document: DocumentItem[];
   };
 }
 
-const documents = [
-  {
-    id: 1,
-    name: "Utility bill.pdf",
-    date: "10/05/2025",
-    size: "0.5mb",
-    iconSrc: "/assets/images/pdf-icon.png",
-  },
-  {
-    id: 2,
-    name: "Voters card.pdf",
-    date: "10/05/2025",
-    size: "0.5mb",
-    iconSrc: "/assets/images/pdf-icon.png",
-  },
-  {
-    id: 3,
-    name: "National ID.pdf",
-    date: "10/05/2025",
-    size: "0.5mb",
-    iconSrc: "/assets/images/pdf-icon.png",
-  },
-];
+const getDocumentIcon = (url: string) => {
+  const lowerUrl = url?.toLowerCase();
+  if (lowerUrl?.endsWith(".pdf")) return "/assets/images/pdf-icon.png";
+  if (lowerUrl?.endsWith(".jpg") || lowerUrl?.endsWith(".jpeg") || lowerUrl?.endsWith(".png")) {
+    return "/assets/images/image-icon.png";
+  }
+  return "/assets/images/file-icon.png";
+};
 
 export function UserProfile({ user }: UserProfileProps) {
+  console.log(user, "user");
+
+  const documents = user.document.map((doc, index) => ({
+    id: index + 1,
+    name: doc.name || doc.documentType,
+    date: new Date().toLocaleDateString(), 
+    size: "—", 
+    iconSrc: getDocumentIcon(doc.url),
+    url: doc.url,
+  }));
+
+  console.log(documents,user.document, "documents");
+  
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <Card>
@@ -66,28 +72,28 @@ export function UserProfile({ user }: UserProfileProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex justify-between font-outfit">
-            <span className="text-sm text-gray-600 font-outfit">Full Name</span>
-            <span className="text-sm font-medium font-outfit">{user.name}</span>
+            <span className="text-sm text-gray-600">Full Name</span>
+            <span className="text-sm font-medium">{user.name}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-gray-600 font-outfit">Date of Birth</span>
-            <span className="text-sm font-medium font-outfit">{user.dateOfBirth}</span>
+            <span className="text-sm text-gray-600">Date of Birth</span>
+            <span className="text-sm font-medium">{user.dateOfBirth}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm font-outfit text-gray-600">Gender</span>
-            <span className="text-sm font-medium font-outfit">{user.gender}</span>
+            <span className="text-sm text-gray-600">Gender</span>
+            <span className="text-sm font-medium">{user.gender}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-gray-600 font-outfit">Scheme</span>
-            <span className="text-sm font-medium font-outfit">{user.scheme}</span>
+            <span className="text-sm text-gray-600">Scheme</span>
+            <span className="text-sm font-medium">{user.scheme}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm font-outfit text-gray-600">Contribution</span>
-            <span className="text-sm font-medium font-outfit">{user.contribution}</span>
+            <span className="text-sm text-gray-600">Contribution</span>
+            <span className="text-sm font-medium">{user.contribution}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm  font-outfit text-gray-600">BVN</span>
-            <span className="text-sm font-medium font-outfit">{user.bvn}</span>
+            <span className="text-sm text-gray-600">BVN</span>
+            <span className="text-sm font-medium">{user.bvn}</span>
           </div>
         </CardContent>
       </Card>
@@ -103,14 +109,14 @@ export function UserProfile({ user }: UserProfileProps) {
               className="flex items-center justify-between p-3 border rounded-lg"
             >
               <div className="flex items-center space-x-3">
-                  <Image
-                    src={document.iconSrc}
-                    alt={user.name}
-                    width={30}
-                    height={30}
-                    className="object-contain" 
-                    priority={document.id === 1}
-                  />
+                <Image
+                  src={document.iconSrc}
+                  alt={document.name}
+                  width={30}
+                  height={30}
+                  className="object-contain"
+                  priority={document.id === 2}
+                />
                 <div>
                   <p className="text-sm font-medium font-outfit">{document.name}</p>
                   <p className="text-xs text-gray-500 font-outfit">
@@ -118,7 +124,9 @@ export function UserProfile({ user }: UserProfileProps) {
                   </p>
                 </div>
               </div>
-              <Download className="h-4 w-4 text-gray-400 cursor-pointer" />
+              <a href={document.url} target="_blank" rel="noopener noreferrer">
+                <Download className="h-4 w-4 text-gray-400 cursor-pointer" />
+              </a>
             </div>
           ))}
         </CardContent>

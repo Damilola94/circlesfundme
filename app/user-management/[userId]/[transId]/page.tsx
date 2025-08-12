@@ -1,83 +1,53 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import mockData from "../../mockdata.json";
-import { ArrowLeft, Filter, Search } from "lucide-react";
-import Pagination from "@/components/ui/pagination";
-import { TransactionStatus } from "@/components/ui/transactionstatus";
-import { TransactionType } from "@/components/ui/actiontype";
-import { Input } from "@/components/ui/input";
-
-export type StatusType =
-  | "Active"
-  | "Completed"
-  | "Pending"
-  | "Waitlisted"
-  | "Successful"
-  | "Failed";
-
-export type ActionType = "Contribution" | "Withdrawal";
+import { useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ArrowLeft, Filter, Search, Loader2 } from "lucide-react"
+import Pagination from "@/components/ui/pagination"
+import { TransactionStatus } from "@/components/ui/transactionstatus"
+import { TransactionType } from "@/components/ui/actiontype"
+import useGetQuery from "@/hooks/useGetQuery"
+import type { StatusType, ActionType } from "../../types"
 
 export default function UserProfilePage() {
-  const [pageNumber, setPageNumber] = useState(2);
-  const [pageSize, setPageSize] = useState(10);
-  const totalElements = 95;
-  const [searchTerm, setSearchTerm] = useState("");
+  const [pageNumber, setPageNumber] = useState(2)
+  const [pageSize, setPageSize] = useState(10)
+  const [searchTerm, setSearchTerm] = useState("")
+  const router = useRouter()
+ const params = useParams();
+  const userId = params.userId as string; 
 
-  const communicationHistory = [
-    {
-      id: 1,
-      date: "20/05/2025",
-      action: "Contribution",
-      amount: "56,678.90",
-      withdrawalCharge: 10.9,
-      status: "Successful",
-    },
-    {
-      id: 2,
-      date: "20/05/2025",
-      action: "Withdrawal",
-      amount: "56,678.90",
-      withdrawalCharge: 10.9,
-      status: "Failed",
-    },
-    {
-      id: 3,
-      date: "20/05/2025",
-      action: "Withdrawal",
-      amount: "56,678.90",
-      withdrawalCharge: 10.9,
-      status: "Successful",
-    },
-    {
-      id: 4,
-      date: "20/05/2025",
-      action: "Contribution",
-      amount: "56,678.90",
-      withdrawalCharge: 10.9,
-      status: "Successful",
-    },
-    {
-      id: 5,
-      date: "20/05/2025",
-      action: "Withdrawal",
-      amount: "56,678.90",
-      withdrawalCharge: 10.9,
-      status: "Failed",
-    },
-  ];
+  const {
+    data: userData,
+    isLoading,
+    isError,
+  } = useGetQuery({
+    endpoint: "/adminusermanagement",
+    extra: `users/${userId}/payments`,
+    queryKey: ["admin-profile", userId, pageNumber.toString(), pageSize.toString()],
+    auth: true,
+  })
+
+  const filteredTransactions =
+    userData?.transactions?.filter(
+      (transaction: { action: string; amount: string | string[]; status: string }) =>
+        transaction.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.amount.includes(searchTerm) ||
+        transaction.status.toLowerCase().includes(searchTerm.toLowerCase()),
+    ) || []
+
 
   return (
     <div className="flex-1 space-y-6 p-6">
       <div className="flex items-center space-x-4">
-        <Link href="/kyc-reviews" className="w-10 h-10 bg-white rounded-full">
-          <Button variant="ghost" size="icon">
+        <div className="w-10 h-10 bg-white rounded-full">
+          <Button onClick={() => router.back()} variant="ghost" size="icon">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-        </Link>
+        </div>
       </div>
 
       <div className="flex justify-between items-end">
@@ -103,35 +73,54 @@ export default function UserProfilePage() {
         <div>Date</div>
         <div>Action</div>
         <div>Amount (₦)</div>
-        <div>Withdrawl Charge (₦)</div>
+        <div>Withdrawal Charge (₦)</div>
         <div>Status</div>
       </div>
-
-      <div className="space-y-3">
-        {communicationHistory.map((item) => (
-          <Card key={item.id} className="shadow-sm bg-white">
-            <CardContent className="p-6">
-              <div className="grid grid-cols-5 gap-4 items-center">
-                <div className="text-sm text-gray-600 font-outfit">{item.date}</div>
-                <TransactionType actionType={item.action as ActionType} />
-                <div className="text-sm text-gray-600 font-outfit">{item.amount}</div>
-                <div className="text-sm text-gray-600 font-outfit">
-                  {item.withdrawalCharge}
-                </div>
-                <TransactionStatus status={item.status as StatusType} />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {isLoading && <div className="flex-1 space-y-6 p-6">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="ml-2 text-lg font-outfit">Loading transaction history...</span>
+        </div>
+      </div>}
+      {isError ? <div className="flex-1 space-y-6 p-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <p className="text-lg font-outfit text-red-600 mb-2">Failed to load transaction history</p>
+            <Button onClick={() => window.location.reload()} variant="outline">
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </div> :
+        <div className="space-y-3">
+          {filteredTransactions.length > 0 ? (
+            filteredTransactions.map((item: any) => (
+              <Card key={item.id} className="shadow-sm bg-white">
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-5 gap-4 items-center">
+                    <div className="text-sm text-gray-600 font-outfit">{item.date}</div>
+                    <TransactionType actionType={item.action as ActionType} />
+                    <div className="text-sm text-gray-600 font-outfit">{item.amount}</div>
+                    <div className="text-sm text-gray-600 font-outfit">{item.withdrawalCharge}</div>
+                    <TransactionStatus status={item.status as StatusType} />
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-500 font-outfit">No transactions found</p>
+            </div>
+          )}
+        </div>}
 
       <Pagination
         current={pageNumber}
         onPageChange={setPageNumber}
         onRowChange={setPageSize}
         pageSize={pageSize}
-        total={totalElements}
+        total={userData?.totalElements || 0}
       />
     </div>
-  );
+  )
 }

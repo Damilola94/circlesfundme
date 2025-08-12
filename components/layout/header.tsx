@@ -3,16 +3,28 @@
 import { useState } from "react"
 import { Search, Bell } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import useGetQuery from "@/hooks/useGetQuery"
+
 
 export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+
+  const { data: userData, isLoading, isError } = useGetQuery(
+    {
+      endpoint: "/adminusermanagement/admin-profile",
+      queryKey: ["admin-profile"],
+      auth: true,
+    }
+  )
+
+  const displayName = isLoading ? "Loading..." : isError || !userData ? "Guest" : userData?.data.firstName
+
+  const displayEmail = isLoading ? "loading@example.com" : isError || !userData ? "guest@example.com" : userData?.data?.email
+
   return (
-    <header
-      className=" bg-[#F5F5F5] flex h-16 items-center justify-between px-6"
- 
-    >
+    <header className=" bg-[#F5F5F5] flex h-16 items-center justify-between px-6">
       <div className="">
-        <h1 className="text-2xl font-semibold text-gray-900 font-outfit">Welcome back, Rotimi!</h1>
+        <h1 className="text-2xl font-semibold text-gray-900 font-outfit">Welcome back, {displayName}!</h1>
         <p className="text-sm text-gray-500 font-outfit">Keep track of everything here</p>
       </div>
       <div className="flex items-center space-x-4">
@@ -50,7 +62,7 @@ export function Header() {
           </span>
         </button>
         <div className="flex items-center space-x-2 border border-1 rounded-full p-2 border-gray-300">
-          <span className="text-sm text-gray-700 font-outfit">rotimishittu@gmail.com</span>
+          <span className="text-sm text-gray-700 font-outfit">{displayEmail}</span>
         </div>
       </div>
     </header>

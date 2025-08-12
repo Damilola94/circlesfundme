@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { navigation } from "./navigation";
 import Image from "next/image";
 import { LogoutIcon } from "@/public/assets/icons";
+import { logout } from "@/services/auth";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -44,10 +45,15 @@ export function Sidebar() {
         })}
       </nav>
       <div className="pl-4 py-4">
-        <Link href={`/login`}>
-          <button className="group flex w-full items-center px-4 py-3 text-sm font-medium rounded-l-2xl text-white hover:bg-white hover:text-primary-900 transition-colors font-outfit">
+        <Link
+          href={`/login`}
+          onClick={() => {
+            logout();
+          }}
+        >
+          <button className="group flex w-full items-center px-4 py-3 text-sm font-medium rounded-l-2xl text-white transition-colors font-outfit">
             <LogoutIcon
-              className="group-hover:stroke-primary-900"
+              className=""
               stroke={"#ffffff"}
             />
             <span className="mr-3" />

@@ -1,129 +1,169 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { StatsCard } from "@/components/dashboard/stats-card";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Select } from "@/components/ui/select";
-import { Mail, Bell } from "lucide-react";
-import {
-  UserIcon,
-  LoanIcon,
-  KYCIcon,
-  OverdueIcon,
-} from "@/public/assets/icons";
-import { useRouter } from "next/navigation";
+import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal } from "react"
+import { StatsCard } from "@/components/dashboard/stats-card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Loader2 } from "lucide-react"
+import { UserIcon, LoanIcon, KYCIcon, OverdueIcon } from "@/public/assets/icons"
+import { useRouter } from "next/navigation"
+import useGetQuery from "@/hooks/useGetQuery"
+import "react-toastify/dist/ReactToastify.css"
+import { formatCurrency, formatDate, UserName } from "./types"
 
 export default function Dashboard() {
-  const [selected, setSelected] = useState("");
-  const router = useRouter();
+  const router = useRouter()
 
-  const kycQueue = [
-    { name: "Angelina Jolie", time: "20 mins", avatar: "/placeholder.svg" },
-    { name: "Angelina Jolie", time: "20 mins", avatar: "/placeholder.svg" },
-    { name: "Angelina Jolie", time: "20 mins", avatar: "/placeholder.svg" },
-  ];
+  const {
+    data: metricsData,
+    status: metricsStatus,
+  } = useGetQuery({
+    endpoint: "admindashboard/statistics",
+    queryKey: ["dashboard-statistics"],
+    auth: true,
+  })
 
-  const recentInflow = [
-    { name: "Subscription Charge", amount: "₦5,000" },
-    { name: "Service Charge", amount: "₦5,000" },
-    { name: "Penalty Charge", amount: "₦5,000" },
-    { name: "Loan Repayment", amount: "₦5,000" },
-    { name: "Loan Management Fee", amount: "₦5,000" },
-    { name: "Contribution", amount: "₦5,000" },
-  ];
+  const {
+    data: pendingKycData,
+    status: pendingKycStatus,
+  } = useGetQuery({
+    endpoint: "adminusermanagement/users",
+    pQuery: { Status: "PendingKYC", PageNumber: 1, PageSize: 3 },
+    queryKey: ["pending-kyc-users"],
+    auth: true,
+  })
 
-  const recentOutflow = [
-    { name: "Loan Payment", amount: "₦58,678.90" },
-    { name: "Withdrawal", amount: "₦58,678.90" },
-  ];
+  const {
+    data: inflowData,
+    status: inflowStatus,
+  } = useGetQuery({
+    endpoint: "admindashboard/inflows",
+    queryKey: ["recent-inflow"],
+    auth: true,
+  })
 
-  const totalInflow = 10000;
-  const totalOutflow = 100000000;
+  const {
+    data: outflowData,
+    status: outflowStatus,
+  } = useGetQuery({
+    endpoint: "admindashboard/outflows",
+    queryKey: ["recent-outflow"],
+    auth: true,
+  })
 
-  const loanRequests = [
-    {
-      name: "Angelina Jolie",
-      amount: "₦10,000,000",
-      time: "Monthly",
-      avatar: "/placeholder.svg",
-    },
-    {
-      name: "Angelina Jolie",
-      amount: "₦500,000",
-      time: "Monthly",
-      avatar: "/placeholder.svg",
-    },
-    {
-      name: "Angelina Jolie",
-      amount: "₦1,000,000",
-      time: "Monthly",
-      avatar: "/placeholder.svg",
-    },
-  ];
+  const {
+    data: loanRequestsData,
+    status: loanRequestsStatus,
+  } = useGetQuery({
+    endpoint: "loanapplications",
+    pQuery: { Status: "Pending", PageNumber: 1, PageSize: 3 },
+    queryKey: ["pending-loan-requests"],
+    auth: true,
+  })
 
-  const subParameters = [
-    { label: "Interest Rate", value: 5, unit: "%" },
-    { label: "Service Charge", value: 5, unit: "%" },
-    { label: "Penalty Charge", value: 20, unit: "%" },
-  ];
+  // useEffect(() => {
+  //   if (metricsStatus === "error") toast.error(metricsError?.message || "Failed to load dashboard metrics.")
+  //   if (pendingKycStatus === "error") toast.error(pendingKycError?.message || "Failed to load pending KYC users.")
+  //   if (inflowStatus === "error") toast.error(inflowError?.message || "Failed to load recent inflow.")
+  //   if (outflowStatus === "error") toast.error(outflowError?.message || "Failed to load recent outflow.")
+  //   if (loanRequestsStatus === "error") toast.error(loanRequestsError?.message || "Failed to load loan requests.")
+  // }, [
+  //   metricsStatus,
+  //   metricsError,
+  //   pendingKycStatus,
+  //   pendingKycError,
+  //   inflowStatus,
+  //   inflowError,
+  //   outflowStatus,
+  //   outflowError,
+  //   loanRequestsStatus,
+  //   loanRequestsError,
+  // ])
 
-  const paymentMonitoring: {
-    label: string;
-    badge: string;
-    variant: "default" | "success" | "warning" | "destructive" | "secondary";
-  }[] = [
-    {
-      label: "Overdue 30+ Days",
-      badge: "Apply Penalty",
-      variant: "destructive",
-    },
-    { label: "Overdue 1 week", badge: "REMINDER", variant: "default" },
-    { label: "Due Today", badge: "Send Notice", variant: "secondary" },
-  ];
+  const kycQueue = pendingKycData?.isSuccess
+    ? pendingKycData.data.map((user: { name: any; dateJoined: string; avatarUrl: any }) => ({
+      name: user.name,
+      time: formatDate(user.dateJoined),
+      avatar: user.avatarUrl,
+    }))
+    : []
 
-  const handleKYCReviewViewAll = async () => {
-    router.push(`/user-management`);
-  };
+  const recentInflow = inflowData?.isSuccess
+    ? inflowData?.data?.items?.map((item: { name: any; amount: number }) => ({
+      name: item.name,
+      amount: formatCurrency(item.amount),
+    }))
+    : []
 
-  const handleKYCReview = async () => {
-    router.push(`/user-management/1`);
-  };
+  const totalInflow = inflowData?.isSuccess ? inflowData?.data?.totalInflow : 0
 
-  const handleLoanReviewViewAll = async () => {
-    router.push(`/loan-management`);
-  };
+  const recentOutflow = outflowData?.isSuccess
+    ? outflowData?.data?.items?.map((item: { name: any; amount: number }) => ({
+      name: item.name,
+      amount: formatCurrency(item.amount),
+    }))
+    : []
 
-  const handleLoanReview = async () => {
-    router.push(`/loan-management/1`);
-  };
+  const totalOutflow = outflowData?.isSuccess ? outflowData?.data?.totalOutflow : 0
+
+  const loanRequests = loanRequestsData?.isSuccess
+    ? loanRequestsData.data.map((item: { applicantName: any; loanAmount: number; applicationDate: string }) => ({
+      name: item.applicantName,
+      amount: formatCurrency(item.loanAmount),
+      time: formatDate(item.applicationDate),
+      avatar: "/diverse-user-avatars.png",
+    }))
+    : []
+
+  const handleKYCReviewViewAll = () => {
+    router.push(`/user-management?status=pending-kyc`)
+  }
+  const handleKYCReview = (userId: string) => {
+    router.push(`/user-management/${userId}`)
+  }
+  const handleLoanReviewViewAll = () => {
+    router.push(`/loan-management?status=pending`)
+  }
+  const handleLoanReview = (loanId: string) => {
+    router.push(`/loan-management/${loanId}`)
+  }
 
   return (
     <div className="flex-1 space-y-6 p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard
           title="Pending KYC"
-          value="10"
+          value={
+            metricsData?.data?.totalPendingKYCs?.toLocaleString() ||
+            (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
+          }
           icon={<KYCIcon stroke="#00A86B" />}
         />
         <StatsCard
           title="Active Loans"
-          value="450"
+          value={
+            metricsData?.data?.totalActiveLoans?.toLocaleString() ||
+            (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
+          }
           icon={<LoanIcon stroke="#00A86B" />}
         />
         <StatsCard
           title="Overdue Payments"
-          value="4"
+          value={
+            metricsData?.data?.totalOverduePayments?.toLocaleString() ||
+            (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
+          }
           icon={<OverdueIcon stroke="#00A86B" />}
         />
         <StatsCard
           title="Total Users"
-          value="642"
+          value={
+            metricsData?.data?.totalUsers?.toLocaleString() ||
+            (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
+          }
           icon={<UserIcon stroke="#00A86B" />}
         />
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -139,35 +179,41 @@ export default function Dashboard() {
           </CardHeader>
           <hr className="border-gray-200 mb-2" />
           <CardContent className="space-y-4">
-            {kycQueue.map((item, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between space-y-5"
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="h-10 w-10 rounded-full bg-gray-300"></div>
-                  <div>
-                    <p className="text-sm font-medium font-outfit">
-                      {item.name}
-                    </p>
-                    <p className="text-xs text-gray-500 font-outfit">
-                      {item.time}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  size="sm"
-                  onClick={handleKYCReview}
-                  variant="outline"
-                  className="border-[#00A86B26] text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
-                >
-                  View Profile
-                </Button>
+            {pendingKycStatus === "loading" ? (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                <span className="text-gray-500">Loading pending KYC...</span>
               </div>
-            ))}
+            ) : pendingKycStatus === "error" || !pendingKycData?.isSuccess ? (
+              <div className="text-center py-4 text-red-500">Failed to load pending KYC users.</div>
+            ) : kycQueue.length > 0 ? (
+              kycQueue.map((item: { avatar: string; name: string; time: string }, index: any) => (
+                <div key={index} className="flex items-center justify-between space-y-5">
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src={item.avatar || "/placeholder.svg"}
+                      className="h-10 w-10 rounded-full object-cover"
+                    />
+                    <div>
+                      <p className="text-sm font-medium font-outfit">{item.name}</p>
+                      <p className="text-xs text-gray-500 font-outfit">{item.time}</p>
+                    </div>
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={() => handleKYCReview(pendingKycData.data[index].userId)}
+                    variant="outline"
+                    className="border-[#00A86B26] text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
+                  >
+                    View Profile
+                  </Button>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-4 text-gray-500">No pending KYC users.</div>
+            )}
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg">Loan Requests</CardTitle>
@@ -182,35 +228,44 @@ export default function Dashboard() {
           </CardHeader>
           <hr className="border-gray-200 mb-2" />
           <CardContent className="space-y-4">
-            {loanRequests.map((item, index) => (
-              <div key={index} className="flex justify-between space-y-5">
-                <div className="flex items-center space-x-3">
-                  <div className="h-10 w-10 rounded-full bg-gray-300"></div>
-                  <div>
-                    <p className="text-sm font-medium font-outfit">
-                      {item.name}
-                    </p>
-                    <p className="text-xs text-gray-500 font-outfit">
-                      {item.time}
-                    </p>
-                  </div>
-                </div>
-
-                <p className="text-lg font-outfit font-medium">{item.amount}</p>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleLoanReview}
-                  className="border-[#00A86B26] text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
-                >
-                  View Request
-                </Button>
+            {loanRequestsStatus === "loading" ? (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                <span className="text-gray-500">Loading loan requests...</span>
               </div>
-            ))}
+            ) : loanRequestsStatus === "error" || !loanRequestsData?.isSuccess ? (
+              <div className="text-center py-4 text-red-500">Failed to load loan requests.</div>
+            ) : loanRequests.length > 0 ? (
+              loanRequests.map((item: { avatar: string, name: string, time: string, amount: string }, index: any) => (
+                <div key={index} className="flex justify-between space-y-5">
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src={item.avatar || "/placeholder.svg"}
+                      alt={item.name}
+                      className="h-10 w-10 rounded-full object-cover"
+                    />
+                    <div>
+                      <p className="text-sm font-medium font-outfit">{item.name}</p>
+                      <p className="text-xs text-gray-500 font-outfit">{item.time}</p>
+                    </div>
+                  </div>
+                  <p className="text-lg font-outfit font-medium">{item.amount}</p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleLoanReview(loanRequestsData.data[index].id)}
+                    className="border-[#00A86B26] text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
+                  >
+                    View Request
+                  </Button>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-4 text-gray-500">No pending loan requests.</div>
+            )}
           </CardContent>
         </Card>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="h-fit p-0">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -225,19 +280,29 @@ export default function Dashboard() {
           </CardHeader>
           <hr className="border-gray-200 mb-2" />
           <CardContent className="space-y-6 p-0">
-            {recentInflow.map((item, index) => (
-              <div key={index} className="flex justify-between space-y-4 px-6">
-                <p className="text-sm font-outfit font-medium">{item.name}</p>
-                <p className="text-sm font-outfit font-medium">{item.amount}</p>
+            {inflowStatus === "loading" ? (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                <span className="text-gray-500">Loading inflow...</span>
               </div>
-            ))}
+            ) : inflowStatus === "error" || !inflowData?.isSuccess ? (
+              <div className="text-center py-4 text-red-500">Failed to load recent inflow.</div>
+            ) : recentInflow?.length > 0 ? (
+              recentInflow?.map((item: { name: string, amount: string }, index: Key | null | undefined) => (
+                <div key={index} className="flex justify-between space-y-4 px-6">
+                  <p className="text-sm font-outfit font-medium">{item.name}</p>
+                  <p className="text-sm font-outfit font-medium">{item.amount}</p>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-4 text-gray-500">No recent inflow.</div>
+            )}
             <div className="flex justify-between font-outfit font-semibold border-t p-4">
               <p className="text-sm">TOTAL</p>
-              <p className="text-sm">{`₦${totalInflow.toLocaleString()}`}</p>
+              <p className="text-sm">{formatCurrency(totalInflow)}</p>
             </div>
           </CardContent>
         </Card>
-
         <Card className="h-fit p-0">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg">Recent Outflow</CardTitle>
@@ -251,132 +316,30 @@ export default function Dashboard() {
           </CardHeader>
           <hr className="border-gray-200 mb-2" />
           <CardContent className="space-y-6 p-0">
-            {recentOutflow.map((item, index) => (
-              <div key={index} className="space-y-4 px-6 flex justify-between">
-                <p className="text-sm font-outfit font-medium">{item.name}</p>
-                <p className="text-sm font-outfit font-medium">{item.amount}</p>
+            {outflowStatus === "loading" ? (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                <span className="text-gray-500">Loading outflow...</span>
               </div>
-            ))}
+            ) : outflowStatus === "error" || !outflowData?.isSuccess ? (
+              <div className="text-center py-4 text-red-500">Failed to load recent outflow.</div>
+            ) : recentOutflow?.length > 0 ? (
+              recentOutflow?.map((item: { name: string, amount: string }, index: any) => (
+                <div key={index} className="space-y-4 px-6 flex justify-between">
+                  <p className="text-sm font-outfit font-medium">{item.name}</p>
+                  <p className="text-sm font-outfit font-medium">{item.amount}</p>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-4 text-gray-500">No recent outflow.</div>
+            )}
             <div className="flex justify-between font-outfit font-semibold border-t p-4">
               <p className="text-sm">TOTAL</p>
-              <p className="text-sm">
-                <p className="text-sm">{`₦${totalOutflow.toLocaleString()}`}</p>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg">Subscription Parameters</CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              className=" text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
-            >
-              Edit
-            </Button>
-          </CardHeader>
-          <hr className="border-gray-200 mb-2" />
-          <CardContent className="space-y-4">
-            {subParameters.map((item, index) => (
-              <div key={index} className="flex justify-between items-center">
-                <span className="text-sm font-outfit">{item.label}</span>
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium font-outfit">
-                    {item.value}
-                  </span>
-                  <span className="text-sm text-gray-500 font-outfit">
-                    {item.unit}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg">Payment Monitoring</CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              className=" text-primary-600  rounded-full"
-              disabled
-            ></Button>
-          </CardHeader>
-          <hr className="border-gray-200 mb-2" />
-          <CardContent className="space-y-4">
-            {paymentMonitoring.map((item, index) => (
-              <div key={index} className="flex justify-between items-center">
-                <span className="text-sm font-outfit">{item.label}</span>
-                <Badge variant={item.variant}>{item.badge}</Badge>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg">Bulk Communication</CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-primary-600  rounded-full"
-              disabled
-            ></Button>
-          </CardHeader>
-          <hr className="border-gray-200 mb-2" />
-          <CardContent className="space-y-4">
-            <div>
-              <Select
-                label="Message Type"
-                options={[
-                  { value: "payment-reminder", label: "Payment Reminder" },
-                  { value: "payment-reminder", label: "Contribution Reminder" },
-                  { value: "payment-reminder", label: "Loan Reminder" },
-                ]}
-                className="mt-1"
-                value={selected}
-                onChange={setSelected}
-              />
-            </div>
-            <div>
-              <Select
-                label="Target Group"
-                options={[
-                  { value: "all-users", label: "All Users" },
-                  { value: "all-users", label: "Pending Users" },
-                  { value: "all-users", label: "Active Users" },
-                ]}
-                className="mt-1"
-                value={selected}
-                onChange={setSelected}
-              />
-            </div>
-            <div className="flex justify-between space-x-2">
-              <Button
-                size="sm"
-                variant="outline"
-                className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full w-full text-[10px]"
-                leftIcon={<Mail className="h-4 w-4 text-primary-600" />}
-              >
-                Send SMS
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full w-full text-[10px]"
-                leftIcon={<Bell className="h-4 w-4 text-primary-600" />}
-              >
-                Send Notification
-              </Button>
+              <p className="text-sm">{formatCurrency(totalOutflow)}</p>
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  );
+  )
 }

@@ -1,52 +1,122 @@
 "use client"
-import { useState } from "react"
+
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Filter } from "lucide-react"
-import Pagination from "@/components/ui/pagination" // Assuming this path is correct
-import mockData from "./mockdata.json"
-
-// Define types for better type safety
-interface User {
-  id: string
-  name: string
-  dateJoined: string
-  scheme: string
-  contribution: string
-  eligibleLoan: string
-  amountRepaid: string
-  kycStatus: "active" | "deactivated" | "pending"
-}
-
-interface Tab {
-  id: string
-  label: string
-  status: "active" | "deactivated" | "pending"
-}
-
-const { users, tabs } = mockData as { users: User[]; tabs: Tab[] }
+import { Search, Filter, Loader2 } from "lucide-react"
+import Pagination from "@/components/ui/pagination"
+import useGetQuery from "@/hooks/useGetQuery"
+import { toast } from "react-toastify"
+import { formatDate, formatCurrency } from "@/lib/utils"
+import { User, tabs } from "./types"
+import { useSearchParams } from "next/navigation"
 
 export default function KYCReviews() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedTab, setSelectedTab] = useState("onboarded-users")
-  const [pageNumber, setPageNumber] = useState(1) 
+  const searchParams = useSearchParams();
+  const statusParams = searchParams.get("status");
+
+  const [selectedTab, setSelectedTab] = useState(statusParams || "onboarded-users");
+  const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [users, setUsers] = useState<User[]>([])
+  const [metaData, setMetaData] = useState({
+    totalCount: 0,
+    pageSize: 10,
+    currentPage: 1,
+    totalPages: 1,
+    hasNext: false,
+    hasPrevious: false,
+  })
 
   const currentTabStatus = tabs.find((tab) => tab.id === selectedTab)?.status || "active"
 
-  const statusFilteredUsers = users.filter((user) => user.kycStatus === currentTabStatus)
+  const { data, status, error, refetch } = useGetQuery({
+    endpoint: "adminusermanagement/users",
+    pQuery: {
+      status: currentTabStatus,
+      PageNumber: pageNumber,
+      PageSize: pageSize,
+      ...(searchTerm && { SearchKey: searchTerm }),
+    },
+    queryKey: ["users", currentTabStatus, pageNumber, pageSize, searchTerm],
+    auth: true,
+  })
 
-  const searchedAndFilteredUsers = statusFilteredUsers.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+  useEffect(() => {
+    if (status === "success") {
+      if (data?.isSuccess) {
+        setUsers(data.data)
+        setMetaData(data.metaData)
+      } else {
+        toast.error(data?.message || "Failed to fetch users.")
+        setUsers([])
+        setMetaData({
+          totalCount: 0,
+          pageSize: pageSize,
+          currentPage: pageNumber,
+          totalPages: 1,
+          hasNext: false,
+          hasPrevious: false,
+        })
+      }
+    } else if (status === "error") {
+      toast.error(
+        typeof error === "object" && error !== null && "message" in error
+          ? (error as { message?: string }).message || "Something went wrong while fetching users."
+          : "Something went wrong while fetching users."
+      )
+      setUsers([])
+      setMetaData({
+        totalCount: 0,
+        pageSize: pageSize,
+        currentPage: pageNumber,
+        totalPages: 1,
+        hasNext: false,
+        hasPrevious: false,
+      })
+    }
+  }, [data, status, error, pageNumber, pageSize])
 
-  const totalElements = searchedAndFilteredUsers.length
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
 
-  const startIndex = (pageNumber - 1) * pageSize
-  const endIndex = startIndex + pageSize
-  const paginatedUsers = searchedAndFilteredUsers.slice(startIndex, endIndex)
+      if (pageNumber !== 1 && searchTerm) {
+        setPageNumber(1)
+      } else {
+        refetch()
+      }
+    }, 500)
+    return () => clearTimeout(timeoutId)
+  }, [searchTerm, pageNumber, refetch])
+
+  const handleTabChange = (tabId: string) => {
+    setSelectedTab(tabId)
+    setPageNumber(1)
+    setSearchTerm("")
+  }
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value)
+  }
+
+  const handlePageChange = (page: number) => {
+    setPageNumber(page)
+  }
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size)
+    setPageNumber(1)
+  }
+
+  const handleRetry = () => {
+    refetch()
+  }
+
+  const isLoading = status === "loading"
+  const isError = status === "error" || (status === "success" && data && !data.isSuccess)
 
   return (
     <div className="flex-1 space-y-6 p-6">
@@ -55,15 +125,12 @@ export default function KYCReviews() {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => {
-                setSelectedTab(tab.id)
-                setPageNumber(1) 
-              }}
-              className={`px-4 py-2 text-sm font-medium transition-colors font-outfit ${
-                selectedTab === tab.id
-                  ? "border-b-2 border-primary-700 text-primary-700"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
+              onClick={() => handleTabChange(tab.id)}
+              disabled={isLoading}
+              className={`px-4 py-2 text-sm font-medium transition-colors font-outfit disabled:opacity-50 ${selectedTab === tab.id
+                ? "border-b-2 border-primary-700 text-primary-700"
+                : "text-gray-600 hover:text-gray-900"
+                }`}
             >
               {tab.label}
             </button>
@@ -75,14 +142,12 @@ export default function KYCReviews() {
             <Input
               placeholder="Search..."
               value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value)
-                setPageNumber(1) 
-              }}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              disabled={isLoading}
               className="w-64 pl-10"
             />
           </div>
-          <Button className="bg-primary-900 hover:bg-primary-700">
+          <Button className="bg-primary-900 hover:bg-primary-700" disabled={isLoading}>
             <Filter className="h-4 w-4 mr-2" />
             Filter
           </Button>
@@ -98,21 +163,37 @@ export default function KYCReviews() {
         <div></div>
       </div>
       <div className="space-y-3">
-        {paginatedUsers.length > 0 ? (
-          paginatedUsers.map((user) => (
-            <Card key={user.id} className="shadow-sm bg-white">
+        {isLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin mr-2" />
+            <span className="text-gray-500">Loading users...</span>
+          </div>
+        ) : isError ? (
+          <div className="text-center py-8">
+            <p className="text-red-500 mb-4">
+              {typeof error === "object" && error !== null && "message" in error
+                ? (error as { message?: string }).message || "Failed to load users."
+                : "Failed to load users."}
+            </p>
+            <Button onClick={handleRetry} variant="outline">
+              Try Again
+            </Button>
+          </div>
+        ) : users.length > 0 ? (
+          users.map((user) => (
+            <Card key={user.userId} className="shadow-sm bg-white">
               <CardContent className="p-6">
                 <div className="grid grid-cols-7 gap-4 items-center font-outfit">
                   <div className="flex items-center space-x-3">
                     <span className="font-medium text-gray-900">{user.name}</span>
                   </div>
-                  <div className="text-sm text-gray-600">{user.dateJoined}</div>
+                  <div className="text-sm text-gray-600">{formatDate(user.dateJoined)}</div>
                   <div className="text-sm text-gray-600">{user.scheme}</div>
-                  <div className="text-sm text-gray-600">{user.contribution}</div>
-                  <div className="text-sm text-gray-600">{user.eligibleLoan}</div>
-                  <div className="text-sm text-gray-600">{user.amountRepaid}</div>
+                  <div className="text-sm text-gray-600">{formatCurrency(user.totalContribution)}</div>
+                  <div className="text-sm text-gray-600">{formatCurrency(user.eligibleLoan)}</div>
+                  <div className="text-sm text-gray-600">{formatCurrency(user.totalRepaidAmount)}</div>
                   <div className="flex justify-end">
-                    <Link href={`/user-management/${user.id}`}>
+                    <Link href={`/user-management/${user.userId}`}>
                       <Button size="sm" className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-4">
                         View Profile →
                       </Button>
@@ -126,13 +207,15 @@ export default function KYCReviews() {
           <p className="text-center text-gray-500 py-8">No users found for this status.</p>
         )}
       </div>
-      <Pagination
-        current={pageNumber}
-        onPageChange={setPageNumber}
-        onRowChange={setPageSize}
-        pageSize={pageSize}
-        total={totalElements}
-      />
+      {!isLoading && !isError && (
+        <Pagination
+          current={metaData.currentPage}
+          onPageChange={handlePageChange}
+          onRowChange={handlePageSizeChange}
+          pageSize={metaData.pageSize}
+          total={metaData.totalCount}
+        />
+      )}
     </div>
   )
 }

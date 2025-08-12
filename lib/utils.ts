@@ -30,3 +30,36 @@ export const formatAmount = (amount: number | undefined | string, currency: stri
 
   return isNegative ? `(${formatted})` : `${formatted}`;
 };
+
+export const roundTo = (value: number, decimals: number) => {
+  const factor = Math.pow(10, decimals);
+  return Math.round(value * factor) / factor;
+};
+
+  export const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount)
+  }
+
+ export  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+  }
+export const noLayoutRoutes = [
+  "/",
+  "/login",
+  "/forgot-password",
+  "/reset-password",
+  "/about",
+  "/contact",
+  "/schemes/weekly",
+  "/schemes/monthly",
+  "/schemes/auto-finance",
+];

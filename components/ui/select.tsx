@@ -17,6 +17,7 @@ interface CustomSelectProps {
   onChange: (value: string) => void;
   className?: string;
   placeholder?: string;
+  disabled?: boolean
 }
 
 export function Select({
@@ -26,6 +27,7 @@ export function Select({
   onChange,
   className,
   placeholder = "Select an option",
+  disabled
 }: CustomSelectProps) {
   const selectedOption = options.find((opt) => opt.value === value);
 

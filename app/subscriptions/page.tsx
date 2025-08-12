@@ -1,94 +1,62 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Pencil, Check } from "lucide-react" 
-
-interface ParamConfig {
-  label: string
-  key: string 
-  unit: string
-}
-
-interface Subscription {
-  title: string
-  type: "regular" | "asset" 
-  values: { [key: string]: string } 
-  paramsConfig: ParamConfig[] 
-}
+import { Pencil, Check, Loader2 } from "lucide-react"
+import { useMutation } from "react-query"
+import { toast } from "react-toastify";
+import handleFetch from "@/services/api/handleFetch"
+import { transformApiDataToSubscriptions, transformSubscriptionToApiPayload , Subscription} from "./types"
 
 export default function SubscriptionCard() {
-  const [subscriptionTypes, setSubscriptionTypes] = 
-  
-  useState<Subscription[]>([
-    {
-      title: "Weekly",
-      type: "regular",
-      values: {
-        contributionPercentage: "20",
-        eligibleLoanMultiplier: "52",
-        serviceCharge: "0.0028",
-        loanManagementFee: "6",
-        defaultPenalty: "25",
-      },
-      paramsConfig: [
-        { label: "Contribution %", key: "contributionPercentage", unit: "%" },
-        { label: "Eligible Loan", key: "eligibleLoanMultiplier", unit: "x" },
-        { label: "Service Charge", key: "serviceCharge", unit: "%" },
-        { label: "Loan Management Fee", key: "loanManagementFee", unit: "%" },
-        { label: "Default Penalty", key: "defaultPenalty", unit: "%" },
-      ],
-    },
-    {
-      title: "Monthly",
-      type: "regular",
-      values: {
-        contributionPercentage: "20",
-        eligibleLoanMultiplier: "12",
-        serviceCharge: "0.005",
-        loanManagementFee: "6",
-        defaultPenalty: "25",
-      },
-      paramsConfig: [
-        { label: "Contribution %", key: "contributionPercentage", unit: "%" },
-        { label: "Eligible Loan", key: "eligibleLoanMultiplier", unit: "x" },
-        { label: "Service Charge", key: "serviceCharge", unit: "%" },
-        { label: "Loan Management Fee", key: "loanManagementFee", unit: "%" },
-        { label: "Default Penalty", key: "defaultPenalty", unit: "%" },
-      ],
-    },
-    {
-      title: "Asset Finance",
-      type: "asset",
-      values: {
-        requiredEquity: "10",
-        loanTermWeeks: "208",
-        loanManagementFeeYear: "6",
-        serviceCharge: "2500",
-        extraEngine: "10",
-        extraTyre: "10",
-        insurance: "6",
-        processingFee: "0.02",
-        preLoanServiceCharge: "0.05",
-        postLoanWeeklyContribution: "0.025",
-      },
-      paramsConfig: [
-        { label: "Required Equity %", key: "requiredEquity", unit: "%" },
-        { label: "Loan Term (Weeks)", key: "loanTermWeeks", unit: "wk" },
-        { label: "Loan Management Fee / year", key: "loanManagementFeeYear", unit: "%" },
-        { label: "Service Charge", key: "serviceCharge", unit: "₦" },
-        { label: "Extra Engine", key: "extraEngine", unit: "%" },
-        { label: "Extra Tyre", key: "extraTyre", unit: "%" },
-        { label: "Insurance", key: "insurance", unit: "%" },
-        { label: "Processing Fee", key: "processingFee", unit: "%" },
-        { label: "Pre-Loan Service Charge", key: "preLoanServiceCharge", unit: "%" },
-        { label: "Post-Loan Weekly Contribution", key: "postLoanWeeklyContribution", unit: "%" },
-      ],
-    },
-  ])
+  const [subscriptionTypes, setSubscriptionTypes] = useState<Subscription[]>([])
+  const [isEditing, setIsEditing] = useState<boolean[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  const [isEditing, setIsEditing] = useState<boolean[]>(subscriptionTypes.map(() => false))
+  const schemesMutation = useMutation({
+    mutationFn: () =>
+      handleFetch({
+        endpoint: "contributionschemes",
+        method: "GET",
+        auth: true,
+      }),
+    onSuccess: (res: any) => {
+      if (res?.status === 200) {
+        const transformedData = transformApiDataToSubscriptions(res.data)
+        setSubscriptionTypes(transformedData)
+        setIsEditing(transformedData.map(() => false))
+        setIsLoading(false)
+      }
+    },
+    onError: (err: { statusCode: string; message: string }) => {
+      toast.error(err?.message || "Failed to load contribution schemes")
+      setIsLoading(false)
+    },
+  })
+
+  const updateSchemeMutation = useMutation({
+    mutationFn: ({ schemeId, payload }: { schemeId: string; payload: any }) =>
+      handleFetch({
+        endpoint: `contributionschemes/${schemeId}`,
+        method: "PUT",
+        body: payload,
+        auth: true,
+      }),
+    onSuccess: (res: any) => {
+      if (res?.status === 200) {
+        toast.success("Scheme updated successfully")
+        schemesMutation.mutate()
+      }
+    },
+    onError: (err: { statusCode: string; message: string }) => {
+      toast.error(err?.message || "Failed to update scheme")
+    },
+  })
+
+  useEffect(() => {
+    schemesMutation.mutate()
+  }, [])
 
   const handleInputChange = (subIndex: number, paramKey: string, newValue: string) => {
     setSubscriptionTypes((prevSubs) => {
@@ -113,17 +81,47 @@ export default function SubscriptionCard() {
   }
 
   const handleSaveChanges = (subIndex: number) => {
-    console.log(`Saving changes for ${subscriptionTypes[subIndex].title}:`, subscriptionTypes[subIndex].values)
+    const subscription = subscriptionTypes[subIndex]
+    const payload = transformSubscriptionToApiPayload(subscription)
+
+    console.log(`Saving changes for ${subscription.title}:`, payload)
+
+    updateSchemeMutation.mutate({
+      schemeId: subscription.id,
+      payload: payload,
+    })
+
     toggleEditMode(subIndex)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 space-y-6 p-6">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="ml-2">Loading contribution schemes...</span>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="flex-1 space-y-6 p-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Contribution Schemes</h2>
+        <Button variant="outline" onClick={() => schemesMutation.mutate()} disabled={schemesMutation.isLoading}>
+          {schemesMutation.isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+          Refresh
+        </Button>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {subscriptionTypes.map((subscription, subIndex) => (
-          <Card key={subIndex} className="h-fit">
+          <Card key={subscription.id} className="h-fit">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-lg">{subscription.title}</CardTitle>
+              <div>
+                <CardTitle className="text-lg">{subscription.title}</CardTitle>
+                <p className="text-sm text-muted-foreground mt-1">{subscription.description}</p>
+              </div>
               <Button variant="ghost" size="icon" onClick={() => toggleEditMode(subIndex)}>
                 {isEditing[subIndex] ? (
                   <Check className="h-4 w-4 text-green-500" />
@@ -142,20 +140,31 @@ export default function SubscriptionCard() {
                     {isEditing[subIndex] ? (
                       <Input
                         type="text"
-                        value={subscription.values[param.key]}
+                        value={subscription.values[param.key] || "0"}
                         onChange={(e) => handleInputChange(subIndex, param.key, e.target.value)}
-                        className="w-16 h-8 text-center"
+                        className="w-20 h-8 text-center"
                       />
                     ) : (
-                      <span className="text-sm font-medium text-gray-900">{subscription.values[param.key]}</span>
+                      <span className="text-sm font-medium text-gray-900">{subscription.values[param.key] || "0"}</span>
                     )}
                     <span className="text-sm text-muted-foreground w-8 font-outfit">{param.unit}</span>
                   </div>
                 </div>
               ))}
               {isEditing[subIndex] && (
-                <Button className="w-full mt-6" onClick={() => handleSaveChanges(subIndex)}>
-                  Save Changes
+                <Button
+                  className="w-full mt-6"
+                  onClick={() => handleSaveChanges(subIndex)}
+                  disabled={updateSchemeMutation.isLoading}
+                >
+                  {updateSchemeMutation.isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Changes"
+                  )}
                 </Button>
               )}
             </CardContent>

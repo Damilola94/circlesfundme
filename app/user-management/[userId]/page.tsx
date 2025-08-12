@@ -1,53 +1,89 @@
 "use client"
-import { useMemo, useState } from "react"
+
+import { useMemo, useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { UserProfile } from "@/components/dashboard/user-profile"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import mockData from "../mockdata.json"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Loader2 } from "lucide-react"
 import Pagination from "@/components/ui/pagination"
 import { TransactionStatus } from "@/components/ui/transactionstatus"
+import useGetQuery from "@/hooks/useGetQuery"
+import { toast } from "react-toastify"
 
-const { loan, users } = mockData 
+const { loan } = mockData
 
-export type StatusType = "Active" | "Completed" | "Pending" | "Waitlisted"
+export type StatusType =
+  | "Approved"
+  | "Pending"
+  | "Waitlisted"
+  | "Rejected"
+
+export type KycStatusType = "active" | "deactivated" | "pending" | "unknown"
 
 export default function UserProfilePage({ params }: { params: { userId: string } }) {
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-  const totalElements = 95 
+  const totalElements = 95
   const router = useRouter()
+  const userId = params.userId
 
-  const userId = params.userId 
-
-  const currentUser = useMemo(() => {
-    return users.find((u) => u.id === userId)
-  }, [userId])
-
-  const kycStatus = useMemo(() => {
-    if (currentUser) {
-      return currentUser.kycStatus
-    }
-    return "unknown" 
-  }, [currentUser])
+  const {
+    data: userData,
+    status: userStatus,
+    error: userError,
+    refetch: refetchUser,
+  } = useGetQuery({
+    endpoint: `users/${userId}`,
+    queryKey: ["user-profile", userId],
+    enabled: !!userId,
+    auth: true,
+  })
 
   const user = useMemo(() => {
-    if (currentUser) {
+    if (userStatus === "success" && userData?.isSuccess && userData.data) {
+      const apiUser = userData.data
+      let kycStatus: KycStatusType = "unknown"
+
+      if (apiUser.onboardingStatus === "Complete") {
+        kycStatus = "active"
+      } else if (apiUser.onboardingStatus === "Incomplete") {
+        kycStatus = "pending"
+      }
+
       return {
-        name: currentUser.name,
-        email: `${currentUser.name.toLowerCase().replace(/\s/g, ".")}@example.com`, 
-        phone: "+234 806 356 7865", 
-        image: "/placeholder.svg?height=100&width=100",
-        dateOfBirth: "30/07/1990", 
-        gender: "Male", 
-        scheme: currentUser.scheme,
-        contribution: currentUser.contribution,
-        bvn: "12345678987",  
-        kycStatus: currentUser.kycStatus,
+        name: `${apiUser.firstName} ${apiUser.lastName}`,
+        email: apiUser.email || "",
+        phone: apiUser.phoneNumber || "",
+        image: apiUser.profilePictureUrl || "/placeholder.svg?height=100&width=100",
+        dateOfBirth: apiUser.dateOfBirth
+          ? new Date(apiUser.dateOfBirth).toLocaleDateString("en-US")
+          : "",
+        gender: apiUser.gender || "",
+        scheme: apiUser.contributionScheme?.name || "N/A",
+        contribution: new Intl.NumberFormat("en-NG", {
+          style: "currency",
+          currency: "NGN",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(apiUser.contributionAmount || 0),
+        bvn: apiUser.bvn || "",
+        kycStatus,
+        document: (apiUser.userDocuments || []).map((doc: any, index: number) => ({
+          id: index + 1,
+          name: doc.documentType || "Unknown Document",
+          date: "", 
+          size: "", 
+          iconSrc: doc.documentUrl.endsWith(".pdf")
+            ? "/pdf-icon.png"
+            : "/image-icon.png",
+          url: doc.documentUrl
+        })),
       }
     }
+
     return {
       name: "User Not Found",
       email: "",
@@ -58,34 +94,53 @@ export default function UserProfilePage({ params }: { params: { userId: string }
       scheme: "",
       contribution: "",
       bvn: "",
-      kycStatus: "unknown",
+      document: [],
     }
-  }, [currentUser])
+  }, [userData, userStatus])
+
+
+  const kycStatus = user.kycStatus
+  console.log(user.kycStatus, "user.kycStatus");
+
+  useEffect(() => {
+    if (userStatus === "error") {
+      const errorMessage =
+        (userError && typeof userError === "object" && "message" in userError
+          ? (userError as { message?: string }).message
+          : undefined) || "Failed to load user profile."
+      toast.error(errorMessage)
+    } else if (userStatus === "success" && userData && !userData.isSuccess) {
+      toast.error(userData.message || "Failed to load user profile.")
+    }
+  }, [userStatus, userData, userError])
 
   const handleTransHistory = async () => {
-    router.push(`/user-management/${userId}/transactions`)  
+    router.push(`/user-management/${userId}/transactions`)
   }
 
-  // Placeholder functions for user actions
   const handleDeactivateUser = () => {
     console.log("Deactivating user:", user.name)
-  }
 
+  }
   const handleActivateUser = () => {
     console.log("Activating user:", user.name)
-  }
 
+  }
   const handleSendReminder = () => {
     console.log("Sending KYC reminder to user:", user.name)
   }
-
   const handleApproveUser = () => {
     console.log("Approving user:", user.name)
-    // Implement actual approval logic here
   }
-
   const handleRejectUser = () => {
     console.log("Rejecting user:", user.name)
+  }
+
+  const isLoading = userStatus === "loading"
+  const isError = userStatus === "error" || (userStatus === "success" && userData && !userData.isSuccess)
+
+  function handleRetry() {
+    refetchUser()
   }
 
   return (
@@ -99,6 +154,21 @@ export default function UserProfilePage({ params }: { params: { userId: string }
         <h1 className="text-xl font-semibold font-outfit text-gray-900">User Management - View Profile</h1>
       </div>
       <UserProfile user={user} />
+
+      {isLoading && <div className="flex flex-1 items-center justify-center min-h-[80vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+        <span className="ml-2 text-gray-500">Loading user profile...</span>
+      </div>}
+      {isError && <div className="flex flex-1 flex-col items-center justify-center text-center">
+        <p className="text-red-500 text-lg mb-4">
+          {(userError && typeof userError === "object" && "message" in userError
+            ? (userError as { message?: string }).message
+            : undefined) || userData?.message || "Failed to load user profile."}
+        </p>
+        <Button onClick={handleRetry} variant="outline">
+          Try Again
+        </Button>
+      </div>}
       <div className="flex justify-end">
         <Button className="bg-primary-900 hover:bg-primary-700" onClick={handleTransHistory}>
           View Transaction History
@@ -113,6 +183,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
         <div className="text-right"> </div>
       </div>
       <div className="space-y-3">
+
         {loan.map((loanItem) => (
           <Card key={loanItem.id} className="shadow-sm bg-white">
             <CardContent className="p-6">
@@ -153,11 +224,11 @@ export default function UserProfilePage({ params }: { params: { userId: string }
             Deactivate User
           </Button>
         )}
-        {kycStatus === "deactivated" && (
+        {/* {kycStatus === "deactivated" && (
           <Button className="bg-primary-900 hover:bg-primary-700" onClick={handleActivateUser}>
             Activate User
           </Button>
-        )}
+        )} */}
         {kycStatus === "pending" && (
           <>
             <Button variant="outline" onClick={handleSendReminder}>

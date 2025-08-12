@@ -12,17 +12,16 @@ import Link from "next/link";
 import { Loader } from "@/components/ui/Loader";
 import { useMutation } from "react-query";
 import handleFetch from "@/services/api/handleFetch";
-// import { useCookies } from "react-cookie";
 
 import { toast } from "react-toastify";
+import { useCookies } from "react-cookie";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-  // const [cookie, , removeCookie] = useCookies(["err"]);
-  // const [, setCookie] = useCookies(["data", "form"]);
+  const [, setCookie] = useCookies(["data", "form"]);
 
   const loginMutation = useMutation(handleFetch, {
     onSuccess: (res: {
@@ -34,7 +33,7 @@ export default function Login() {
         toast.error(res?.message || "Something went wrong.");
       } else {
         toast.success("Login Successful");
-        // setCookie("data", res?.data, { secure: true, sameSite: true });
+        setCookie("data", res?.data, { secure: true, sameSite: true });
         router.push("/dashboard");
       }
     },
