@@ -3,14 +3,18 @@ import { cn } from "@/lib/utils";
 export type StatusType =
   | "Approved"
   | "Pending"
-  | "Waitlisted"
+  | "Waitlist"
   | "Completed"
   | "Rejected"
   | "Active"
   | "Successful"
   | "Failed"
   | "Awaiting"
-  | "Abandoned";
+  | "Abandoned"
+  | "Processing"
+  | "Processed"
+  | "Confirmed"
+  | "Queued";
 
 interface StatusProps {
   status: StatusType;
@@ -24,16 +28,31 @@ const statusConfig: Record<StatusType, { bg: string; text: string; dot: string }
     dot: "bg-green-500",
   },
   Pending: {
-    bg: "bg-yellow-100",
-    text: "text-yellow-800",
-    dot: "bg-yellow-500",
+    bg: "bg-amber-100",
+    text: "text-amber-800",
+    dot: "bg-amber-500",
   },
-   Awaiting: {
-    bg: "bg-yellow-100",
-    text: "text-yellow-800",
-    dot: "bg-yellow-500",
+  Processing: {
+    bg: "bg-indigo-100",
+    text: "text-indigo-800",
+    dot: "bg-indigo-500",
   },
-  Waitlisted: {
+  Processed: {
+    bg: "bg-blue-100",
+    text: "text-blue-800",
+    dot: "bg-blue-500",
+  },
+  Queued: {
+    bg: "bg-purple-100",
+    text: "text-purple-800",
+    dot: "bg-purple-500",
+  },
+  Awaiting: {
+    bg: "bg-cyan-100",
+    text: "text-cyan-800",
+    dot: "bg-cyan-500",
+  },
+  Waitlist: {
     bg: "bg-gray-100",
     text: "text-gray-800",
     dot: "bg-gray-500",
@@ -41,14 +60,19 @@ const statusConfig: Record<StatusType, { bg: string; text: string; dot: string }
   Rejected: {
     bg: "bg-red-100",
     text: "text-red-800",
-    dot: "bg-red-800",
+    dot: "bg-red-500",
   },
   Completed: {
-    bg: "bg-blue-100",
-    text: "text-blue-800",
-    dot: "bg-blue-500",
+    bg: "bg-sky-100",
+    text: "text-sky-800",
+    dot: "bg-sky-500",
   },
   Successful: {
+    bg: "bg-emerald-100",
+    text: "text-emerald-800",
+    dot: "bg-emerald-600",
+  },
+  Confirmed: {
     bg: "bg-emerald-100",
     text: "text-emerald-800",
     dot: "bg-emerald-600",
@@ -63,10 +87,10 @@ const statusConfig: Record<StatusType, { bg: string; text: string; dot: string }
     text: "text-rose-800",
     dot: "bg-rose-600",
   },
-   Abandoned: {
-    bg: "bg-rose-100",
-    text: "text-rose-800",
-    dot: "bg-rose-600",
+  Abandoned: {
+    bg: "bg-stone-100",
+    text: "text-stone-800",
+    dot: "bg-stone-600",
   },
 };
 

@@ -10,6 +10,9 @@ import { useRouter } from "next/navigation"
 import useGetQuery from "@/hooks/useGetQuery"
 import "react-toastify/dist/ReactToastify.css"
 import { formatCurrency, formatDate, UserName } from "./types"
+import moment from "moment";
+
+import { formatAmount, getTotalInflow, getTotalOutflow } from "@/lib/utils"
 
 export default function Dashboard() {
   const router = useRouter()
@@ -83,35 +86,37 @@ export default function Dashboard() {
   const kycQueue = pendingKycData?.isSuccess
     ? pendingKycData.data.map((user: { name: any; dateJoined: string; avatarUrl: any }) => ({
       name: user.name,
-      time: formatDate(user.dateJoined),
+      time: moment(user.dateJoined).format("MM/DD/YYYY"),
       avatar: user.avatarUrl,
     }))
     : []
 
   const recentInflow = inflowData?.isSuccess
-    ? inflowData?.data?.items?.map((item: { name: any; amount: number }) => ({
-      name: item.name,
-      amount: formatCurrency(item.amount),
+    ? inflowData?.data?.map((item: { narration: any; amount: number }) => ({
+      narration: item.narration,
+      amount: (item.amount),
     }))
     : []
 
-  const totalInflow = inflowData?.isSuccess ? inflowData?.data?.totalInflow : 0
+
+  const totalInflow = getTotalInflow(inflowData);
+
 
   const recentOutflow = outflowData?.isSuccess
-    ? outflowData?.data?.items?.map((item: { name: any; amount: number }) => ({
-      name: item.name,
-      amount: formatCurrency(item.amount),
+    ? outflowData?.data?.map((item: { narration: any; amount: number }) => ({
+      narration: item.narration,
+      amount: (item.amount),
     }))
     : []
 
-  const totalOutflow = outflowData?.isSuccess ? outflowData?.data?.totalOutflow : 0
+  const totalOutflow = getTotalOutflow(outflowData);
 
   const loanRequests = loanRequestsData?.isSuccess
-    ? loanRequestsData.data.map((item: { applicantName: any; loanAmount: number; applicationDate: string }) => ({
-      name: item.applicantName,
-      amount: formatCurrency(item.loanAmount),
-      time: formatDate(item.applicationDate),
-      avatar: "/diverse-user-avatars.png",
+    ? loanRequestsData.data.map((item: { applicantDetail: { firstName: string, lastName: string }; requestedAmount: number; dateApplied: string, avatar: string }) => ({
+      name: `${item.applicantDetail.firstName} ${item.applicantDetail.firstName}`,
+      amount: formatAmount(item.requestedAmount, "₦"),
+      time: moment(item.dateApplied).format("MM/DD/YYYY"),
+      avatar: item.avatar
     }))
     : []
 
@@ -240,7 +245,7 @@ export default function Dashboard() {
                 <div key={index} className="flex justify-between space-y-5">
                   <div className="flex items-center space-x-3">
                     <img
-                      src={item.avatar || "/placeholder.svg"}
+                      src={item.avatar || "/assets/images/display-photo.png"}
                       alt={item.name}
                       className="h-10 w-10 rounded-full object-cover"
                     />
@@ -288,10 +293,10 @@ export default function Dashboard() {
             ) : inflowStatus === "error" || !inflowData?.isSuccess ? (
               <div className="text-center py-4 text-red-500">Failed to load recent inflow.</div>
             ) : recentInflow?.length > 0 ? (
-              recentInflow?.map((item: { name: string, amount: string }, index: Key | null | undefined) => (
+              recentInflow?.map((item: { narration: string, amount: string }, index: Key | null | undefined) => (
                 <div key={index} className="flex justify-between space-y-4 px-6">
-                  <p className="text-sm font-outfit font-medium">{item.name}</p>
-                  <p className="text-sm font-outfit font-medium">{item.amount}</p>
+                  <p className="text-sm font-outfit font-medium">{item.narration}</p>
+                  <p className="text-sm font-outfit font-medium">{formatAmount(item.amount, "N")}</p>
                 </div>
               ))
             ) : (
@@ -299,7 +304,7 @@ export default function Dashboard() {
             )}
             <div className="flex justify-between font-outfit font-semibold border-t p-4">
               <p className="text-sm">TOTAL</p>
-              <p className="text-sm">{formatCurrency(totalInflow)}</p>
+              <p className="text-sm">{formatAmount(totalInflow, "N")}</p>
             </div>
           </CardContent>
         </Card>
@@ -324,10 +329,10 @@ export default function Dashboard() {
             ) : outflowStatus === "error" || !outflowData?.isSuccess ? (
               <div className="text-center py-4 text-red-500">Failed to load recent outflow.</div>
             ) : recentOutflow?.length > 0 ? (
-              recentOutflow?.map((item: { name: string, amount: string }, index: any) => (
+              recentOutflow?.map((item: { narration: string, amount: string }, index: any) => (
                 <div key={index} className="space-y-4 px-6 flex justify-between">
-                  <p className="text-sm font-outfit font-medium">{item.name}</p>
-                  <p className="text-sm font-outfit font-medium">{item.amount}</p>
+                  <p className="text-sm font-outfit font-medium">{item.narration}</p>
+                  <p className="text-sm font-outfit font-medium">{formatAmount(item.amount, "N")}</p>
                 </div>
               ))
             ) : (
@@ -335,7 +340,7 @@ export default function Dashboard() {
             )}
             <div className="flex justify-between font-outfit font-semibold border-t p-4">
               <p className="text-sm">TOTAL</p>
-              <p className="text-sm">{formatCurrency(totalOutflow)}</p>
+              <p className="text-sm">{formatAmount(totalOutflow, "N")}</p>
             </div>
           </CardContent>
         </Card>

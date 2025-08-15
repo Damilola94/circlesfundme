@@ -10,11 +10,7 @@ import { TransactionStatus } from "@/components/ui/transactionstatus"
 import Pagination from "@/components/ui/pagination"
 import useGetQuery from "@/hooks/useGetQuery"
 
-export type StatusType =
-  | "Approved"
-  | "Pending"
-  | "Rejected"
-  | "Waitlisted"
+export type StatusType = "Approved" | "Pending" | "Rejected" | "Waitlist"
 
 export default function LoanManagement() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -57,10 +53,27 @@ export default function LoanManagement() {
   const loansToDisplay = loanRequestsResponse?.data || []
   const totalElements = loanRequestsResponse?.totalElements || 0
 
-  const filteredLoans = loansToDisplay.filter((loan: { name: string; scheme: string }) => {
-    const matchesSearch = loan.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredLoans = loansToDisplay.filter((loan: any) => {
+    const fullName = `${loan.applicantDetail?.firstName || ""} ${loan.applicantDetail?.lastName || ""}`.toLowerCase()
+    const matchesSearch = fullName.includes(searchTerm.toLowerCase())
     return matchesSearch
   })
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+      minimumFractionDigits: 2,
+    }).format(amount)
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+  }
 
   return (
     <div className="flex-1 space-y-6 p-6">
@@ -70,10 +83,11 @@ export default function LoanManagement() {
             <button
               key={tab.id}
               onClick={() => setStatusFilter(tab.id)}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${statusFilter === tab.id
-                ? "border-b-2 font-outfit border-primary-700 text-primary-700"
-                : "text-gray-600 hover:text-gray-900"
-                }`}
+              className={`px-4 py-2 text-sm font-medium transition-colors ${
+                statusFilter === tab.id
+                  ? "border-b-2 font-outfit border-primary-700 text-primary-700"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
             >
               {tab.label}
             </button>
@@ -101,10 +115,11 @@ export default function LoanManagement() {
             <button
               key={tab.id}
               onClick={() => setSchemeFilter(tab.id)}
-              className={`px-4 py-2 text-sm font-medium transition-colors font-outfit ${schemeFilter === tab.id
-                ? "border-b-2 border-primary-700 text-primary-700"
-                : "text-gray-600 hover:text-gray-900"
-                }`}
+              className={`px-4 py-2 text-sm font-medium transition-colors font-outfit ${
+                schemeFilter === tab.id
+                  ? "border-b-2 border-primary-700 text-primary-700"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
             >
               {tab.label}
             </button>
@@ -120,15 +135,17 @@ export default function LoanManagement() {
         <div>Date Applied</div>
         <div></div>
       </div>
-      {loanRequestsLoading &&
+      {loanRequestsLoading && (
         <div className="flex items-center justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin mr-2" />
           <span className="text-gray-500">Loading loan requests...</span>
         </div>
-      }
-      {loanRequestsError && <div className="flex-1 space-y-6 p-6 text-center text-red-500">
-        Failed to load loan requests. Please try again.
-      </div>}
+      )}
+      {loanRequestsError && (
+        <div className="flex-1 space-y-6 p-6 text-center text-red-500">
+          Failed to load loan requests. Please try again.
+        </div>
+      )}
       <div className="space-y-3">
         {filteredLoans.length > 0 ? (
           filteredLoans.map((loan: any) => (
@@ -136,15 +153,17 @@ export default function LoanManagement() {
               <CardContent className="p-6">
                 <div className="grid grid-cols-7 gap-4 items-center">
                   <div className="flex items-center space-x-3">
-                    <span className="font-medium text-gray-900 font-outfit">{loan.name}</span>
+                    <span className="font-medium text-gray-900 font-outfit">
+                      {`${loan.applicantDetail?.firstName || ""} ${loan.applicantDetail?.lastName || ""}`.trim()}
+                    </span>
                   </div>
                   <div>
                     <TransactionStatus status={loan.status as StatusType} />
                   </div>
                   <div className="text-sm text-gray-600 font-outfit">{loan.scheme}</div>
-                  <div className="text-sm text-gray-600 font-outfit">{loan.eligibleLoan}</div>
-                  <div className="text-sm text-gray-600 font-outfit">{loan.amountRepaid}</div>
-                  <div className="text-sm text-gray-600 font-outfit">{loan.dateApplied}</div>
+                  <div className="text-sm text-gray-600 font-outfit">{formatCurrency(loan.eligibleLoanAmount)}</div>
+                  <div className="text-sm text-gray-600 font-outfit">{formatCurrency(loan.amountRepaid)}</div>
+                  <div className="text-sm text-gray-600 font-outfit">{formatDate(loan.dateApplied)}</div>
                   <div className="w-full ">
                     <Link href={`/loan-management/${loan.id}`}>
                       <Button size="sm" className="bg-gray-900 hover:bg-gray-800 w-full text-white rounded-full px-2">

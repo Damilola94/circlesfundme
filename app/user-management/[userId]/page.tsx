@@ -6,26 +6,23 @@ import { useRouter } from "next/navigation"
 import { UserProfile } from "@/components/dashboard/user-profile"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import mockData from "../mockdata.json"
 import { ArrowLeft, Loader2 } from "lucide-react"
 import Pagination from "@/components/ui/pagination"
 import { TransactionStatus } from "@/components/ui/transactionstatus"
+import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 import useGetQuery from "@/hooks/useGetQuery"
 import { toast } from "react-toastify"
-
-const { loan } = mockData
-
-export type StatusType =
-  | "Approved"
-  | "Pending"
-  | "Waitlisted"
-  | "Rejected"
-
-export type KycStatusType = "active" | "deactivated" | "pending" | "unknown"
+import { formatAmount } from "@/lib/utils";
+import moment from "moment";
+import { KycStatusType, StatusType } from "../types"
+import { useMutation } from "react-query"
+import handleFetch from "@/services/api/handleFetch"
 
 export default function UserProfilePage({ params }: { params: { userId: string } }) {
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false)
+  const [showActivateModal, setShowActivateModal] = useState(false)
   const totalElements = 95
   const router = useRouter()
   const userId = params.userId
@@ -42,14 +39,69 @@ export default function UserProfilePage({ params }: { params: { userId: string }
     auth: true,
   })
 
+  const {
+    data: loanData,
+    status: loanStatus,
+    error: loanError,
+    refetch: refetchLoans,
+  } = useGetQuery({
+    endpoint: `loanapplications`,
+    pQuery: {
+      UserId: userId
+    },
+    queryKey: ["user-loans", userId],
+    enabled: !!userId,
+    auth: true,
+  })
+
+  const deactivateUserMutation = useMutation(handleFetch, {
+    onSuccess: (res: {
+      statusCode: string
+      message: string
+      data: any
+    }) => {
+      if (res?.statusCode !== "200") {
+        toast.error(res?.message || "Something went wrong.")
+      } else {
+        toast.success("User deactivated successfully")
+        router.push(`/user-management`)
+      }
+    },
+    onError: (err: { statusCode?: string; message: string }) => {
+      toast.error(err?.message || "Something went wrong.")
+    },
+  })
+
+  const activateUserMutation = useMutation(handleFetch, {
+    onSuccess: (res: {
+      statusCode: string
+      message: string
+      data: any
+    }) => {
+      if (res?.statusCode !== "200") {
+        toast.error(res?.message || "Something went wrong.")
+      } else {
+        toast.success("User activated successfully")
+        router.push(`/user-management`)
+      }
+    },
+    onError: (err: { statusCode?: string; message: string }) => {
+      toast.error(err?.message || "Something went wrong.")
+    },
+  })
+
   const user = useMemo(() => {
     if (userStatus === "success" && userData?.isSuccess && userData.data) {
       const apiUser = userData.data
       let kycStatus: KycStatusType = "unknown"
 
-      if (apiUser.onboardingStatus === "Complete") {
+      if (apiUser.isActive) {
         kycStatus = "active"
-      } else if (apiUser.onboardingStatus === "Incomplete") {
+      } else if (!apiUser.isActive) {
+        kycStatus = "deactivated"
+      }
+
+      if (apiUser.isActive && apiUser.onboardingStatus === "Incomplete") {
         kycStatus = "pending"
       }
 
@@ -57,29 +109,24 @@ export default function UserProfilePage({ params }: { params: { userId: string }
         name: `${apiUser.firstName} ${apiUser.lastName}`,
         email: apiUser.email || "",
         phone: apiUser.phoneNumber || "",
-        image: apiUser.profilePictureUrl || "/placeholder.svg?height=100&width=100",
+        image: apiUser.profilePictureUrl,
         dateOfBirth: apiUser.dateOfBirth
-          ? new Date(apiUser.dateOfBirth).toLocaleDateString("en-US")
+          ? moment(apiUser.dateOfBirth).format("MM/DD/YYYY")
           : "",
         gender: apiUser.gender || "",
         scheme: apiUser.contributionScheme?.name || "N/A",
-        contribution: new Intl.NumberFormat("en-NG", {
-          style: "currency",
-          currency: "NGN",
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0,
-        }).format(apiUser.contributionAmount || 0),
-        bvn: apiUser.bvn || "",
+        contribution: formatAmount(apiUser.contributionAmount || 0, "N"),
+        bvn: apiUser.bvn || "N/A",
         kycStatus,
         document: (apiUser.userDocuments || []).map((doc: any, index: number) => ({
           id: index + 1,
           name: doc.documentType || "Unknown Document",
-          date: "", 
-          size: "", 
+          date: "",
+          size: "",
           iconSrc: doc.documentUrl.endsWith(".pdf")
             ? "/pdf-icon.png"
             : "/image-icon.png",
-          url: doc.documentUrl
+          url: doc.documentUrl,
         })),
       }
     }
@@ -88,7 +135,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
       name: "User Not Found",
       email: "",
       phone: "",
-      image: "/placeholder.svg?height=100&width=100",
+      image: "",
       dateOfBirth: "",
       gender: "",
       scheme: "",
@@ -99,8 +146,23 @@ export default function UserProfilePage({ params }: { params: { userId: string }
   }, [userData, userStatus])
 
 
+  const loans = useMemo(() => {
+    if (loanStatus === "success" && loanData?.isSuccess && loanData.data) {
+      return loanData.data.map((loan: any) => ({
+        id: loan.id,
+        dateJoined: moment(loan.dateApplied).format("MMM D, YYYY"),
+        status: loan.status,
+        loanAmount: formatAmount(loan.approvedAmount || loan.requestedAmount, "N"),
+        amountRepaid: formatAmount(loan.amountRepaid, "N"),
+        amountRemaining: formatAmount(
+          (loan.approvedAmount || loan.requestedAmount) - loan.amountRepaid
+          , "N"),
+      }))
+    }
+    return []
+  }, [loanData, loanStatus])
+
   const kycStatus = user.kycStatus
-  console.log(user.kycStatus, "user.kycStatus");
 
   useEffect(() => {
     if (userStatus === "error") {
@@ -114,18 +176,52 @@ export default function UserProfilePage({ params }: { params: { userId: string }
     }
   }, [userStatus, userData, userError])
 
+  useEffect(() => {
+    if (loanStatus === "error") {
+      const errorMessage =
+        (loanError && typeof loanError === "object" && "message" in loanError
+          ? (loanError as { message?: string }).message
+          : undefined) || "Failed to load loan data."
+      toast.error(errorMessage)
+    } else if (loanStatus === "success" && loanData && !loanData.isSuccess) {
+      toast.error(loanData.message || "Failed to load loan data.")
+    }
+  }, [loanStatus, loanData, loanError])
+
   const handleTransHistory = async () => {
     router.push(`/user-management/${userId}/transactions`)
   }
 
   const handleDeactivateUser = () => {
-    console.log("Deactivating user:", user.name)
-
+    setShowDeactivateModal(true)
   }
+
+  const confirmDeactivateUser = () => {
+    deactivateUserMutation.mutate({
+      endpoint: `adminusermanagement`,
+      extra: `users/${userId}/deactivate`,
+      method: "PUT",
+      auth: true,
+      body: {},
+    })
+    setShowDeactivateModal(false)
+  }
+
   const handleActivateUser = () => {
-    console.log("Activating user:", user.name)
-
+    setShowActivateModal(true)
   }
+
+  const confirmActivateUser = () => {
+    activateUserMutation.mutate({
+      endpoint: `adminusermanagement`,
+      extra: `users/${userId}/reactivate`,
+      method: "PUT",
+      auth: true,
+      body: {},
+    })
+    setShowActivateModal(false)
+  }
+
   const handleSendReminder = () => {
     console.log("Sending KYC reminder to user:", user.name)
   }
@@ -138,10 +234,16 @@ export default function UserProfilePage({ params }: { params: { userId: string }
 
   const isLoading = userStatus === "loading"
   const isError = userStatus === "error" || (userStatus === "success" && userData && !userData.isSuccess)
+  const isLoanLoading = loanStatus === "loading"
+  const isLoanError = loanStatus === "error" || (loanStatus === "success" && loanData && !loanData.isSuccess)
 
   function handleRetry() {
     refetchUser()
+    refetchLoans()
   }
+
+  const { isLoading: isDeactivating } = deactivateUserMutation
+  const { isLoading: isActivating } = activateUserMutation
 
   return (
     <div className="flex-1 space-y-6 p-6">
@@ -155,20 +257,26 @@ export default function UserProfilePage({ params }: { params: { userId: string }
       </div>
       <UserProfile user={user} />
 
-      {isLoading && <div className="flex flex-1 items-center justify-center min-h-[80vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-        <span className="ml-2 text-gray-500">Loading user profile...</span>
-      </div>}
-      {isError && <div className="flex flex-1 flex-col items-center justify-center text-center">
-        <p className="text-red-500 text-lg mb-4">
-          {(userError && typeof userError === "object" && "message" in userError
-            ? (userError as { message?: string }).message
-            : undefined) || userData?.message || "Failed to load user profile."}
-        </p>
-        <Button onClick={handleRetry} variant="outline">
-          Try Again
-        </Button>
-      </div>}
+      {isLoading && (
+        <div className="flex flex-1 items-center justify-center min-h-[80vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+          <span className="ml-2 text-gray-500">Loading user profile...</span>
+        </div>
+      )}
+      {isError && (
+        <div className="flex flex-1 flex-col items-center justify-center text-center">
+          <p className="text-red-500 text-lg mb-4">
+            {(userError && typeof userError === "object" && "message" in userError
+              ? (userError as { message?: string }).message
+              : undefined) ||
+              userData?.message ||
+              "Failed to load user profile."}
+          </p>
+          <Button onClick={handleRetry} variant="outline">
+            Try Again
+          </Button>
+        </div>
+      )}
       <div className="flex justify-end">
         <Button className="bg-primary-900 hover:bg-primary-700" onClick={handleTransHistory}>
           View Transaction History
@@ -182,35 +290,64 @@ export default function UserProfilePage({ params }: { params: { userId: string }
         <div>Amount Remaining (₦)</div>
         <div className="text-right"> </div>
       </div>
-      <div className="space-y-3">
 
-        {loan.map((loanItem) => (
-          <Card key={loanItem.id} className="shadow-sm bg-white">
-            <CardContent className="p-6">
-              <div className="grid grid-cols-6 gap-4 items-center">
-                <div className="text-sm text-gray-600 font-outfit">{loanItem.dateJoined}</div>
-                <div className="text-sm text-gray-600 font-outfit">
-                  <TransactionStatus status={loanItem.status as StatusType} />
-                </div>
-                <div className="text-sm text-gray-600 font-outfit">{loanItem.loanAmount}</div>
-                <div className="text-sm text-gray-600 font-outfit">{loanItem.amountRepaid}</div>
-                <div className="text-sm text-gray-600 font-outfit">{loanItem.amountRemaining}</div>
-                <div className="text-right">
-                  <Link href={`/loan-management/1`}>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full w-full border-primary-900 bg-transparent"
-                    >
-                      View Request →
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {isLoanLoading && (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+          <span className="ml-2 text-gray-500">Loading loan data...</span>
+        </div>
+      )}
+
+      {isLoanError && (
+        <div className="flex flex-col items-center justify-center text-center py-8">
+          <p className="text-red-500 mb-4">
+            {(loanError && typeof loanError === "object" && "message" in loanError
+              ? (loanError as { message?: string }).message
+              : undefined) ||
+              loanData?.message ||
+              "Failed to load loan data."}
+          </p>
+          <Button onClick={() => refetchLoans()} variant="outline" size="sm">
+            Retry
+          </Button>
+        </div>
+      )}
+
+      {!isLoanLoading && !isLoanError && (
+        <div className="space-y-3">
+          {loans.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">No loan applications found for this user.</div>
+          ) : (
+            loans.map((loanItem: any) => (
+              <Card key={loanItem.id} className="shadow-sm bg-white">
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-6 gap-4 items-center">
+                    <div className="text-sm text-gray-600 font-outfit">{loanItem.dateJoined}</div>
+                    <div className="text-sm text-gray-600 font-outfit">
+                      <TransactionStatus status={loanItem.status as StatusType} />
+                    </div>
+                    <div className="text-sm   text-gray-600 font-outfit">{loanItem.loanAmount}</div>
+                    <div className="text-sm text-gray-600 font-outfit">{loanItem.amountRepaid}</div>
+                    <div className="text-sm text-gray-600 font-outfit">{loanItem.amountRemaining}</div>
+                    <div className="text-right">
+                      <Link href={`/loan-management/${loanItem.id}`}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full w-full border-primary-900 bg-transparent"
+                        >
+                          View Request →
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+      )}
+
       <Pagination
         current={pageNumber}
         onPageChange={setPageNumber}
@@ -224,25 +361,43 @@ export default function UserProfilePage({ params }: { params: { userId: string }
             Deactivate User
           </Button>
         )}
-        {/* {kycStatus === "deactivated" && (
+        {kycStatus === "deactivated" && (
           <Button className="bg-primary-900 hover:bg-primary-700" onClick={handleActivateUser}>
             Activate User
           </Button>
-        )} */}
+        )}
         {kycStatus === "pending" && (
           <>
             <Button variant="outline" onClick={handleSendReminder}>
-              Send Reminder to Complete KYC
+              KYC Reminder
             </Button>
-            <Button variant="outline" onClick={handleRejectUser}>
-              Reject User
+            <Button variant="outline" onClick={handleDeactivateUser}>
+              Deactivate User
             </Button>
-            <Button className="bg-primary-900 hover:bg-primary-700" onClick={handleApproveUser}>
-              Approve User
-            </Button>
+            <Button className="bg-primary-900 hover:bg-primary-700" onClick={handleActivateUser}>
+              Activate User            </Button>
           </>
         )}
       </div>
+      <ConfirmationModal
+        isOpen={showDeactivateModal}
+        onOpenChange={setShowDeactivateModal}
+        onConfirm={confirmDeactivateUser}
+        title="Deactivate User"
+        description={`Are you sure you want to deactivate ${user.name}? This action will prevent the user from accessing their account.`}
+        confirmButtonText="Deactivate"
+        cancelButtonText="Cancel"
+      />
+
+      <ConfirmationModal
+        isOpen={showActivateModal}
+        onOpenChange={setShowActivateModal}
+        onConfirm={confirmActivateUser}
+        title="Activate User"
+        description={`Are you sure you want to activate ${user.name}? This will restore the user's access to their account.`}
+        confirmButtonText="Activate"
+        cancelButtonText="Cancel"
+      />
     </div>
   )
 }

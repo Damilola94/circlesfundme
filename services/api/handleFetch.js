@@ -40,7 +40,6 @@ const handleFetch = async ({
         `${encodeURIComponent(key)}=${encodeURIComponent(pQuery[key])}`,
     );
     paramsArray = paramsArray.filter((item) => item);
-    // console.log("paramsArray", paramsArray)
     url += `?${paramsArray.join("&")}`;
   }
 
@@ -82,7 +81,6 @@ const handleFetch = async ({
         : { ...response.data, method, status: response.status },
     )
     .catch((error) => {
-      // console.log("error", error);
       if (returnErrorData) {
         return { ...error?.response?.data };
       }

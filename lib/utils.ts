@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { InflowResponse } from "./type";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -17,19 +18,23 @@ export   const formatMoney = (value: string) => {
       return Number(numericValue).toLocaleString("en-NG");
     };
     
-export const formatAmount = (amount: number | undefined | string, currency: string) => {
-  if (typeof amount !== "number") return "Invalid";
+export const formatAmount = (
+  amount: number | undefined | string,
+  currency: string = "₦"
+) => {
+  if (typeof amount !== "number") return `${currency}0.00`;
 
   const isNegative = amount < 0;
-  const dividedAmount = Math.abs(amount) 
+  const dividedAmount = Math.abs(amount);
 
   const formatted = new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2, 
+    maximumFractionDigits: 2, 
   }).format(dividedAmount);
 
-  return isNegative ? `(${formatted})` : `${formatted}`;
+  return isNegative ? `(${currency}${formatted})` : `${currency}${formatted}`;
 };
+
 
 export const roundTo = (value: number, decimals: number) => {
   const factor = Math.pow(10, decimals);
@@ -63,3 +68,19 @@ export const noLayoutRoutes = [
   "/schemes/monthly",
   "/schemes/auto-finance",
 ];
+
+export function getTotalInflow(inflowData?: InflowResponse): number {
+  if (!inflowData?.isSuccess || !Array.isArray(inflowData.data)) {
+    return 0;
+  }
+  
+  return inflowData.data.reduce((sum, item) => sum + (item.amount || 0), 0);
+}
+
+export function getTotalOutflow(inflowData?: InflowResponse): number {
+  if (!inflowData?.isSuccess || !Array.isArray(inflowData.data)) {
+    return 0;
+  }
+  
+  return inflowData.data.reduce((sum, item) => sum + (item.amount || 0), 0);
+}

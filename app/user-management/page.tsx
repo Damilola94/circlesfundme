@@ -18,7 +18,7 @@ export default function KYCReviews() {
   const searchParams = useSearchParams();
   const statusParams = searchParams.get("status");
 
-  const [selectedTab, setSelectedTab] = useState(statusParams || "onboarded-users");
+  const [selectedTab, setSelectedTab] = useState(statusParams || "all-users");
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [users, setUsers] = useState<User[]>([])
@@ -31,7 +31,7 @@ export default function KYCReviews() {
     hasPrevious: false,
   })
 
-  const currentTabStatus = tabs.find((tab) => tab.id === selectedTab)?.status || "active"
+  const currentTabStatus = tabs.find((tab) => tab.id === selectedTab)?.status;
 
   const { data, status, error, refetch } = useGetQuery({
     endpoint: "adminusermanagement/users",
@@ -82,7 +82,6 @@ export default function KYCReviews() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-
       if (pageNumber !== 1 && searchTerm) {
         setPageNumber(1)
       } else {

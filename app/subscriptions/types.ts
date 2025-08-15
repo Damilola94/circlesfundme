@@ -101,11 +101,11 @@ export const transformApiDataToSubscriptions = (
         description: scheme.description,
         type: "asset",
         values: {
-          minimumVehicleCost: (scheme.minimumVehicleCost / 1000000).toString(),
+          minimumVehicleCost: (scheme.minimumVehicleCost).toString(),
           requiredEquity: scheme.equityPercent.toString(),
           loanTermWeeks: scheme.loanTerm.toString(),
           loanManagementFeeYear: scheme.loanManagementFeePercent.toString(),
-          baseFee: (scheme.baseFee / 1000).toString(),
+          baseFee: (scheme.baseFee ).toString(),
           extraEngine: scheme.extraEnginePercent.toString(),
           extraTyre: scheme.extraTyrePercent.toString(),
           insurance: scheme.insurancePerAnnumPercent.toString(),

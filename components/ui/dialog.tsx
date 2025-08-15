@@ -81,7 +81,9 @@ export const DialogDescription: React.FC<DialogDescriptionProps> = ({ children }
 
 interface DialogFooterProps {
   children: React.ReactNode;
+  className?: string;
 }
-export const DialogFooter: React.FC<DialogFooterProps> = ({ children }) => (
-  <div className="flex justify-end space-x-2 mt-4">{children}</div>
+
+export const DialogFooter: React.FC<DialogFooterProps> = ({ children, className }) => (
+  <div className={`flex justify-end space-x-2 mt-4 ${className || ""}`}>{children}</div>
 );

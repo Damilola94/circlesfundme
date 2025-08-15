@@ -11,14 +11,16 @@ import { TransactionStatus } from "@/components/ui/transactionstatus"
 import { TransactionType } from "@/components/ui/actiontype"
 import useGetQuery from "@/hooks/useGetQuery"
 import type { StatusType, ActionType } from "../../types"
+import { formatAmount } from "@/lib/utils"
+import moment from "moment-timezone"
 
 export default function UserProfilePage() {
   const [pageNumber, setPageNumber] = useState(2)
   const [pageSize, setPageSize] = useState(10)
   const [searchTerm, setSearchTerm] = useState("")
   const router = useRouter()
- const params = useParams();
-  const userId = params.userId as string; 
+  const params = useParams();
+  const userId = params.userId as string;
 
   const {
     data: userData,
@@ -32,7 +34,7 @@ export default function UserProfilePage() {
   })
 
   const filteredTransactions =
-    userData?.transactions?.filter(
+    userData?.data?.filter(
       (transaction: { action: string; amount: string | string[]; status: string }) =>
         transaction.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
         transaction.amount.includes(searchTerm) ||
@@ -98,10 +100,14 @@ export default function UserProfilePage() {
               <Card key={item.id} className="shadow-sm bg-white">
                 <CardContent className="p-6">
                   <div className="grid grid-cols-5 gap-4 items-center">
-                    <div className="text-sm text-gray-600 font-outfit">{item.date}</div>
+                    <div className="text-sm text-gray-600 font-outfit">{
+                      moment(item.date).format("MM/DD/YYYY")}
+                    </div>
                     <TransactionType actionType={item.action as ActionType} />
-                    <div className="text-sm text-gray-600 font-outfit">{item.amount}</div>
-                    <div className="text-sm text-gray-600 font-outfit">{item.withdrawalCharge}</div>
+                    <div className="text-sm text-gray-600 font-outfit">
+                      {formatAmount(item.amount, "₦")}
+                    </div>
+                    <div className="text-sm text-gray-600 font-outfit">{formatAmount(item.charge, "₦")}</div>
                     <TransactionStatus status={item.status as StatusType} />
                   </div>
                 </CardContent>

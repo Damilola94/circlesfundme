@@ -20,9 +20,9 @@ import {
 } from "@/components/ui/dialog"
 
 const CHANNEL_MAP_NUMBER_TO_STRING: Record<number, string> = {
-  1: "SMS",
+  1: "SMS (Coming Soon)",
   2: "Email",
-  3: "Notification",
+  3: "Notification (Coming Soon)",
 }
 
 const CHANNEL_MAP_STRING_TO_NUMBER: Record<string, number> = {
@@ -33,9 +33,9 @@ const CHANNEL_MAP_STRING_TO_NUMBER: Record<string, number> = {
 
 const MESSAGE_TYPE_API_TO_DISPLAY: Record<string, string> = {
   LoanRepaymentReminder: "Payment Reminder",
-  WelcomeMessage: "Welcome Message",
-  LoanApproval: "Loan Approval",
-  KYCReminder: "KYC Reminder",
+  // WelcomeMessage: "Welcome Message",
+  // LoanApproval: "Loan Approval",
+  // KYCReminder: "KYC Reminder",
 }
 
 const MESSAGE_TYPE_DISPLAY_TO_API: Record<string, string> = {

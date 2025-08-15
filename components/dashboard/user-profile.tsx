@@ -33,19 +33,14 @@ const getDocumentIcon = (url: string) => {
 };
 
 export function UserProfile({ user }: UserProfileProps) {
-  console.log(user, "user");
-
   const documents = user.document.map((doc, index) => ({
     id: index + 1,
     name: doc.name || doc.documentType,
-    date: new Date().toLocaleDateString(), 
-    size: "—", 
+    date: new Date().toLocaleDateString(),
+    size: "—",
     iconSrc: getDocumentIcon(doc.url),
     url: doc.url,
   }));
-
-  console.log(documents,user.document, "documents");
-  
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -53,7 +48,7 @@ export function UserProfile({ user }: UserProfileProps) {
         <CardContent className="p-6 text-center">
           <div className="relative mx-auto mb-4 h-24 w-24">
             <Image
-              src="/assets/images/display-photo.png"
+              src={user.image || "/assets/images/display-photo.png"}
               alt={user.name}
               fill
               className="rounded-full object-cover"
@@ -103,34 +98,41 @@ export function UserProfile({ user }: UserProfileProps) {
           <CardTitle className="text-lg">Documents</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {documents.map((document) => (
-            <div
-              key={document.id}
-              className="flex items-center justify-between p-3 border rounded-lg"
-            >
-              <div className="flex items-center space-x-3">
-                <Image
-                  src={document.iconSrc}
-                  alt={document.name}
-                  width={30}
-                  height={30}
-                  className="object-contain"
-                  priority={document.id === 2}
-                />
-                <div>
-                  <p className="text-sm font-medium font-outfit">{document.name}</p>
-                  <p className="text-xs text-gray-500 font-outfit">
-                    {document.date} - {document.size}
-                  </p>
+          {documents.length > 0 ? (
+            documents.map((document) => (
+              <div
+                key={document.id}
+                className="flex items-center justify-between p-3 border rounded-lg"
+              >
+                <div className="flex items-center space-x-3">
+                  <Image
+                    src={document.iconSrc}
+                    alt={document.name}
+                    width={30}
+                    height={30}
+                    className="object-contain"
+                    priority={document.id === 2}
+                  />
+                  <div>
+                    <p className="text-sm font-medium font-outfit">{document.name}</p>
+                    <p className="text-xs text-gray-500 font-outfit">
+                      {document.date} - {document.size}
+                    </p>
+                  </div>
                 </div>
+                <a href={document.url} target="_blank" rel="noopener noreferrer">
+                  <Download className="h-4 w-4 text-gray-400 cursor-pointer" />
+                </a>
               </div>
-              <a href={document.url} target="_blank" rel="noopener noreferrer">
-                <Download className="h-4 w-4 text-gray-400 cursor-pointer" />
-              </a>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-sm text-gray-500 font-outfit text-center">
+              No documents available
+            </p>
+          )}
         </CardContent>
       </Card>
+
     </div>
   );
 }
