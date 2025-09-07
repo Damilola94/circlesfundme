@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: ["class"],
@@ -10,6 +10,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        "860": "860px",
+        "1140": "1140px",
+      },
       fontFamily: {
         outfit: ["Outfit", "system-ui", "sans-serif"],
         sans: ["Outfit", "system-ui", "sans-serif"],
@@ -27,7 +31,7 @@ const config: Config = {
           200: "#99f6e4",
           300: "#5eead4",
           350: "#00A86B",
-          400: "#2dd4bf", 
+          400: "#2dd4bf",
           500: "#14b8a6",
           600: "#0d9488",
           700: "#0f766e",
@@ -105,6 +109,6 @@ const config: Config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
 
-export default config
+export default config;

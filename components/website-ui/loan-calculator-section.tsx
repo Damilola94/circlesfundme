@@ -49,7 +49,8 @@ export default function LoanCalculatorSection() {
     loanManagementFeeDescription: "",
     eligibleLoan: "",
     eligibleLoanDescription: "",
-    serviceCharge: "",
+    preLoanServiceCharge: "",
+    postLoanServiceCharge: "",
     totalRepayment: "",
     repaymentTerm: "",
   });
@@ -94,7 +95,7 @@ export default function LoanCalculatorSection() {
           loanManagementFee: breakdown.loanManagementFee,
           minimumWeeklyContribution: breakdown.minimumWeeklyContribution,
           preLoanServiceCharge: breakdown.preLoanServiceCharge,
-          postLoanWeeklyContribution: breakdown.postLoanWeeklyContribution,
+          postLoanContribution: breakdown.postLoanWeeklyContribution,
           eligibleLoan: breakdown.eligibleLoan,
           totalRepayment: breakdown.totalRepayment,
         });
@@ -121,7 +122,8 @@ export default function LoanCalculatorSection() {
         loanManagementFeeDescription: breakdown.loanManagementFeeDescription,
         eligibleLoan: breakdown.eligibleLoan,
         eligibleLoanDescription: breakdown.eligibleLoanDescription,
-        serviceCharge: breakdown.serviceCharge,
+        preLoanServiceCharge: breakdown.preLoanServiceCharge,
+        postLoanServiceCharge: breakdown.postLoanServiceCharge,
         totalRepayment: breakdown.totalRepayment,
         repaymentTerm: breakdown.repaymentTerm,
       });
@@ -214,6 +216,10 @@ export default function LoanCalculatorSection() {
                     value={scheme}
                     onChange={setScheme}
                     options={[
+                      {
+                        label: "Daily Contribution Scheme",
+                        value: "Daily Contribution Scheme",
+                      },
                       {
                         label: "Weekly Contribution Scheme",
                         value: "Weekly Contribution Scheme",
@@ -310,20 +316,20 @@ export default function LoanCalculatorSection() {
                     <>
                       <Input
                         type="money"
-                        label={`${
-                          scheme.includes("Weekly")
+                        label={`${scheme.includes("Daily")
+                          ? "Daily Sales Revenue"
+                          : scheme.includes("Weekly")
                             ? "Weekly Sales Revenue"
                             : "Monthly Income"
-                        } `}
+                          } `}
                         value={income}
                         onChange={(e) => setIncome(e.target.value)}
                         placeholder="Enter amount"
                       />
                       <Input
                         type="money"
-                        label={`${
-                          scheme.includes("Weekly") ? "Weekly" : "Monthly"
-                        } Contribution`}
+                        label={`${scheme.includes("Weekly") ? "Weekly" : "Monthly"
+                          } Contribution`}
                         value={contribution}
                         onChange={(e) => setContribution(e.target.value)}
                         placeholder="Enter amount"
@@ -345,11 +351,12 @@ export default function LoanCalculatorSection() {
                           <div className="flex justify-between">
                             <span>Repayment Duration:</span>
                             <span className="font-outfit font-semibold">
-                              {`${
-                                scheme.includes("Weekly")
+                              {`${scheme.includes("Daily")
+                                ? "365 days/1 yr"
+                                : scheme.includes("Weekly")
                                   ? "52 weeks/1 yr"
-                                  : "12 months/1yr"
-                              } `}
+                                  : "12 months/1 yr"
+                                } `}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -359,9 +366,15 @@ export default function LoanCalculatorSection() {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Service Charge:</span>
+                            <span>Pre-Loan Service Charge:</span>
                             <span className="font-outfit font-semibold">
-                              {regularBreakdown.serviceCharge}
+                              {regularBreakdown.preLoanServiceCharge}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Post-Loan Service Charge:</span>
+                            <span className="font-outfit font-semibold">
+                              {regularBreakdown.postLoanServiceCharge}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -370,7 +383,7 @@ export default function LoanCalculatorSection() {
                               {regularBreakdown.totalRepayment || "₦0.00"}
                             </span>
                           </div>
-                           <div className="flex justify-between">
+                          <div className="flex justify-between">
                             <span>Repayment term:</span>
                             <span className="font-outfit font-semibold">
                               {regularBreakdown.repaymentTerm || "₦0.00"}

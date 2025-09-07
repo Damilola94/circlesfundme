@@ -76,6 +76,8 @@ export default function LoanManagement() {
   }
 
   return (
+    <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
+
     <div className="flex-1 space-y-6 p-6">
       <div className="flex justify-between items-end border-b-2">
         <div className="flex space-x-1 bg-gray-100 rounded-lg w-fit justify-between">
@@ -126,7 +128,7 @@ export default function LoanManagement() {
           ))}
         </div>
       </div>
-      <div className="grid grid-cols-7 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
+      <div className="grid grid-cols-7 gap-4 min-w-[800px] px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
         <div>Name</div>
         <div>Status</div>
         <div>Scheme</div>
@@ -187,5 +189,7 @@ export default function LoanManagement() {
         total={totalElements}
       />
     </div>
+    </div>
+
   )
 }

@@ -449,70 +449,74 @@ export default function Communications() {
           </CardContent>
         </Card>
       </div>
-      <div className="flex justify-between items-end">
-        <p className="text-lg font-outfit">Communication History</p>
-        <div className="flex items-center justify-between space-x-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-            <Input
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-64 pl-10"
-            />
-          </div>
-          <Button className="bg-primary-900 hover:bg-primary-700">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </Button>
-        </div>
-      </div>
-      <div className="grid grid-cols-6 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
-        <div>Title</div>
-        <div>Channel</div>
-        <div>Target</div>
-        <div>Recipients</div>
-        <div>Scheduled</div>
-        <div>Status</div>
-      </div>
-      <div className="space-y-3">
-        {isLoadingCommunications ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin mr-2" />
-            <span className="text-gray-500">Loading communication history...</span>
-          </div>
-        ) : isErrorCommunications ? (
-          <div className="text-center py-8">
-            <p className="text-red-500 mb-4">
-              {(communicationsError && typeof communicationsError === "object" && "message" in communicationsError
-                ? (communicationsError as any).message
-                : undefined) ||
-                communicationsData?.message ||
-                "Failed to load communication history."}
-            </p>
-            <Button onClick={refetchCommunications} variant="outline">
-              Try Again
+      <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
+
+        <div className="flex justify-between items-end">
+          <p className="text-lg font-outfit">Communication History</p>
+          <div className="flex items-center justify-between space-x-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Input
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-64 pl-10"
+              />
+            </div>
+            <Button className="bg-primary-900 hover:bg-primary-700">
+              <Filter className="h-4 w-4 mr-2" />
+              Filter
             </Button>
           </div>
-        ) : communicationHistory.length > 0 ? (
-          communicationHistory.map((item: any) => (
-            <Card key={item.id} className="shadow-sm bg-white">
-              <CardContent className="p-6">
-                <div className="grid grid-cols-6 gap-4 items-center">
-                  <div className="text-sm text-gray-600 font-outfit">{item.title}</div>
-                  <div className="text-sm text-gray-600 font-outfit capitalize">{item.channel}</div>
-                  <div className="text-sm text-gray-600 font-outfit">{item.target}</div>
-                  <div className="text-sm text-gray-600 font-outfit">{item.totalRecipients}</div>
-                  <div className="text-sm text-gray-600 font-outfit">{item.scheduledAt}</div>
-                  <TransactionStatus status={item.status as StatusType} />
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          <p className="text-center text-gray-500 py-8">No communication history found.</p>
-        )}
+        </div>
+        <div className="grid grid-cols-6 gap-4 min-w-[800px] px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
+          <div>Title</div>
+          <div>Channel</div>
+          <div>Target</div>
+          <div>Recipients</div>
+          <div>Scheduled</div>
+          <div>Status</div>
+        </div>
+        <div className="space-y-3">
+          {isLoadingCommunications ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin mr-2" />
+              <span className="text-gray-500">Loading communication history...</span>
+            </div>
+          ) : isErrorCommunications ? (
+            <div className="text-center py-8">
+              <p className="text-red-500 mb-4">
+                {(communicationsError && typeof communicationsError === "object" && "message" in communicationsError
+                  ? (communicationsError as any).message
+                  : undefined) ||
+                  communicationsData?.message ||
+                  "Failed to load communication history."}
+              </p>
+              <Button onClick={refetchCommunications} variant="outline">
+                Try Again
+              </Button>
+            </div>
+          ) : communicationHistory.length > 0 ? (
+            communicationHistory.map((item: any) => (
+              <Card key={item.id} className="shadow-sm bg-white">
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-6 gap-4 items-center">
+                    <div className="text-sm text-gray-600 font-outfit">{item.title}</div>
+                    <div className="text-sm text-gray-600 font-outfit capitalize">{item.channel}</div>
+                    <div className="text-sm text-gray-600 font-outfit">{item.target}</div>
+                    <div className="text-sm text-gray-600 font-outfit">{item.totalRecipients}</div>
+                    <div className="text-sm text-gray-600 font-outfit">{item.scheduledAt}</div>
+                    <TransactionStatus status={item.status as StatusType} />
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p className="text-center text-gray-500 py-8">No communication history found.</p>
+          )}
+        </div>
       </div>
+
       <Pagination
         current={pageNumber}
         onPageChange={setPageNumber}

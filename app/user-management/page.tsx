@@ -118,7 +118,7 @@ export default function KYCReviews() {
   const isError = status === "error" || (status === "success" && data && !data.isSuccess)
 
   return (
-    <div className="flex-1 space-y-6 p-6">
+    <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
       <div className="flex justify-between items-end border-b-2">
         <div className="flex space-x-1 bg-gray-100 rounded-lg w-fit justify-between">
           {tabs.map((tab) => (
@@ -152,60 +152,61 @@ export default function KYCReviews() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
-        <div>Name</div>
-        <div>Date Joined</div>
-        <div>Scheme</div>
-        <div>Contribution(₦)</div>
-        <div>Eligible Loan (₦)</div>
-        <div>Amount Repaid (₦)</div>
-        <div></div>
-      </div>
-      <div className="space-y-3">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin mr-2" />
-            <span className="text-gray-500">Loading users...</span>
-          </div>
-        ) : isError ? (
-          <div className="text-center py-8">
-            <p className="text-red-500 mb-4">
-              {typeof error === "object" && error !== null && "message" in error
-                ? (error as { message?: string }).message || "Failed to load users."
-                : "Failed to load users."}
-            </p>
-            <Button onClick={handleRetry} variant="outline">
-              Try Again
-            </Button>
-          </div>
-        ) : users.length > 0 ? (
-          users.map((user) => (
-            <Card key={user.userId} className="shadow-sm bg-white">
-              <CardContent className="p-6">
-                <div className="grid grid-cols-7 gap-4 items-center font-outfit">
-                  <div className="flex items-center space-x-3">
-                    <span className="font-medium text-gray-900">{user.name}</span>
+        <div className="grid grid-cols-7 gap-4 min-w-[800px] px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit w-full">
+          <div>Name</div>
+          <div>Date Joined</div>
+          <div>Scheme</div>
+          <div>Contribution(₦)</div>
+          <div>Eligible Loan (₦)</div>
+          <div>Amount Repaid (₦)</div>
+          <div></div>
+        </div>
+        <div className="space-y-3">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin mr-2" />
+              <span className="text-gray-500">Loading users...</span>
+            </div>
+          ) : isError ? (
+            <div className="text-center py-8">
+              <p className="text-red-500 mb-4">
+                {typeof error === "object" && error !== null && "message" in error
+                  ? (error as { message?: string }).message || "Failed to load users."
+                  : "Failed to load users."}
+              </p>
+              <Button onClick={handleRetry} variant="outline">
+                Try Again
+              </Button>
+            </div>
+          ) : users.length > 0 ? (
+            users.map((user) => (
+              <Card key={user.userId} className="shadow-sm bg-white">
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-7 gap-4 items-center font-outfit">
+                    <div className="flex items-center space-x-3">
+                      <span className="font-medium text-gray-900">{user.name}</span>
+                    </div>
+                    <div className="text-sm text-gray-600">{formatDate(user.dateJoined)}</div>
+                    <div className="text-sm text-gray-600">{user.scheme}</div>
+                    <div className="text-sm text-gray-600">{formatCurrency(user.totalContribution)}</div>
+                    <div className="text-sm text-gray-600">{formatCurrency(user.eligibleLoan)}</div>
+                    <div className="text-sm text-gray-600">{formatCurrency(user.totalRepaidAmount)}</div>
+                    <div className="flex justify-end">
+                      <Link href={`/user-management/${user.userId}`}>
+                        <Button size="sm" className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-4">
+                          View Profile →
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-600">{formatDate(user.dateJoined)}</div>
-                  <div className="text-sm text-gray-600">{user.scheme}</div>
-                  <div className="text-sm text-gray-600">{formatCurrency(user.totalContribution)}</div>
-                  <div className="text-sm text-gray-600">{formatCurrency(user.eligibleLoan)}</div>
-                  <div className="text-sm text-gray-600">{formatCurrency(user.totalRepaidAmount)}</div>
-                  <div className="flex justify-end">
-                    <Link href={`/user-management/${user.userId}`}>
-                      <Button size="sm" className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-4">
-                        View Profile →
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          <p className="text-center text-gray-500 py-8">No users found for this status.</p>
-        )}
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p className="text-center text-gray-500 py-8">No users found for this status.</p>
+          )}
       </div>
+
       {!isLoading && !isError && (
         <Pagination
           current={metaData.currentPage}

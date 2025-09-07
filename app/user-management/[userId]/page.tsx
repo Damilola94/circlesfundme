@@ -12,9 +12,9 @@ import { TransactionStatus } from "@/components/ui/transactionstatus"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 import useGetQuery from "@/hooks/useGetQuery"
 import { toast } from "react-toastify"
-import { formatAmount } from "@/lib/utils";
-import moment from "moment";
-import { KycStatusType, StatusType } from "../types"
+import { formatAmount } from "@/lib/utils"
+import moment from "moment"
+import type { KycStatusType, StatusType } from "../types"
 import { useMutation } from "react-query"
 import handleFetch from "@/services/api/handleFetch"
 
@@ -47,7 +47,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
   } = useGetQuery({
     endpoint: `loanapplications`,
     pQuery: {
-      UserId: userId
+      UserId: userId,
     },
     queryKey: ["user-loans", userId],
     enabled: !!userId,
@@ -90,6 +90,23 @@ export default function UserProfilePage({ params }: { params: { userId: string }
     },
   })
 
+  const sendKycReminderMutation = useMutation(handleFetch, {
+    onSuccess: (res: {
+      statusCode: string
+      message: string
+      data: any
+    }) => {
+      if (res?.statusCode !== "200") {
+        toast.error(res?.message || "Something went wrong.")
+      } else {
+        toast.success("KYC reminder sent successfully")
+      }
+    },
+    onError: (err: { statusCode?: string; message: string }) => {
+      toast.error(err?.message || "Something went wrong.")
+    },
+  })
+
   const user = useMemo(() => {
     if (userStatus === "success" && userData?.isSuccess && userData.data) {
       const apiUser = userData.data
@@ -110,9 +127,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
         email: apiUser.email || "",
         phone: apiUser.phoneNumber || "",
         image: apiUser.profilePictureUrl,
-        dateOfBirth: apiUser.dateOfBirth
-          ? moment(apiUser.dateOfBirth).format("MM/DD/YYYY")
-          : "",
+        dateOfBirth: apiUser.dateOfBirth ? moment(apiUser.dateOfBirth).format("MM/DD/YYYY") : "",
         gender: apiUser.gender || "",
         scheme: apiUser.contributionScheme?.name || "N/A",
         contribution: formatAmount(apiUser.contributionAmount || 0, "N"),
@@ -123,9 +138,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
           name: doc.documentType || "Unknown Document",
           date: "",
           size: "",
-          iconSrc: doc.documentUrl.endsWith(".pdf")
-            ? "/pdf-icon.png"
-            : "/image-icon.png",
+          iconSrc: doc.documentUrl.endsWith(".pdf") ? "/pdf-icon.png" : "/image-icon.png",
           url: doc.documentUrl,
         })),
       }
@@ -145,7 +158,6 @@ export default function UserProfilePage({ params }: { params: { userId: string }
     }
   }, [userData, userStatus])
 
-
   const loans = useMemo(() => {
     if (loanStatus === "success" && loanData?.isSuccess && loanData.data) {
       return loanData.data.map((loan: any) => ({
@@ -154,9 +166,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
         status: loan.status,
         loanAmount: formatAmount(loan.approvedAmount || loan.requestedAmount, "N"),
         amountRepaid: formatAmount(loan.amountRepaid, "N"),
-        amountRemaining: formatAmount(
-          (loan.approvedAmount || loan.requestedAmount) - loan.amountRepaid
-          , "N"),
+        amountRemaining: formatAmount((loan.approvedAmount || loan.requestedAmount) - loan.amountRepaid, "N"),
       }))
     }
     return []
@@ -223,13 +233,14 @@ export default function UserProfilePage({ params }: { params: { userId: string }
   }
 
   const handleSendReminder = () => {
-    console.log("Sending KYC reminder to user:", user.name)
-  }
-  const handleApproveUser = () => {
-    console.log("Approving user:", user.name)
-  }
-  const handleRejectUser = () => {
-    console.log("Rejecting user:", user.name)
+    sendKycReminderMutation.mutate({
+      endpoint: `adminusermanagement/send-kyc-reminder/${userId}`,
+      // body: {
+      //   userId,
+      // },
+      method: "POST",
+      auth: true,
+    })
   }
 
   const isLoading = userStatus === "loading"
@@ -244,9 +255,16 @@ export default function UserProfilePage({ params }: { params: { userId: string }
 
   const { isLoading: isDeactivating } = deactivateUserMutation
   const { isLoading: isActivating } = activateUserMutation
+  const { isLoading: isSendingReminder } = sendKycReminderMutation
 
   return (
     <div className="flex-1 space-y-6 p-6">
+      {(isDeactivating || isActivating || isSendingReminder) && (
+        <div className="flex items-center justify-center py-4">
+          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+          <span className="text-gray-500">Loading</span>
+        </div>
+      )}
       <div className="flex items-center space-x-4">
         <Link href="/user-management" className="w-10 h-10 bg-white rounded-full">
           <Button variant="ghost" size="icon">
@@ -282,71 +300,73 @@ export default function UserProfilePage({ params }: { params: { userId: string }
           View Transaction History
         </Button>
       </div>
-      <div className="grid grid-cols-6 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
-        <div>Date Applied</div>
-        <div>Status</div>
-        <div>Loan Amount (₦)</div>
-        <div>Amount Repaid (₦)</div>
-        <div>Amount Remaining (₦)</div>
-        <div className="text-right"> </div>
+      <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
+        <div className="grid grid-cols-6 gap-4 px-6 py-3 min-w-[800px] text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
+          <div>Date Applied</div>
+          <div>Status</div>
+          <div>Loan Amount (₦)</div>
+          <div>Amount Repaid (₦)</div>
+          <div>Amount Remaining (₦)</div>
+          <div className="text-right"> </div>
+        </div>
+
+        {isLoanLoading && (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+            <span className="ml-2 text-gray-500">Loading loan data...</span>
+          </div>
+        )}
+
+        {isLoanError && (
+          <div className="flex flex-col items-center justify-center text-center py-8">
+            <p className="text-red-500 mb-4">
+              {(loanError && typeof loanError === "object" && "message" in loanError
+                ? (loanError as { message?: string }).message
+                : undefined) ||
+                loanData?.message ||
+                "Failed to load loan data."}
+            </p>
+            <Button onClick={() => refetchLoans()} variant="outline" size="sm">
+              Retry
+            </Button>
+          </div>
+        )}
+
+        {!isLoanLoading && !isLoanError && (
+          <div className="space-y-3">
+            {loans.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">No loan applications found for this user.</div>
+            ) : (
+              loans.map((loanItem: any) => (
+                <Card key={loanItem.id} className="shadow-sm bg-white">
+                  <CardContent className="p-6">
+                    <div className="grid grid-cols-6 gap-4 items-center">
+                      <div className="text-sm text-gray-600 font-outfit">{loanItem.dateJoined}</div>
+                      <div className="text-sm text-gray-600 font-outfit">
+                        <TransactionStatus status={loanItem.status as StatusType} />
+                      </div>
+                      <div className="text-sm   text-gray-600 font-outfit">{loanItem.loanAmount}</div>
+                      <div className="text-sm text-gray-600 font-outfit">{loanItem.amountRepaid}</div>
+                      <div className="text-sm text-gray-600 font-outfit">{loanItem.amountRemaining}</div>
+                      <div className="text-right">
+                        <Link href={`/loan-management/${loanItem.id}`}>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full w-full border-primary-900 bg-transparent"
+                          >
+                            View Request →
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+        )}
       </div>
-
-      {isLoanLoading && (
-        <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
-          <span className="ml-2 text-gray-500">Loading loan data...</span>
-        </div>
-      )}
-
-      {isLoanError && (
-        <div className="flex flex-col items-center justify-center text-center py-8">
-          <p className="text-red-500 mb-4">
-            {(loanError && typeof loanError === "object" && "message" in loanError
-              ? (loanError as { message?: string }).message
-              : undefined) ||
-              loanData?.message ||
-              "Failed to load loan data."}
-          </p>
-          <Button onClick={() => refetchLoans()} variant="outline" size="sm">
-            Retry
-          </Button>
-        </div>
-      )}
-
-      {!isLoanLoading && !isLoanError && (
-        <div className="space-y-3">
-          {loans.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">No loan applications found for this user.</div>
-          ) : (
-            loans.map((loanItem: any) => (
-              <Card key={loanItem.id} className="shadow-sm bg-white">
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-6 gap-4 items-center">
-                    <div className="text-sm text-gray-600 font-outfit">{loanItem.dateJoined}</div>
-                    <div className="text-sm text-gray-600 font-outfit">
-                      <TransactionStatus status={loanItem.status as StatusType} />
-                    </div>
-                    <div className="text-sm   text-gray-600 font-outfit">{loanItem.loanAmount}</div>
-                    <div className="text-sm text-gray-600 font-outfit">{loanItem.amountRepaid}</div>
-                    <div className="text-sm text-gray-600 font-outfit">{loanItem.amountRemaining}</div>
-                    <div className="text-right">
-                      <Link href={`/loan-management/${loanItem.id}`}>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full w-full border-primary-900 bg-transparent"
-                        >
-                          View Request →
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </div>
-      )}
 
       <Pagination
         current={pageNumber}
@@ -368,14 +388,22 @@ export default function UserProfilePage({ params }: { params: { userId: string }
         )}
         {kycStatus === "pending" && (
           <>
-            <Button variant="outline" onClick={handleSendReminder}>
-              KYC Reminder
+            <Button variant="outline" onClick={handleSendReminder} disabled={isSendingReminder}>
+              {isSendingReminder ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Sending...
+                </>
+              ) : (
+                "KYC Reminder"
+              )}
             </Button>
             <Button variant="outline" onClick={handleDeactivateUser}>
               Deactivate User
             </Button>
             <Button className="bg-primary-900 hover:bg-primary-700" onClick={handleActivateUser}>
-              Activate User            </Button>
+              Activate User
+            </Button>
           </>
         )}
       </div>

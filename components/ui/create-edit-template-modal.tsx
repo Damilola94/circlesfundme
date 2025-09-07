@@ -33,23 +33,23 @@ const CHANNEL_MAP_STRING_TO_NUMBER: Record<string, number> = {
 
 const MESSAGE_TYPE_API_TO_DISPLAY: Record<string, string> = {
   LoanRepaymentReminder: "Payment Reminder",
+  PendingKYCReminder: "KYC Reminder",
   // WelcomeMessage: "Welcome Message",
   // LoanApproval: "Loan Approval",
-  // KYCReminder: "KYC Reminder",
 }
 
 const MESSAGE_TYPE_DISPLAY_TO_API: Record<string, string> = {
   "Payment Reminder": "LoanRepaymentReminder",
+  "KYC Reminder": "PendingKYCReminder",
   "Welcome Message": "WelcomeMessage",
   "Loan Approval": "LoanApproval",
-  "KYC Reminder": "KYCReminder",
 }
 
 const MESSAGE_TYPE_NUMBER_TO_API_STRING: Record<number, string> = {
   1: "LoanRepaymentReminder",
-  2: "WelcomeMessage",
-  3: "LoanApproval",
-  4: "KYCReminder",
+  2: "PendingKYCReminder",
+  3: "WelcomeMessage",
+  4: "LoanApproval",
 }
 
 export interface TemplateData {

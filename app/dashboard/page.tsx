@@ -1,7 +1,8 @@
 "use client"
 
-import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal } from "react"
+import { Key, } from "react"
 import { StatsCard } from "@/components/dashboard/stats-card"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
@@ -9,7 +10,6 @@ import { UserIcon, LoanIcon, KYCIcon, OverdueIcon } from "@/public/assets/icons"
 import { useRouter } from "next/navigation"
 import useGetQuery from "@/hooks/useGetQuery"
 import "react-toastify/dist/ReactToastify.css"
-import { formatCurrency, formatDate, UserName } from "./types"
 import moment from "moment";
 
 import { formatAmount, getTotalInflow, getTotalOutflow } from "@/lib/utils"
@@ -59,29 +59,10 @@ export default function Dashboard() {
     status: loanRequestsStatus,
   } = useGetQuery({
     endpoint: "loanapplications",
-    pQuery: { Status: "Pending", PageNumber: 1, PageSize: 3 },
+    pQuery: { Status: "Pending", PageNumber: 1, PageSize: 5 },
     queryKey: ["pending-loan-requests"],
     auth: true,
   })
-
-  // useEffect(() => {
-  //   if (metricsStatus === "error") toast.error(metricsError?.message || "Failed to load dashboard metrics.")
-  //   if (pendingKycStatus === "error") toast.error(pendingKycError?.message || "Failed to load pending KYC users.")
-  //   if (inflowStatus === "error") toast.error(inflowError?.message || "Failed to load recent inflow.")
-  //   if (outflowStatus === "error") toast.error(outflowError?.message || "Failed to load recent outflow.")
-  //   if (loanRequestsStatus === "error") toast.error(loanRequestsError?.message || "Failed to load loan requests.")
-  // }, [
-  //   metricsStatus,
-  //   metricsError,
-  //   pendingKycStatus,
-  //   pendingKycError,
-  //   inflowStatus,
-  //   inflowError,
-  //   outflowStatus,
-  //   outflowError,
-  //   loanRequestsStatus,
-  //   loanRequestsError,
-  // ])
 
   const kycQueue = pendingKycData?.isSuccess
     ? pendingKycData.data.map((user: { name: any; dateJoined: string; avatarUrl: any }) => ({
@@ -98,9 +79,7 @@ export default function Dashboard() {
     }))
     : []
 
-
   const totalInflow = getTotalInflow(inflowData);
-
 
   const recentOutflow = outflowData?.isSuccess
     ? outflowData?.data?.map((item: { narration: any; amount: number }) => ({
@@ -112,11 +91,11 @@ export default function Dashboard() {
   const totalOutflow = getTotalOutflow(outflowData);
 
   const loanRequests = loanRequestsData?.isSuccess
-    ? loanRequestsData.data.map((item: { applicantDetail: { firstName: string, lastName: string }; requestedAmount: number; dateApplied: string, avatar: string }) => ({
-      name: `${item.applicantDetail.firstName} ${item.applicantDetail.firstName}`,
+    ? loanRequestsData.data.map((item: { applicantDetail: { firstName: string, lastName: string, imageUrl: string }; requestedAmount: number; dateApplied: string, }) => ({
+      name: `${item.applicantDetail.firstName} ${item.applicantDetail.lastName}`,
       amount: formatAmount(item.requestedAmount, "₦"),
       time: moment(item.dateApplied).format("MM/DD/YYYY"),
-      avatar: item.avatar
+      avatar: item.applicantDetail.imageUrl
     }))
     : []
 
@@ -196,7 +175,7 @@ export default function Dashboard() {
                 <div key={index} className="flex items-center justify-between space-y-5">
                   <div className="flex items-center space-x-3">
                     <img
-                      src={item.avatar || "/placeholder.svg"}
+                      src={item.avatar || "/assets/images/display-photo.png"}
                       className="h-10 w-10 rounded-full object-cover"
                     />
                     <div>
@@ -246,7 +225,6 @@ export default function Dashboard() {
                   <div className="flex items-center space-x-3">
                     <img
                       src={item.avatar || "/assets/images/display-photo.png"}
-                      alt={item.name}
                       className="h-10 w-10 rounded-full object-cover"
                     />
                     <div>
@@ -272,6 +250,7 @@ export default function Dashboard() {
         </Card>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Inflow */}
         <Card className="h-fit p-0">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg">Recent Inflow</CardTitle>
@@ -284,30 +263,46 @@ export default function Dashboard() {
             </Button>
           </CardHeader>
           <hr className="border-gray-200 mb-2" />
-          <CardContent className="space-y-6 p-0">
-            {inflowStatus === "loading" ? (
-              <div className="flex items-center justify-center py-4">
-                <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                <span className="text-gray-500">Loading inflow...</span>
-              </div>
-            ) : inflowStatus === "error" || !inflowData?.isSuccess ? (
-              <div className="text-center py-4 text-red-500">Failed to load recent inflow.</div>
-            ) : recentInflow?.length > 0 ? (
-              recentInflow?.map((item: { narration: string, amount: string }, index: Key | null | undefined) => (
-                <div key={index} className="flex justify-between space-y-4 px-6">
-                  <p className="text-sm font-outfit font-medium">{item.narration}</p>
-                  <p className="text-sm font-outfit font-medium">{formatAmount(item.amount, "N")}</p>
+          {/* Wrap CardContent in a scrollable container */}
+          <CardContent className="p-0">
+            <div className="max-h-64 overflow-y-auto space-y-6">
+              {inflowStatus === "loading" ? (
+                <div className="flex items-center justify-center py-4">
+                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                  <span className="text-gray-500">Loading inflow...</span>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-4 text-gray-500">No recent inflow.</div>
-            )}
+              ) : inflowStatus === "error" || !inflowData?.isSuccess ? (
+                <div className="text-center py-4 text-red-500">
+                  Failed to load recent inflow.
+                </div>
+              ) : recentInflow?.length > 0 ? (
+                recentInflow?.map(
+                  (item: { narration: string; amount: string }, index: Key) => (
+                    <div
+                      key={index}
+                      className="flex justify-between space-y-4 px-6"
+                    >
+                      <p className="text-sm font-outfit font-medium">
+                        {item.narration}
+                      </p>
+                      <p className="text-sm font-outfit font-medium">
+                        {formatAmount(item.amount, "N")}
+                      </p>
+                    </div>
+                  )
+                )
+              ) : (
+                <div className="text-center py-4 text-gray-500">No recent inflow.</div>
+              )}
+            </div>
             <div className="flex justify-between font-outfit font-semibold border-t p-4">
               <p className="text-sm">TOTAL</p>
               <p className="text-sm">{formatAmount(totalInflow, "N")}</p>
             </div>
           </CardContent>
         </Card>
+
+        {/* Recent Outflow */}
         <Card className="h-fit p-0">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg">Recent Outflow</CardTitle>
@@ -320,24 +315,39 @@ export default function Dashboard() {
             </Button>
           </CardHeader>
           <hr className="border-gray-200 mb-2" />
-          <CardContent className="space-y-6 p-0">
-            {outflowStatus === "loading" ? (
-              <div className="flex items-center justify-center py-4">
-                <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                <span className="text-gray-500">Loading outflow...</span>
-              </div>
-            ) : outflowStatus === "error" || !outflowData?.isSuccess ? (
-              <div className="text-center py-4 text-red-500">Failed to load recent outflow.</div>
-            ) : recentOutflow?.length > 0 ? (
-              recentOutflow?.map((item: { narration: string, amount: string }, index: any) => (
-                <div key={index} className="space-y-4 px-6 flex justify-between">
-                  <p className="text-sm font-outfit font-medium">{item.narration}</p>
-                  <p className="text-sm font-outfit font-medium">{formatAmount(item.amount, "N")}</p>
+          <CardContent className="p-0">
+            <div className="max-h-64 overflow-y-auto space-y-6">
+              {outflowStatus === "loading" ? (
+                <div className="flex items-center justify-center py-4">
+                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                  <span className="text-gray-500">Loading outflow...</span>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-4 text-gray-500">No recent outflow.</div>
-            )}
+              ) : outflowStatus === "error" || !outflowData?.isSuccess ? (
+                <div className="text-center py-4 text-red-500">
+                  Failed to load recent outflow.
+                </div>
+              ) : recentOutflow?.length > 0 ? (
+                recentOutflow?.map(
+                  (item: { narration: string; amount: string }, index: any) => (
+                    <div
+                      key={index}
+                      className="space-y-4 px-6 flex justify-between"
+                    >
+                      <p className="text-sm font-outfit font-medium">
+                        {item.narration}
+                      </p>
+                      <p className="text-sm font-outfit font-medium">
+                        {formatAmount(item.amount, "N")}
+                      </p>
+                    </div>
+                  )
+                )
+              ) : (
+                <div className="text-center py-4 text-gray-500">
+                  No recent outflow.
+                </div>
+              )}
+            </div>
             <div className="flex justify-between font-outfit font-semibold border-t p-4">
               <p className="text-sm">TOTAL</p>
               <p className="text-sm">{formatAmount(totalOutflow, "N")}</p>

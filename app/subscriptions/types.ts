@@ -43,6 +43,7 @@ export const transformSubscriptionToApiPayload = (
   const getSchemeTypeString = (type: string, title: string) => {
     if (type === "asset") return "AutoFinance";
     if (title.toLowerCase().includes("weekly")) return "Weekly";
+    if (title.toLowerCase().includes("daily")) return "Daily";
     if (title.toLowerCase().includes("monthly")) return "Monthly";
     return "Weekly";
   };
@@ -110,8 +111,8 @@ export const transformApiDataToSubscriptions = (
           extraTyre: scheme.extraTyrePercent.toString(),
           insurance: scheme.insurancePerAnnumPercent.toString(),
           processingFee: scheme.processingFeePercent.toString(),
-          preLoanServiceCharge: scheme.preLoanServiceChargePercent.toFixed(3),
-          postLoanServiceCharge: scheme.postLoanServiceChargePercent.toFixed(2),
+          preLoanServiceCharge: scheme.preLoanServiceChargePercent.toFixed(5),
+          postLoanServiceCharge: scheme.postLoanServiceChargePercent.toFixed(5),
           eligibleLoanPercent: scheme.eligibleLoanPercent.toString(),
           contributionPercent: "",
           eligibleLoanMultiple: "",
@@ -133,9 +134,9 @@ export const transformApiDataToSubscriptions = (
           { label: "Extra Tyre", key: "extraTyre", unit: "%" },
           { label: "Insurance/Annum", key: "insurance", unit: "%" },
           { label: "Processing Fee", key: "processingFee", unit: "%" },
-          { label: "Pre-Loan Service", key: "preLoanServiceCharge", unit: "%" },
+          { label: "Pre-Loan Service Charge", key: "preLoanServiceCharge", unit: "%" },
           {
-            label: "Post-Loan Service",
+            label: "Post-Loan Service Charge",
             key: "postLoanServiceCharge",
             unit: "%",
           },
@@ -151,7 +152,8 @@ export const transformApiDataToSubscriptions = (
         values: {
           contributionPercent: scheme.contributionPercent.toString(),
           eligibleLoanMultiple: scheme.eligibleLoanMultiple.toString(),
-          serviceCharge: roundTo(scheme.serviceCharge, 4).toString(),
+          preLoanServiceCharge: roundTo(scheme.preLoanServiceChargePercent, 5).toString(),
+          postLoanServiceCharge: roundTo(scheme.postLoanServiceChargePercent, 5).toString(),
           loanManagementFee: scheme.loanManagementFeePercent.toString(),
           defaultPenalty: scheme.defaultPenaltyPercent.toString(),
           minimumVehicleCost: "",
@@ -163,14 +165,14 @@ export const transformApiDataToSubscriptions = (
           extraTyre: "",
           insurance: "",
           processingFee: "",
-          preLoanServiceCharge: "",
-          postLoanServiceCharge: "",
+          serviceCharge: "",
           eligibleLoanPercent: "",
         },
         paramsConfig: [
           { label: "Contribution", key: "contributionPercent", unit: "%" },
           { label: "Eligible Loan", key: "eligibleLoanMultiple", unit: "x" },
-          { label: "Service Charge", key: "serviceCharge", unit: "%" },
+          { label: "Pre Loan Service Charge", key: "preLoanServiceCharge", unit: "%" },
+           { label: "Post Loan Service Charge", key: "postLoanServiceCharge", unit: "%" },
           { label: "Loan Mgmt Fee", key: "loanManagementFee", unit: "%" },
           { label: "Default Penalty", key: "defaultPenalty", unit: "%" },
         ],

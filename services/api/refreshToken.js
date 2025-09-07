@@ -12,6 +12,7 @@ axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 async function refreshTokenFn() {
   const storedData = Cookies.get("data");
   const data = storedData && JSON.parse(storedData);
+console.log(storedData);
 
   try {
     const url = `${endpoints.auth}/refresh-token`;

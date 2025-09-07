@@ -21,7 +21,7 @@ export   const formatMoney = (value: string) => {
 export const formatAmount = (
   amount: number | undefined | string,
   currency: string = "₦"
-) => {
+) => {  
   if (typeof amount !== "number") return `${currency}0.00`;
 
   const isNegative = amount < 0;

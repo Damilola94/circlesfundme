@@ -11,15 +11,15 @@ import { ReasonModal } from "@/components/ui/reason-modal"
 import useGetQuery from "@/hooks/useGetQuery"
 import { formatAmount } from "@/lib/utils"
 import { useMutation } from "react-query"
-// import handleFetch from "@/lib/handleFetch"
-import { toast } from "react-toastify";
 import handleFetch from "@/services/api/handleFetch"
+import { toast } from "react-toastify"
 
 export type StatusType = "Active" | "Completed" | "Pending" | "Waitlisted" | "Rejected"
 
 export default function LoanDetails({ params }: { params: { id: string } }) {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false)
   const [isWaitlistModalOpen, setIsWaitlistModalOpen] = useState(false)
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false)
 
   const {
     data: loanDetailsResponse,
@@ -29,7 +29,7 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
   } = useGetQuery({
     endpoint: `loanapplications/${params.id}`,
     pQuery: {
-      loanApplicationId: params.id
+      loanApplicationId: params.id,
     },
     queryKey: ["loan-details", params.id],
     auth: true,
@@ -54,7 +54,7 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
       refetch()
     },
     onError: (response: { message: string }) => {
-      console.log(response);
+      console.log(response)
       if (response) {
         toast.error(response.message || "Failed to reject loan")
       }
@@ -79,8 +79,35 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
       setIsWaitlistModalOpen(false)
       refetch()
     },
-    onError: () => {
-      toast.error("Failed to waitlist loan")
+    onError: (err: { statusCode: string; message: string }) => {
+      if (err.statusCode !== "400") {
+        toast.error(err.message || "Failed to waitlist loan")
+      }
+    },
+  })
+
+  const approveMutation = useMutation({
+    mutationFn: (loanApplicationId: string) =>
+      handleFetch({
+        endpoint: "loanapplications/approve",
+        method: "POST",
+        auth: true,
+        body: { loanApplicationId },
+      }),
+    onSuccess: (response) => {
+      if (response.statusCode == "400") {
+        toast.error(response.message || "Failed to approve loan")
+        return
+      }
+      toast.success("Loan approved successfully")
+      setIsApproveModalOpen(false)
+      refetch()
+    },
+    onError: (response: { message: string }) => {
+      console.log(response)
+      if (response) {
+        toast.error(response.message || "Failed to approve loan")
+      }
     },
   })
 
@@ -90,6 +117,10 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
 
   const handleWaitlistLoan = () => {
     waitlistMutation.mutate(params.id)
+  }
+
+  const handleApproveLoan = () => {
+    approveMutation.mutate(params.id)
   }
 
   const loanData = loanDetailsResponse?.data
@@ -181,27 +212,41 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
                 </div>
               ))}
               <div className="flex justify-between text-sm pt-2">
-                <span className="text-gray-600">Loan Status</span>
-                <TransactionStatus status={loanData?.isEligible ? "Completed" : "Pending"} />
+                <span className="text-gray-600 font-outfit">Loan Status</span>
+                <TransactionStatus status={loanData?.status} />
               </div>
-              <div className="flex justify-between space-x-4 pt-6">
-                <Button className="bg-primary-900 hover:bg-primary-700 w-full">Approve Loan</Button>
-                <Button
-                  className="bg-red-800 hover:bg-red-600 w-full"
-                  onClick={() => setIsRejectModalOpen(true)}
-                  disabled={rejectMutation.isLoading}
-                >
-                  {rejectMutation.isLoading ? "Rejecting..." : "Reject Loan"}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full bg-transparent"
-                  onClick={() => setIsWaitlistModalOpen(true)}
-                  disabled={waitlistMutation.isLoading}
-                >
-                  {waitlistMutation.isLoading ? "Processing..." : "Waitlist Request"}
-                </Button>
-              </div>
+              {loanData?.status !== "Active" && (
+                <div className="flex justify-between space-x-4 pt-6">
+                  {loanData?.status === "Waitlist" && (
+                      <Button
+                        className="bg-primary-900 hover:bg-primary-700 w-full"
+                        onClick={() => setIsApproveModalOpen(true)}
+                        disabled={approveMutation.isLoading}
+                      >
+                        {approveMutation.isLoading ? "Approving..." : "Approve"}
+                      </Button>
+                  )}
+                  {loanData?.status === "Pending" && (
+                    <>
+                      <Button
+                        variant="outline"
+                        className="w-full bg-transparent"
+                        onClick={() => setIsWaitlistModalOpen(true)}
+                        disabled={waitlistMutation.isLoading}
+                      >
+                        {waitlistMutation.isLoading ? "Processing..." : "Waitlisted"}
+                      </Button>
+                      <Button
+                        className="bg-red-800 hover:bg-red-600 w-full"
+                        onClick={() => setIsRejectModalOpen(true)}
+                        disabled={rejectMutation.isLoading}
+                      >
+                        {rejectMutation.isLoading ? "Rejecting..." : "Reject"}
+                      </Button>
+                    </>
+                  )}
+                </div>
+              )}
             </CardContent>
           )}
         </Card>
@@ -224,6 +269,15 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
         title="Waitlist Loan Application"
         description={`Are you sure you want to waitlist this loan application for ${loanData?.fullname}? This will move the application to the waitlist.`}
         confirmButtonText="Waitlist Application"
+      />
+
+      <ConfirmationModal
+        isOpen={isApproveModalOpen}
+        onOpenChange={setIsApproveModalOpen}
+        onConfirm={handleApproveLoan}
+        title="Approve Loan Application"
+        description={`Are you sure you want to approve this loan application for ${loanData?.fullname}? This will process the loan for ${formatAmount(loanData?.requestedAmount, "₦")}.`}
+        confirmButtonText="Approve Loan"
       />
     </div>
   )

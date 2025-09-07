@@ -47,14 +47,14 @@ export const MESSAGE_TYPE_API_TO_DISPLAY: Record<string, string> = {
   LoanRepaymentReminder: "Payment Reminder",
   WelcomeMessage: "Welcome Message",
   LoanApproval: "Loan Approval",
-  KYCReminder: "KYC Reminder",
+  PendingKYCReminder: "KYC Reminder",
 };
 
 export const MESSAGE_TYPE_DISPLAY_TO_API: Record<string, string> = {
   "Payment Reminder": "LoanRepaymentReminder",
   "Welcome Message": "WelcomeMessage",
   "Loan Approval": "LoanApproval",
-  "KYC Reminder": "KYCReminder",
+  "KYC Reminder": "PendingKYCReminder",
 };
 
 
