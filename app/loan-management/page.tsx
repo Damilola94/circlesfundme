@@ -78,7 +78,7 @@ export default function LoanManagement() {
   return (
     <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
 
-    <div className="flex-1 space-y-6 p-6">
+    <div className="flex-1 space-y-6 p-6 min-w-[800px] ">
       <div className="flex justify-between items-end border-b-2">
         <div className="flex space-x-1 bg-gray-100 rounded-lg w-fit justify-between">
           {statusTabs.map((tab) => (
@@ -151,7 +151,7 @@ export default function LoanManagement() {
       <div className="space-y-3">
         {filteredLoans.length > 0 ? (
           filteredLoans.map((loan: any) => (
-            <Card key={loan.id} className="shadow-sm">
+            <Card key={loan.id} className="shadow-sm min-w-[800px] ">
               <CardContent className="p-6">
                 <div className="grid grid-cols-7 gap-4 items-center">
                   <div className="flex items-center space-x-3">

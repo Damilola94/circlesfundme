@@ -338,7 +338,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
               <div className="text-center py-8 text-gray-500">No loan applications found for this user.</div>
             ) : (
               loans.map((loanItem: any) => (
-                <Card key={loanItem.id} className="shadow-sm bg-white">
+                <Card key={loanItem.id} className="shadow-sm bg-white min-w-[800px]">
                   <CardContent className="p-6">
                     <div className="grid grid-cols-6 gap-4 items-center">
                       <div className="text-sm text-gray-600 font-outfit">{loanItem.dateJoined}</div>

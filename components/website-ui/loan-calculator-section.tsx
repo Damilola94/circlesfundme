@@ -95,7 +95,7 @@ export default function LoanCalculatorSection() {
           loanManagementFee: breakdown.loanManagementFee,
           minimumWeeklyContribution: breakdown.minimumWeeklyContribution,
           preLoanServiceCharge: breakdown.preLoanServiceCharge,
-          postLoanContribution: breakdown.postLoanWeeklyContribution,
+          postLoanWeeklyContribution: breakdown.postLoanWeeklyContribution,
           eligibleLoan: breakdown.eligibleLoan,
           totalRepayment: breakdown.totalRepayment,
         });
@@ -149,6 +149,7 @@ export default function LoanCalculatorSection() {
       });
     }
   };
+console.log(vehicleBreakdown);
 
   const { isLoading } = breakdownMutation;
   const { isLoading: regularIsLoading } = regualarBreakdownMutation;

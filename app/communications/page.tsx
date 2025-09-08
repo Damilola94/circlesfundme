@@ -451,7 +451,7 @@ export default function Communications() {
       </div>
       <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
 
-        <div className="flex justify-between items-end">
+        <div className="flex justify-between items-end min-w-[800px]">
           <p className="text-lg font-outfit">Communication History</p>
           <div className="flex items-center justify-between space-x-2">
             <div className="relative">
@@ -498,7 +498,7 @@ export default function Communications() {
             </div>
           ) : communicationHistory.length > 0 ? (
             communicationHistory.map((item: any) => (
-              <Card key={item.id} className="shadow-sm bg-white">
+              <Card key={item.id} className="shadow-sm bg-white min-w-[800px]">
                 <CardContent className="p-6">
                   <div className="grid grid-cols-6 gap-4 items-center">
                     <div className="text-sm text-gray-600 font-outfit">{item.title}</div>

@@ -119,7 +119,7 @@ export default function KYCReviews() {
 
   return (
     <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
-      <div className="flex justify-between items-end border-b-2">
+      <div className="flex min-w-[800px] justify-between items-end border-b-2">
         <div className="flex space-x-1 bg-gray-100 rounded-lg w-fit justify-between">
           {tabs.map((tab) => (
             <button
@@ -180,7 +180,7 @@ export default function KYCReviews() {
             </div>
           ) : users.length > 0 ? (
             users.map((user) => (
-              <Card key={user.userId} className="shadow-sm bg-white">
+              <Card key={user.userId} className="shadow-sm bg-white min-w-[800px]">
                 <CardContent className="p-6">
                   <div className="grid grid-cols-7 gap-4 items-center font-outfit">
                     <div className="flex items-center space-x-3">
