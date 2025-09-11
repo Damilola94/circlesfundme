@@ -13,6 +13,13 @@ export default function WhatWeProvideSection() {
       image: "/assets/images/auto-finance-scheme.jpg",
       href: "/schemes/auto-finance",
     },
+     {
+      title: "Daily Contribution",
+      description:
+       "Build wealth one day at a time with secure daily contributions.",
+      image: "/assets/images/daily-finance.jpg",
+      href: "/schemes/daily",
+    },
     {
       title: "Weekly Contribution",
       description:

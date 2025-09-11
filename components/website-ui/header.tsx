@@ -17,6 +17,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const schemes = [
+    { name: "Daily Contribution Scheme", href: "/schemes/daily" },
     { name: "Weekly Contribution Scheme", href: "/schemes/weekly" },
     { name: "Monthly Contribution Scheme", href: "/schemes/monthly" },
     { name: "Auto Finance Contribution Scheme", href: "/schemes/auto-finance" },

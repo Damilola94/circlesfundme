@@ -1,0 +1,15 @@
+export const tableOfContent = [
+  { id: 1, title: "Introduction" },
+  { id: 2, title: "Personal Data We Collect" },
+  { id: 3, title: "How We Use Your Data" },
+  { id: 4, title: "Sharing & Third Parties" },
+  { id: 5, title: "KYC, Identity Verification & Documents" },
+  { id: 6, title: "Cookies & Tracking" },
+  { id: 7, title: "Data Retention" },
+  { id: 8, title: "Your Rights" },
+  { id: 9, title: "Security" },
+  { id: 10, title: "International Transfers" },
+  { id: 11, title: "Children" },
+  { id: 12, title: "Changes to this Policy" },
+  { id: 13, title: "Contact Us" },
+];
