@@ -47,7 +47,7 @@ export default function WeeklySchemePage() {
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-gray-700 font-outfit">Do you have a consistent daily or weekly sales revenue stream?</p>
+                  <p className="text-gray-700 font-outfit">Do you have a consistent weekly sales revenue stream?</p>
                 </div>
               </div>
 

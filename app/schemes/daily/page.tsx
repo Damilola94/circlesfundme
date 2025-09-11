@@ -109,7 +109,7 @@ const loanTermsDaily = [
           <div className="text-center">
             <p className="text-gray-600 mb-6 font-outfit">
               If you meet these criteria and are ready to take your business to the next level, consider signing up
-              for the CirclesFundme Weekly Contribution Scheme!
+              for the CirclesFundme Daily Contribution Scheme!
             </p>
             <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3">Get Started</Button>
           </div>
