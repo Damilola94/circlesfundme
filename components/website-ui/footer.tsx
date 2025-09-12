@@ -45,6 +45,14 @@ export default function Footer() {
                   About
                 </Link>
               </li>
+               <li>
+                <Link
+                  href="/schemes/daily"
+                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
+                >
+                  Daily Contribution
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/schemes/weekly"

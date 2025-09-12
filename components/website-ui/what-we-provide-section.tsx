@@ -17,7 +17,7 @@ export default function WhatWeProvideSection() {
       title: "Daily Contribution",
       description:
        "Build wealth one day at a time with secure daily contributions.",
-      image: "/assets/images/daily-finance.jpg",
+      image: "/assets/images/daily-happy-woman-home.jpg",
       href: "/schemes/daily",
     },
     {

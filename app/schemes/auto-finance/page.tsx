@@ -12,7 +12,7 @@ export default function AutoFinancePage() {
   ];
 
   const eligibilityRequirements = [
-    "To participate in the CirclesFundme Auto Finance Contribution Savings Linked Auto Finance Scheme, you must save a minimum of ₦50,000 weekly or monthly towards your auto finance scheme.",
+    "Are you interested in owning a vehicle through the Circlesfundme Auto Finance Contribution Scheme? Can you make regular daily, weekly, or monthly contributions to save your 10% Equity Contribution, which qualifies you for access to the Circlesfundme Auto Finance Scheme? ",
     "You must be a member for at least three months and meet the 10% down payment requirement to access our auto finance scheme.",
     "A good credit history is necessary.",
     "Direct debit from your corporate or personal account is required.",

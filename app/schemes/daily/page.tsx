@@ -64,7 +64,7 @@ const loanTermsDaily = [
             <div className="relative animate-slide-in-right">
               <div className="relative z-10">
                 <Image
-                  src="/assets/images/happy-man-with-money.jpg"
+                  src="/assets/images/daily-happy-woman.jpg"
                   alt="Happy customers"
                   width={400}
                   height={500}

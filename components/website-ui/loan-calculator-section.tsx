@@ -329,8 +329,12 @@ console.log(vehicleBreakdown);
                       />
                       <Input
                         type="money"
-                        label={`${scheme.includes("Weekly") ? "Weekly" : "Monthly"
-                          } Contribution`}
+                        label={`${scheme.includes("Daily")
+                          ? "Daily Contribution"
+                          : scheme.includes("Weekly")
+                            ? "Weekly Contribution"
+                            : "Monthly Contribution"
+                          } `}
                         value={contribution}
                         onChange={(e) => setContribution(e.target.value)}
                         placeholder="Enter amount"
