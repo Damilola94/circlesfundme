@@ -41,10 +41,11 @@ export const transformSubscriptionToApiPayload = (
   subscription: Subscription
 ): any => {
   const getSchemeTypeString = (type: string, title: string) => {
-    if (type === "asset") return "AutoFinance";
+    if (title.toLowerCase().includes("tricycle")) return "TricycleFinance";
     if (title.toLowerCase().includes("weekly")) return "Weekly";
     if (title.toLowerCase().includes("daily")) return "Daily";
     if (title.toLowerCase().includes("monthly")) return "Monthly";
+    if (type === "asset") return "AutoFinance";
     return "Weekly";
   };
 
@@ -93,9 +94,10 @@ export const transformApiDataToSubscriptions = (
   apiData: ApiScheme[]
 ): Subscription[] => {
   return apiData.map((scheme) => {
-    const isAssetFinance = scheme.schemeType === 3;
+    const isAssetFinance = scheme.schemeType === 3
+    const isTricycleFinance = scheme.schemeType === 5
 
-    if (isAssetFinance) {
+    if (isAssetFinance || isTricycleFinance) {
       return {
         id: scheme.id,
         title: scheme.name,
@@ -178,5 +180,25 @@ export const transformApiDataToSubscriptions = (
         ],
       };
     }
+  });
+};
+
+export const sortSubscriptionsByOrder = (subscriptions: Subscription[]) => {
+  const order = [
+    "Daily",
+    "Weekly",
+    "Monthly",
+    "Tricycle Financing",
+    "Auto Financing",
+  ];
+
+  return subscriptions.sort((a, b) => {
+    const indexA = order.findIndex((name) =>
+      a.title.toLowerCase().includes(name.toLowerCase())
+    );
+    const indexB = order.findIndex((name) =>
+      b.title.toLowerCase().includes(name.toLowerCase())
+    );
+    return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
   });
 };

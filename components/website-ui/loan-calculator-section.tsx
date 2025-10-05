@@ -359,7 +359,7 @@ export default function LoanCalculatorSection() {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Loan Mgt. Fee (4 years):</span>
+                            <span>Loan Mgt. Fee (2 years):</span>
                             <span className="font-outfit font-semibold">
                               ₦{vehicleBreakdown.loanManagementFee}
                             </span>
