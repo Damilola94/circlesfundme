@@ -21,6 +21,7 @@ export default function Header() {
     { name: "Weekly Contribution Scheme", href: "/schemes/weekly" },
     { name: "Monthly Contribution Scheme", href: "/schemes/monthly" },
     { name: "Auto Finance Contribution Scheme", href: "/schemes/auto-finance" },
+    { name: "Tricycle Finance Contribution Scheme", href: "/schemes/tricycle-finance" },
   ];
 
   return (

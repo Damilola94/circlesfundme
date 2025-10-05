@@ -77,6 +77,14 @@ export default function Footer() {
                   Auto Finance Contribution
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/schemes/tricycle-finance"
+                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
+                >
+                  Tricycle Finance Contribution
+                </Link>
+              </li>
             </ul>
           </div>
 
