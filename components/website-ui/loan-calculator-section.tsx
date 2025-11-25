@@ -56,6 +56,7 @@ export default function LoanCalculatorSection() {
   });
 
   const isAssetFinance = scheme === "Auto Financing Contribution";
+  const isTricycleFinance = scheme === "Tricycle Financing Contribution";
   const incomeValue = parseFloat(income.replace(/,/g, ""));
   const contributionValue = parseFloat(contribution.replace(/,/g, ""));
   const assetCostValue = parseFloat(assetCost.replace(/,/g, ""));
@@ -77,7 +78,9 @@ export default function LoanCalculatorSection() {
   const breakdownMutation = useMutation({
     mutationFn: (body: any) =>
       handleFetch({
-        endpoint: "contributionschemes/auto-finance-breakdown",
+        endpoint: isAssetFinance
+          ? "contributionschemes/auto-finance-breakdown"
+          : "contributionschemes/tricycle-finance-breakdown",
         method: "POST",
         body,
       }),
@@ -149,7 +152,7 @@ export default function LoanCalculatorSection() {
       });
     }
   };
-console.log(vehicleBreakdown);
+  console.log(vehicleBreakdown);
 
   const { isLoading } = breakdownMutation;
   const { isLoading: regularIsLoading } = regualarBreakdownMutation;
@@ -210,7 +213,7 @@ console.log(vehicleBreakdown);
                   Calculate Your <span className="text-primary">Loan</span>
                 </h2>
               </div>
-              <Card className="bg-primary-50 border shadow-md ">
+              <Card className="bg-gray border shadow-md ">
                 <CardContent className="p-8 space-y-6">
                   <Select
                     label="Contribution Scheme"
@@ -233,6 +236,10 @@ console.log(vehicleBreakdown);
                         label: "Auto Financing Contribution",
                         value: "Auto Financing Contribution",
                       },
+                      {
+                        label: "Tricycle Financing Contribution",
+                        value: "Tricycle Financing Contribution",
+                      },
                     ]}
                   />
 
@@ -246,7 +253,7 @@ console.log(vehicleBreakdown);
                         placeholder="Enter amount"
                       />
                       {vehicleBreakdown.costOfVehicle && (
-                        <div className="bg-gray-50 p-4 rounded space-y-2 font-outfit ">
+                        <div className="bg-gray-50 p-4 rounded space-y-2 font-outfit">
                           <div className="flex justify-between">
                             <span>Extra Engine:</span>
                             <span className="font-outfit font-semibold">
@@ -313,28 +320,95 @@ console.log(vehicleBreakdown);
                         </div>
                       )}
                     </>
+                  ) : isTricycleFinance ? (
+                    <>
+                      <Input
+                        type="money"
+                        label="Cost of Tricycle (₦)"
+                        value={assetCost}
+                        onChange={(e) => setAssetCost(e.target.value)}
+                        placeholder="Enter amount"
+                      />
+                      {vehicleBreakdown.costOfVehicle && (
+                        <div className="bg-gray-50 p-4 rounded-lg space-y-2 font-outfit">
+                          <div className="flex justify-between">
+                            <span>Insurance:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.insurance}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Processing Fee:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.processingFee}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>
+                              User Contribution{" "}
+                              <span className="text-sm">(Down Payment):</span>
+                            </span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.downPayment}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Eligible Loan:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.eligibleLoan}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Loan Mgt. Fee (2 years):</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.loanManagementFee}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Pre-Loan Service Charge:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.preLoanServiceCharge}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Post-Loan Weekly Repayment:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.postLoanWeeklyContribution}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Total Repayment:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.totalRepayment}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </>
                   ) : (
                     <>
                       <Input
                         type="money"
-                        label={`${scheme.includes("Daily")
-                          ? "Daily Sales Revenue"
-                          : scheme.includes("Weekly")
+                        label={`${
+                          scheme.includes("Daily")
+                            ? "Daily Sales Revenue"
+                            : scheme.includes("Weekly")
                             ? "Weekly Sales Revenue"
                             : "Monthly Income"
-                          } `}
+                        } `}
                         value={income}
                         onChange={(e) => setIncome(e.target.value)}
                         placeholder="Enter amount"
                       />
                       <Input
                         type="money"
-                        label={`${scheme.includes("Daily")
-                          ? "Daily Contribution"
-                          : scheme.includes("Weekly")
+                        label={`${
+                          scheme.includes("Daily")
+                            ? "Daily Contribution"
+                            : scheme.includes("Weekly")
                             ? "Weekly Contribution"
                             : "Monthly Contribution"
-                          } `}
+                        } `}
                         value={contribution}
                         onChange={(e) => setContribution(e.target.value)}
                         placeholder="Enter amount"
@@ -356,12 +430,11 @@ console.log(vehicleBreakdown);
                           <div className="flex justify-between">
                             <span>Repayment Duration:</span>
                             <span className="font-outfit font-semibold">
-                              {`${scheme.includes("Daily")
+                              {scheme.includes("Daily")
                                 ? "365 days/1 yr"
                                 : scheme.includes("Weekly")
-                                  ? "52 weeks/1 yr"
-                                  : "12 months/1 yr"
-                                } `}
+                                ? "52 weeks/1 yr"
+                                : "12 months/1 yr"}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -409,7 +482,11 @@ console.log(vehicleBreakdown);
                   <Button
                     className="w-full mt-4"
                     onClick={
-                      isAssetFinance ? handleAutoSubmit : handleRegularSubmit
+                      isTricycleFinance
+                        ? handleAutoSubmit
+                        : isAssetFinance
+                        ? handleAutoSubmit
+                        : handleRegularSubmit
                     }
                   >
                     Calculate

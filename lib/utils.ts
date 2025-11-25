@@ -70,6 +70,7 @@ export const noLayoutRoutes = [
   "/schemes/weekly",
   "/schemes/monthly",
   "/schemes/auto-finance",
+  "/schemes/tricycle-finance",
 ];
 
 export function getTotalInflow(inflowData?: InflowResponse): number {
