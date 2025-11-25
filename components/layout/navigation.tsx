@@ -4,6 +4,7 @@ import {
   CommunicationIcon,
   KYCIcon,
   SubscriptionIcon,
+  WithdrawalIcon
 } from "@/public/assets/icons";
 
 export const navigation = [
@@ -22,6 +23,16 @@ export const navigation = [
     href: "/user-management",
     icon: (isActive: boolean, hoverClass = "") => (
       <KYCIcon
+        stroke={isActive ? "#004C42" : "#ffffff"}
+        className={hoverClass}
+      />
+    ),
+  },
+  {
+    name: "Withdrawal Requests",
+    href: "/withdrawal-requests",
+    icon: (isActive: boolean, hoverClass = "") => (
+      <WithdrawalIcon
         stroke={isActive ? "#004C42" : "#ffffff"}
         className={hoverClass}
       />

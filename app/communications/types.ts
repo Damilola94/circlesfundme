@@ -50,6 +50,12 @@ export const MESSAGE_TYPE_API_TO_DISPLAY: Record<string, string> = {
   PendingKYCReminder: "KYC Reminder",
 };
 
+export const optionList = [
+                { value: "All", label: "All Users" },
+                { value: "ActiveBorrowers", label: "Active Borrowers" },
+                { value: "OverdueRepaymentMembers", label: "Overdue Repayment Members" },
+                { value: "PendingKYCMembers", label: "Pending KYC Members" },
+              ]
 export const MESSAGE_TYPE_DISPLAY_TO_API: Record<string, string> = {
   "Payment Reminder": "LoanRepaymentReminder",
   "Welcome Message": "WelcomeMessage",

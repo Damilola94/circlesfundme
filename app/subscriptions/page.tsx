@@ -116,7 +116,7 @@ export default function SubscriptionCard() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {subscriptionTypes.map((subscription, subIndex) => (
-          <Card key={subscription.id} className="h-fit">
+          <Card key={subscription.id} className="shadow-sm bg-white">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
               <div>
                 <CardTitle className="text-lg">{subscription.title}</CardTitle>

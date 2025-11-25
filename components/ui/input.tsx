@@ -1,6 +1,6 @@
 import type React from "react";
 import { forwardRef, useState } from "react";
-import { cn, formatAmount, formatMoney } from "@/lib/utils";
+import { cn, formatMoney } from "@/lib/utils";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {

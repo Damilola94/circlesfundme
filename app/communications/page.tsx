@@ -15,9 +15,6 @@ import { SendIcon, SmsIcon, EmailIcon, NotificationIcon } from
 import useGetQuery from "@/hooks/useGetQuery"
 import { useMutation } from "react-query"
 import { toast } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-// import handleFetch from "@/lib/handleFetch"
-
 import { CreateEditTemplateModal, type TemplateData } from "@/components/ui/create-edit-template-modal"
 import {
   MESSAGE_TYPE_NUMBER_TO_API_STRING,
@@ -25,6 +22,7 @@ import {
   MESSAGE_TYPE_API_TO_DISPLAY,
   CHANNEL_MAP_NUMBER_TO_STRING,
   type Communication,
+  optionList,
 } from "./types"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 import handleFetch from "@/services/api/handleFetch"
@@ -308,26 +306,10 @@ export default function Communications() {
             </div>
             <Select
               label="Select Target Group"
-              options={[
-                { value: "All", label: "All Users" },
-                { value: "ActiveBorrowers", label: "Active Borrowers" },
-                { value: "OverdueRepaymentMembers", label: "Overdue Repayment Members" },
-                { value: "PendingKYCMembers", label: "Pending KYC Members" },
-              ]}
+              options={optionList}
               value={selectedTargetGroup}
               onChange={setSelectedTargetGroup}
             />
-            {/* <Select
-              label="Select Message Type"
-              options={[
-                { value: "payment-reminder", label: "Payment Reminder" },
-                { value: "welcome-message", label: "Welcome Message" },
-                { value: "loan-approval", label: "Loan Approval" },
-                { value: "kyc-reminder", label: "KYC Reminder" },
-              ]}
-              value={selectedMessageType}
-              onChange={setSelectedMessageType}
-            /> */}
             <Select
               label="Select Channels"
               options={[

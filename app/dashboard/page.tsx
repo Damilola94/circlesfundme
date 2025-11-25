@@ -9,7 +9,6 @@ import { Loader2 } from "lucide-react"
 import { UserIcon, LoanIcon, KYCIcon, OverdueIcon } from "@/public/assets/icons"
 import { useRouter } from "next/navigation"
 import useGetQuery from "@/hooks/useGetQuery"
-import "react-toastify/dist/ReactToastify.css"
 import moment from "moment";
 
 import { formatAmount, getTotalInflow, getTotalOutflow } from "@/lib/utils"
@@ -23,6 +22,16 @@ export default function Dashboard() {
   } = useGetQuery({
     endpoint: "admindashboard/statistics",
     queryKey: ["dashboard-statistics"],
+    auth: true,
+  })
+
+   const {
+    data: paystackBalance,
+    status: paystackBalanceStatus,
+  } = useGetQuery({
+    endpoint: "adminwithdrawalrequests",
+    extra: "paystack-balance",
+    queryKey: ["paystack-balance"],
     auth: true,
   })
 
@@ -114,7 +123,15 @@ export default function Dashboard() {
 
   return (
     <div className="flex-1 space-y-6 p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <StatsCard
+          title="Paystack Balance"
+          value={
+           paystackBalance?.data[0].balance?.toLocaleString() ||
+            (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
+          }
+          icon={<LoanIcon stroke="#00A86B" />}
+        />
         <StatsCard
           title="Pending KYC"
           value={
@@ -148,7 +165,7 @@ export default function Dashboard() {
           icon={<UserIcon stroke="#00A86B" />}
         />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg">Pending KYC</CardTitle>
@@ -250,7 +267,6 @@ export default function Dashboard() {
         </Card>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Inflow */}
         <Card className="h-fit p-0">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg">Recent Inflow</CardTitle>
@@ -263,7 +279,6 @@ export default function Dashboard() {
             </Button>
           </CardHeader>
           <hr className="border-gray-200 mb-2" />
-          {/* Wrap CardContent in a scrollable container */}
           <CardContent className="p-0">
             <div className="max-h-64 overflow-y-auto space-y-6">
               {inflowStatus === "loading" ? (
@@ -301,8 +316,6 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Recent Outflow */}
         <Card className="h-fit p-0">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg">Recent Outflow</CardTitle>
@@ -343,7 +356,7 @@ export default function Dashboard() {
                   )
                 )
               ) : (
-                <div className="text-center py-4 text-gray-500">
+                <div className="flex justify-center items-center text-center py-4 text-gray-500 h-64 overflow-y-auto">
                   No recent outflow.
                 </div>
               )}
@@ -354,6 +367,58 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
+
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-lg">Withdrawal Requests</CardTitle>
+              <Button
+                onClick={handleKYCReviewViewAll}
+                variant="ghost"
+                size="sm"
+                className=" text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
+              >
+                View All
+              </Button>
+            </CardHeader>
+            <hr className="border-gray-200 mb-2" />
+            <CardContent className="space-y-4">
+              {pendingKycStatus === "loading" ? (
+                <div className="flex items-center justify-center py-4">
+                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                  <span className="text-gray-500">Loading pending KYC...</span>
+                </div>
+              ) : pendingKycStatus === "error" || !pendingKycData?.isSuccess ? (
+                <div className="text-center py-4 text-red-500">Failed to load pending KYC users.</div>
+              ) : kycQueue.length > 0 ? (
+                kycQueue.map((item: { avatar: string; name: string; time: string }, index: any) => (
+                  <div key={index} className="flex items-center justify-between space-y-5">
+                    <div className="flex items-center space-x-3">
+                      <img
+                        src={item.avatar || "/assets/images/display-photo.png"}
+                        className="h-10 w-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <p className="text-sm font-medium font-outfit">{item.name}</p>
+                        <p className="text-xs text-gray-500 font-outfit">{item.time}</p>
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => handleKYCReview(pendingKycData.data[index].userId)}
+                      variant="outline"
+                      className="border-[#00A86B26] text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
+                    >
+                      View Profile
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-4 text-gray-500">No pending KYC users.</div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
