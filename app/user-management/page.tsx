@@ -171,8 +171,8 @@ export default function KYCReviews() {
                   <div className="text-sm text-gray-600">{formatCurrency(user.totalRepaidAmount)}</div>
                   <div className="flex justify-start w-full">
                     <Link href={`/user-management/${user.userId}`}>
-                      <Button size="sm" className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-0 w-fit">
-                        View Profile →
+                      <Button size="sm" className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-2 w-fit">
+                        View Profile
                       </Button>
                     </Link>
                   </div>

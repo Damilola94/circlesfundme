@@ -77,18 +77,31 @@ export default function Header() {
             </Link>
           </nav>
           <div className="hidden md:flex items-center space-x-3">
-            <Button
-              className="w-full bg-primary-350  rounded-full hover:bg-primary/90 text-white"
+            <Link
+              href="https://play.google.com/store/apps/details?id=com.circlesfundme"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <PlayStoreIcon color="#FFFFFF" />
-              Playstore
-            </Button>
-            <Button
-              className="w-full bg-primary-350  rounded-full hover:bg-primary/90 text-white"
+              <Button
+                className="w-full bg-primary-350  rounded-full hover:bg-primary/90 text-white"
+              >
+                <PlayStoreIcon color="#FFFFFF" />
+                Playstore
+              </Button>
+            </Link>
+            <Link
+              href="https://apps.apple.com/ng/app/circlesfundme/id6752893435"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <AppStoreIcon color="#FFFFFF" />
-              Appstore
-            </Button>
+
+              <Button
+                className="w-full bg-primary-350  rounded-full hover:bg-primary/90 text-white"
+              >
+                <AppStoreIcon color="#FFFFFF" />
+                Appstore
+              </Button>
+            </Link>
           </div>
 
           <div className="md:hidden">

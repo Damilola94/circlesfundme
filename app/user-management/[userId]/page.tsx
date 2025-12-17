@@ -353,9 +353,9 @@ export default function UserProfilePage({ params }: { params: { userId: string }
                           <Button
                             size="sm"
                             variant="outline"
-                            className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full w-full border-primary-900 bg-transparent"
+                            className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full w-full border-primary-900 bg-transparent px-2"
                           >
-                            View Request →
+                            View Request 
                           </Button>
                         </Link>
                       </div>

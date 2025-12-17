@@ -140,8 +140,8 @@ export default function LoanManagement() {
                     <div className="text-sm text-gray-600 font-outfit">{formatDate(loan.dateApplied)}</div>
                     <div className="w-full">
                       <Link href={`/loan-management/${loan.id}`}>
-                        <Button size="sm" className="bg-gray-900 hover:bg-gray-800 w-full text-white rounded-full px-0">
-                          View Request →
+                        <Button size="sm" className="bg-gray-900 hover:bg-gray-800 w-full text-white rounded-full px-2">
+                          View Request
                         </Button>
                       </Link>
                     </div>

@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import { AppStoreIcon, PlayStoreIcon } from "@/public/assets/icons";
 
 export default function HeroSection() {
@@ -22,20 +23,35 @@ export default function HeroSection() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                className=" bg-primary-350 rounded-full hover:bg-primary/90 text-white"
+              {/* Play Store */}
+              <Link
+                href="https://play.google.com/store/apps/details?id=com.circlesfundme"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <PlayStoreIcon color="#FFFFFF" />
-                Playstore
-              </Button>
-              <Button
-                size="lg"
-                className="bg-primary-350  rounded-full hover:bg-primary/90 text-white"
+                <Button
+                  size="lg"
+                  className="bg-primary-350 rounded-full hover:bg-primary/90 text-white w-full sm:w-auto"
+                >
+                  <PlayStoreIcon color="#FFFFFF" />
+                  Playstore
+                </Button>
+              </Link>
+
+              {/* App Store */}
+              <Link
+                href="https://apps.apple.com/ng/app/circlesfundme/id6752893435"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <AppStoreIcon color="#FFFFFF" />
-                Appstore
-              </Button>
+                <Button
+                  size="lg"
+                  className="bg-primary-350 rounded-full hover:bg-primary/90 text-white w-full sm:w-auto"
+                >
+                  <AppStoreIcon color="#FFFFFF" />
+                  Appstore
+                </Button>
+              </Link>
             </div>
           </div>
 
