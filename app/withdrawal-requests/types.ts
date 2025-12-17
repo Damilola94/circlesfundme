@@ -1,11 +1,11 @@
 export interface User {
   id: string;
-  name: string;
+  requesterName: string;
   dateRequested: string;
   scheme: string;
   amountRequested: number;
   eligibleLoan: number;
-  totalRepaidAmount: number;
+  totalAmount: number;
 }
 
 interface Tab {
@@ -18,7 +18,6 @@ export const tabs: Tab[] = [
   { id: "pending", label: "Pending Requests", status: "pending" },
   { id: "approved", label: "Approved Requests", status: "approved" },
 ];
-
 
 export type ActionType = "Contribution" | "Withdrawal";
 

@@ -27,7 +27,6 @@ export default function Dashboard() {
 
    const {
     data: paystackBalance,
-    status: paystackBalanceStatus,
   } = useGetQuery({
     endpoint: "adminwithdrawalrequests",
     extra: "paystack-balance",
@@ -35,13 +34,24 @@ export default function Dashboard() {
     auth: true,
   })
 
-  const {
+   const {
     data: pendingKycData,
     status: pendingKycStatus,
   } = useGetQuery({
-    endpoint: "adminusermanagement/users",
+    endpoint: "adminusermanagement",
+    extra: "users",
     pQuery: { Status: "PendingKYC", PageNumber: 1, PageSize: 3 },
-    queryKey: ["pending-kyc-users"],
+    queryKey: ["pending-kyc-user"],
+    auth: true,
+  })
+
+  const {
+    data: pendingWithdrawalData,
+    status: pendingWithdrawalStatus,
+  } = useGetQuery({
+    endpoint: "adminwithdrawalrequests",
+    pQuery: { Status: "pending", PageNumber: 1, PageSize: 3 },
+    queryKey: ["pending-withdrawal"],
     auth: true,
   })
 
@@ -81,6 +91,14 @@ export default function Dashboard() {
     }))
     : []
 
+  const withdrawalQueue = pendingWithdrawalData?.isSuccess
+    ? pendingWithdrawalData.data.map((user: { requesterName: any; dateRequested: string; avatarUrl: any }) => ({
+      name: user.requesterName,
+      time: moment(user.dateRequested).format("MM/DD/YYYY"),
+      avatar: user.avatarUrl,
+    }))
+    : []
+
   const recentInflow = inflowData?.isSuccess
     ? inflowData?.data?.map((item: { narration: any; amount: number }) => ({
       narration: item.narration,
@@ -111,6 +129,11 @@ export default function Dashboard() {
   const handleKYCReviewViewAll = () => {
     router.push(`/user-management?status=pending-kyc`)
   }
+
+  const handleWithdrawalViewAll = () => {
+    router.push(`/withdrawal-requests`)
+  }
+
   const handleKYCReview = (userId: string) => {
     router.push(`/user-management/${userId}`)
   }
@@ -373,7 +396,7 @@ export default function Dashboard() {
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-lg">Withdrawal Requests</CardTitle>
               <Button
-                onClick={handleKYCReviewViewAll}
+                onClick={handleWithdrawalViewAll}
                 variant="ghost"
                 size="sm"
                 className=" text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
@@ -383,15 +406,15 @@ export default function Dashboard() {
             </CardHeader>
             <hr className="border-gray-200 mb-2" />
             <CardContent className="space-y-4">
-              {pendingKycStatus === "loading" ? (
+              {pendingWithdrawalStatus === "loading" ? (
                 <div className="flex items-center justify-center py-4">
                   <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                  <span className="text-gray-500">Loading pending KYC...</span>
+                  <span className="text-gray-500">Loading pending withdrawal...</span>
                 </div>
-              ) : pendingKycStatus === "error" || !pendingKycData?.isSuccess ? (
-                <div className="text-center py-4 text-red-500">Failed to load pending KYC users.</div>
-              ) : kycQueue.length > 0 ? (
-                kycQueue.map((item: { avatar: string; name: string; time: string }, index: any) => (
+              ) : pendingWithdrawalStatus === "error" || !pendingWithdrawalData?.isSuccess ? (
+                <div className="text-center py-4 text-red-500">Failed to load pending withdrawal users.</div>
+              ) : withdrawalQueue.length > 0 ? (
+                withdrawalQueue.map((item: { avatar: string; name: string; time: string }, index: any) => (
                   <div key={index} className="flex items-center justify-between space-y-5">
                     <div className="flex items-center space-x-3">
                       <img
@@ -405,16 +428,16 @@ export default function Dashboard() {
                     </div>
                     <Button
                       size="sm"
-                      onClick={() => handleKYCReview(pendingKycData.data[index].userId)}
+                      onClick={() => handleWithdrawalViewAll()}
                       variant="outline"
                       className="border-[#00A86B26] text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full"
                     >
-                      View Profile
+                      View Request
                     </Button>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-4 text-gray-500">No pending KYC users.</div>
+                <div className="text-center py-4 text-gray-500">No pending withdrawal request.</div>
               )}
             </CardContent>
           </Card>

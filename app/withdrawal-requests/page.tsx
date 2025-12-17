@@ -11,7 +11,7 @@ import { useMutation } from "react-query"
 
 import Pagination from "@/components/ui/pagination"
 import TabsSearchHeader from "@/components/ui/tabs-search-header"
-import {ConfirmationModal} from "@/components/ui/confirmation-modal"
+import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
 import { User, tabs } from "./types"
 import handleFetch from "@/services/api/handleFetch";
@@ -138,15 +138,16 @@ export default function WithdrawalRequests() {
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
         secondaryFilter={false}
-        onFilterClick={() => {}}
+        onFilterClick={() => { }}
         isLoading={isLoading}
       />
 
-      <div className="grid grid-cols-5 gap-4 min-w-[900px] px-6 py-3 font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
+      <div className="grid grid-cols-6 gap-4 min-w-[900px] px-6 py-3 font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
         <div>Name</div>
         <div>Date Requested</div>
         <div>Scheme</div>
         <div>Amount (₦)</div>
+        <div>Balance (₦)</div>
         <div>Actions</div>
       </div>
 
@@ -162,20 +163,19 @@ export default function WithdrawalRequests() {
           users.map((user) => (
             <Card key={user.id} className="shadow-sm bg-white min-w-[900px]">
               <CardContent className="p-6">
-                <div className="grid grid-cols-5 w-full gap-4 items-center font-outfit">
-                  
-                  <span className="font-medium">{user.name}</span>
+                <div className="grid grid-cols-6 w-full gap-4 items-center font-outfit">
+                  <span className="font-medium">{user.requesterName}</span>
                   <span className="text-sm">{formatDate(user.dateRequested)}</span>
                   <span className="text-sm">{user.scheme}</span>
                   <span className="text-sm">{formatCurrency(user.amountRequested)}</span>
-
+                  <span className="text-sm">{formatCurrency(user.totalAmount)}</span>
                   <div className="flex gap-3">
                     <Button
                       onClick={() => openApprovalModal(user.id)}
                       className="bg-primary px-2 py-1 text-white hover:bg-green-700"
                       disabled={actionMutation.isLoading}
                     >
-                      Approve 
+                      Approve
                     </Button>
 
                     <Button

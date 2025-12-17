@@ -23,7 +23,6 @@ export default function HeroSection() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              {/* Play Store */}
               <Link
                 href="https://play.google.com/store/apps/details?id=com.circlesfundme"
                 target="_blank"
@@ -37,8 +36,6 @@ export default function HeroSection() {
                   Playstore
                 </Button>
               </Link>
-
-              {/* App Store */}
               <Link
                 href="https://apps.apple.com/ng/app/circlesfundme/id6752893435"
                 target="_blank"
