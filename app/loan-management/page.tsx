@@ -30,9 +30,11 @@ export default function LoanManagement() {
 
   const schemeTabs = [
     { id: "all-scheme", label: "All Scheme" },
+    { id: "daily", label: "Daily" },
     { id: "weekly", label: "Weekly" },
     { id: "monthly", label: "Monthly" },
-    { id: "autofinance", label: "AutoFinance" },
+    { id: "autofinance", label: "Auto Finance" },
+    { id: "tricyclefinance", label: "Tricycle Finance" },
   ]
 
   const {

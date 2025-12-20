@@ -18,7 +18,7 @@ export function Header() {
     ? "Loading..."
     : isError || !userData
       ? "Guest"
-      : userData?.data.firstName
+      : userData?.data.lastName
 
   const displayEmail = isLoading
     ? "loading@example.com"
