@@ -134,7 +134,7 @@ export default function KYCReviews() {
         <div>Name</div>
         <div>Date Joined</div>
         <div>Scheme</div>
-        <div>Loan-Ready Balance(₦)</div>
+        <div>Loan-Ready Amount(₦)</div>
         <div>Eligible Loan (₦)</div>
         <div>Amount Repaid (₦)</div>
         <div></div>
