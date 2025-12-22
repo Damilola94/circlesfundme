@@ -10,6 +10,7 @@ import { TransactionStatus } from "@/components/ui/transactionstatus"
 import Pagination from "@/components/ui/pagination"
 import useGetQuery from "@/hooks/useGetQuery"
 import TabsSearchHeader from "@/components/ui/tabs-search-header"
+import { formatFullName } from "@/lib/utils"
 
 export type StatusType = "Approved" | "Pending" | "Rejected" | "Waitlist"
 
@@ -129,7 +130,7 @@ export default function LoanManagement() {
                   <div className="grid grid-cols-7 gap-4 items-center">
                     <div className="flex items-center space-x-3">
                       <span className="font-medium text-gray-900 font-outfit">
-                        {`${loan.applicantDetail?.firstName || ""} ${loan.applicantDetail?.lastName || ""}`.trim()}
+                        {formatFullName(`${loan.applicantDetail?.firstName || ""} ${loan.applicantDetail?.lastName || ""}`.trim())}
                       </span>
                     </div>
                     <div>
