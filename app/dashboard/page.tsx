@@ -150,7 +150,7 @@ export default function Dashboard() {
         <StatsCard
           title="Paystack Balance"
           value={
-           paystackBalance?.data[0].balance?.toLocaleString() ||
+           formatAmount(paystackBalance?.data[0].balance)||
             (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
           }
           icon={<LoanIcon stroke="#00A86B" />}
