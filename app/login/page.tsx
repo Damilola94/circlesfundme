@@ -12,7 +12,6 @@ import Link from "next/link";
 import { Loader } from "@/components/ui/Loader";
 import { useMutation } from "react-query";
 import handleFetch from "@/services/api/handleFetch";
-
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
 
@@ -48,93 +47,91 @@ export default function Login() {
       toast.error("Please, enter your email and password.");
       return;
     }
-    const body = {
-      email,
-      password,
-    };
+
     loginMutation.mutate({
       endpoint: "auth/login",
       method: "POST",
-      body,
+      body: { email, password },
     });
   };
 
   const { isLoading } = loginMutation;
 
   return (
-    <div className="min-h-screen flex">
-      <div className="flex-1 flex items-center justify-center bg-white">
-        <div className="w-full space-y-8 max-w-2xl">
-          <div className="flex items-center space-x-2 mb-15 -mt-10">
-            <div className="flex pt-10 pl-10 mb-4">
-              <Link href="">
-                <Image
-                  src="/assets/images/logo.png"
-                  alt="logo"
-                  width={250}
-                  height={100}
-                />
-              </Link>
-            </div>
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      {/* LEFT SIDE (LOGIN FORM) */}
+      <div className="w-full lg:flex-1 flex items-center justify-center bg-white px-4">
+        <div className="w-full max-w-lg space-y-8">
+          {/* Logo */}
+          <div className="flex justify-center lg:justify-start pt-10">
+            <Link href="/">
+              <Image
+                src="/assets/images/logo.png"
+                alt="logo"
+                width={220}
+                height={80}
+              />
+            </Link>
           </div>
-          <Card className="border-0 shadow-none max-w-lg mx-auto">
-            <CardHeader className="text-center pb-8">
+
+          <Card className="border-0 shadow-none">
+            <CardHeader className="text-center pb-6">
               <CardTitle className="text-3xl font-bold text-gray-900">
                 Log In
               </CardTitle>
-              <p className="text-gray-600 mt-2 -m-6 text-sm font-outfit">
+              <p className="text-gray-600 mt-2 text-sm font-outfit">
                 Please fill the details below to sign into your account.
               </p>
             </CardHeader>
+
             <CardContent>
               <form onSubmit={handleLogin}>
-                <div className="space-y-4 mt-10">
-                  <div className="space-y-2">
+                <div className="space-y-4 mt-6">
+                  <Input
+                    id="email"
+                    label="Email Address or Phone Number"
+                    type="email"
+                    placeholder="Enter Your Email Address or Phone Number"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-12"
+                    required
+                  />
+
+                  <div className="relative">
                     <Input
-                      id="email"
-                      label="Email Address or Phone Number"
-                      type="email"
-                      placeholder="Enter Your Email Address or Phone Number"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="h-12"
+                      id="password"
+                      label="Password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter Your Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="h-12 pr-10"
                       required
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        label="Password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter Your Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="h-12 pr-10"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-[70%] -translate-y-1/2 text-gray-400 hover:text-gray-600"    
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-6 w-6" />
-                        ) : (
-                          <Eye className="h-6 w-6" />
-                        )}
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-[70%] -translate-y-1/2 text-gray-400"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-6 w-6" />
+                      ) : (
+                        <Eye className="h-6 w-6" />
+                      )}
+                    </button>
                   </div>
                 </div>
-                <div className="text-right mb-12">
+
+                <div className="text-right my-6">
                   <Link
                     href="/forgot-password"
-                    className="text-sm text-primary-600 font-outfit hover:text-primary-700"
+                    className="text-sm text-primary-600 hover:text-primary-700"
                   >
                     Forgotten Password?
                   </Link>
                 </div>
+
                 <Button
                   type="submit"
                   className="w-full h-12 bg-black hover:bg-primary-900 text-white"
@@ -147,7 +144,9 @@ export default function Login() {
           </Card>
         </div>
       </div>
-      <div className="flex-1 bg-primary-900 flex items-center justify-center">
+
+      {/* RIGHT SIDE (HIDDEN ON MOBILE) */}
+      <div className="hidden lg:flex lg:flex-1 bg-primary-900 items-center justify-center">
         <div className="relative w-80 h-80">
           <Image
             src="/assets/images/logo-v.png"
@@ -157,6 +156,7 @@ export default function Login() {
           />
         </div>
       </div>
+
       {isLoading && <Loader />}
     </div>
   );
