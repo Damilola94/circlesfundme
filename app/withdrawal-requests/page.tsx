@@ -14,7 +14,7 @@ import TabsSearchHeader from "@/components/ui/tabs-search-header"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
 import { User, tabs } from "./types"
-import handleFetch from "@/services/api/handleFetch";
+import handleFetch from "@/services/api/handleFetch"
 
 export default function WithdrawalRequests() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -35,6 +35,8 @@ export default function WithdrawalRequests() {
   const [isActionModalOpen, setIsActionModalOpen] = useState(false)
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(null)
+
+  const showActions = selectedTab === "pending"
 
   const { data, status, error, refetch } = useGetQuery({
     endpoint: "adminwithdrawalrequests",
@@ -126,11 +128,11 @@ export default function WithdrawalRequests() {
   }
 
   const isLoading = status === "loading"
-  const isError = status === "error" || (status === "success" && data && !data.isSuccess)
+  const isError =
+    status === "error" || (status === "success" && data && !data.isSuccess)
 
   return (
     <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
-
       <TabsSearchHeader
         tabs={tabs}
         selectedTab={selectedTab}
@@ -138,17 +140,22 @@ export default function WithdrawalRequests() {
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
         secondaryFilter={false}
-        onFilterClick={() => { }}
+        onFilterClick={() => {}}
         isLoading={isLoading}
       />
 
-      <div className="grid grid-cols-6 gap-4 min-w-[900px] px-6 py-3 font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
+      {/* Table Header */}
+      <div
+        className={`grid gap-4 min-w-[900px] px-6 py-3 font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit ${
+          showActions ? "grid-cols-6" : "grid-cols-5"
+        }`}
+      >
         <div>Name</div>
         <div>Date Requested</div>
         <div>Scheme</div>
         <div>Amount (₦)</div>
         <div>Balance (₦)</div>
-        <div>Actions</div>
+        {showActions && <div>Actions</div>}
       </div>
 
       <div className="space-y-3">
@@ -158,51 +165,69 @@ export default function WithdrawalRequests() {
             <span className="text-gray-500">Loading...</span>
           </div>
         ) : isError ? (
-          <p className="text-center text-red-500 py-8">Failed to load requests.</p>
+          <p className="text-center text-red-500 py-8">
+            Failed to load requests.
+          </p>
         ) : users.length > 0 ? (
           users.map((user) => (
             <Card key={user.id} className="shadow-sm bg-white min-w-[900px]">
               <CardContent className="p-6">
-                <div className="grid grid-cols-6 w-full gap-4 items-center font-outfit">
-                  <span className="font-medium">{formatFullName(user.requesterName)}</span>
-                  <span className="text-sm">{formatDate(user.dateRequested)}</span>
+                <div
+                  className={`grid w-full gap-4 items-center font-outfit ${
+                    showActions ? "grid-cols-6" : "grid-cols-5"
+                  }`}
+                >
+                  <span className="font-medium">
+                    {formatFullName(user.requesterName)}
+                  </span>
+                  <span className="text-sm">
+                    {formatDate(user.dateRequested)}
+                  </span>
                   <span className="text-sm">{user.scheme}</span>
-                  <span className="text-sm">{formatCurrency(user.amountRequested)}</span>
-                  <span className="text-sm">{formatCurrency(user.totalAmount)}</span>
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={() => openApprovalModal(user.id)}
-                      className="bg-primary px-2 py-1 text-white hover:bg-green-700"
-                      disabled={actionMutation.isLoading}
-                    >
-                      Approve
-                    </Button>
+                  <span className="text-sm">
+                    {formatCurrency(user.amountRequested)}
+                  </span>
+                  <span className="text-sm">
+                    {formatCurrency(user.totalAmount)}
+                  </span>
 
-                    <Button
-                      onClick={() => openRejectModal(user.id)}
-                      className="bg-red-600  px-2 text-white hover:bg-red-700"
-                      disabled={actionMutation.isLoading}
-                    >
-                      Reject
-                    </Button>
-                  </div>
+                  {showActions && (
+                    <div className="flex gap-3">
+                      <Button
+                        onClick={() => openApprovalModal(user.id)}
+                        className="bg-primary px-2 py-1 text-white hover:bg-green-700"
+                        disabled={actionMutation.isLoading}
+                      >
+                        Approve
+                      </Button>
 
+                      <Button
+                        onClick={() => openRejectModal(user.id)}
+                        className="bg-red-600 px-2 text-white hover:bg-red-700"
+                        disabled={actionMutation.isLoading}
+                      >
+                        Reject
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
           ))
         ) : (
-          <p className="text-center text-gray-500 py-8">No withdrawal requests found.</p>
+          <p className="text-center text-gray-500 py-8">
+            No withdrawal requests found.
+          </p>
         )}
       </div>
 
       {!isLoading && !isError && (
         <Pagination
-          current={metaData?.currentPage}
+          current={metaData.currentPage}
           onPageChange={handlePageChange}
           onRowChange={handlePageSizeChange}
-          pageSize={metaData?.pageSize}
-          total={metaData?.totalCount}
+          pageSize={metaData.pageSize}
+          total={metaData.totalCount}
         />
       )}
 
@@ -218,7 +243,6 @@ export default function WithdrawalRequests() {
         }
         confirmButtonText={actionType === "approve" ? "Approve" : "Reject"}
       />
-
     </div>
   )
 }

@@ -3,8 +3,10 @@ export interface User {
   name: string;
   dateJoined: string;
   scheme: string;
+  contribution: number;
   totalContribution: number;
   eligibleLoan: number;
+  loanEligibilityAmount: number;
   totalRepaidAmount: number;
 }
 

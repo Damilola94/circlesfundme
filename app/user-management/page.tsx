@@ -4,8 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Search, Filter, Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import Pagination from "@/components/ui/pagination"
 import useGetQuery from "@/hooks/useGetQuery"
 import { toast } from "react-toastify"
@@ -126,14 +125,16 @@ export default function KYCReviews() {
         onTabChange={handleTabChange}
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
-        onFilterClick={() => {}}
+        onFilterClick={() => { }}
         isLoading={isLoading}
         secondaryFilter={true}
       />
-      <div className="grid grid-cols-7 gap-4 min-w-[800px] px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit w-full">
+      <div className="grid grid-cols-9 gap-4 min-w-[800px] px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit w-full">
         <div>Name</div>
         <div>Date Joined</div>
         <div>Scheme</div>
+        <div>Contribution Amount(₦)</div>
+        <div>Amount Contributed(₦)</div>
         <div>Loan-Ready Amount(₦)</div>
         <div>Eligible Loan (₦)</div>
         <div>Amount Repaid (₦)</div>
@@ -160,18 +161,20 @@ export default function KYCReviews() {
           users.map((user) => (
             <Card key={user.userId} className="shadow-sm bg-white min-w-[800px]">
               <CardContent className="p-6">
-                <div className="grid grid-cols-7 w-full gap-4 items-center font-outfit">
+                <div className="grid grid-cols-9 w-full gap-4 items-center font-outfit">
                   <div className="flex items-center space-x-3">
                     <span className="font-medium text-gray-900">{formatFullName(user.name)}</span>
                   </div>
                   <div className="text-sm text-gray-600">{formatDate(user.dateJoined)}</div>
                   <div className="text-sm text-gray-600">{user.scheme}</div>
+                  <div className="text-sm text-gray-600">{formatCurrency(user.contribution)}</div>
                   <div className="text-sm text-gray-600">{formatCurrency(user.totalContribution)}</div>
+                  <div className="text-sm text-gray-600">{formatCurrency(user.loanEligibilityAmount)}</div>
                   <div className="text-sm text-gray-600">{formatCurrency(user.eligibleLoan)}</div>
                   <div className="text-sm text-gray-600">{formatCurrency(user.totalRepaidAmount)}</div>
                   <div className="flex justify-start w-full">
                     <Link href={`/user-management/${user.userId}`}>
-                      <Button size="sm" className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-2 w-fit">
+                      <Button size="sm" className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-2 w-fit text-xs">
                         View Profile
                       </Button>
                     </Link>
