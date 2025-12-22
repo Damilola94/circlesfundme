@@ -9,7 +9,7 @@ import { Search, Filter, Loader2 } from "lucide-react"
 import Pagination from "@/components/ui/pagination"
 import useGetQuery from "@/hooks/useGetQuery"
 import { toast } from "react-toastify"
-import { formatDate, formatCurrency } from "@/lib/utils"
+import { formatDate, formatCurrency, formatFullName } from "@/lib/utils"
 import { User, tabs } from "./types"
 import { useSearchParams } from "next/navigation"
 import TabsSearchHeader from "@/components/ui/tabs-search-header"
@@ -162,7 +162,7 @@ export default function KYCReviews() {
               <CardContent className="p-6">
                 <div className="grid grid-cols-7 w-full gap-4 items-center font-outfit">
                   <div className="flex items-center space-x-3">
-                    <span className="font-medium text-gray-900">{user.name}</span>
+                    <span className="font-medium text-gray-900">{formatFullName(user.name)}</span>
                   </div>
                   <div className="text-sm text-gray-600">{formatDate(user.dateJoined)}</div>
                   <div className="text-sm text-gray-600">{user.scheme}</div>

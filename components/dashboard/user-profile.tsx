@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Download } from "lucide-react";
+import { formatFullName } from "@/lib/utils";
 
 interface DocumentItem {
   documentType: string;
@@ -54,7 +55,7 @@ export function UserProfile({ user }: UserProfileProps) {
               className="rounded-full object-cover"
             />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 font-outfit">{user.name}</h3>
+          <h3 className="text-lg font-semibold text-gray-900 font-outfit">{ formatFullName(user.name)}</h3>
           <p className="text-sm text-gray-500 font-outfit">{user.email}</p>
           <p className="text-sm text-gray-500 font-outfit">{user.phone}</p>
           <p className="text-sm text-gray-500 font-outfit">Joined 20/05/2025</p>
@@ -68,7 +69,7 @@ export function UserProfile({ user }: UserProfileProps) {
         <CardContent className="space-y-4">
           <div className="flex justify-between font-outfit">
             <span className="text-sm text-gray-600">Full Name</span>
-            <span className="text-sm font-medium">{user.name}</span>
+            <span className="text-sm font-medium">{formatFullName(user.name)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Date of Birth</span>

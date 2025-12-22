@@ -88,3 +88,16 @@ export function getTotalOutflow(inflowData?: InflowResponse): number {
   
   return inflowData.data.reduce((sum, item) => sum + (item.amount || 0), 0);
 }
+
+export function formatFullName(name: string): string {
+  if (!name) return "";
+
+  return name
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .map(
+      (word) => word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join(" ");
+}

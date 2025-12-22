@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { toast } from "react-toastify"
-import { formatCurrency, formatDate } from "@/lib/utils"
+import { formatCurrency, formatDate, formatFullName } from "@/lib/utils"
 import useGetQuery from "@/hooks/useGetQuery"
 import { useMutation } from "react-query"
 
@@ -164,7 +164,7 @@ export default function WithdrawalRequests() {
             <Card key={user.id} className="shadow-sm bg-white min-w-[900px]">
               <CardContent className="p-6">
                 <div className="grid grid-cols-6 w-full gap-4 items-center font-outfit">
-                  <span className="font-medium">{user.requesterName}</span>
+                  <span className="font-medium">{formatFullName(user.requesterName)}</span>
                   <span className="text-sm">{formatDate(user.dateRequested)}</span>
                   <span className="text-sm">{user.scheme}</span>
                   <span className="text-sm">{formatCurrency(user.amountRequested)}</span>

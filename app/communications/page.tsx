@@ -431,8 +431,7 @@ export default function Communications() {
           </CardContent>
         </Card>
       </div>
-      <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
-
+      <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6">
         <div className="flex justify-between items-end min-w-[800px]">
           <p className="text-lg font-outfit">Communication History</p>
           <div className="flex items-center justify-between space-x-2">
@@ -498,7 +497,6 @@ export default function Communications() {
           )}
         </div>
       </div>
-
       <Pagination
         current={pageNumber}
         onPageChange={setPageNumber}

@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation"
 import useGetQuery from "@/hooks/useGetQuery"
 import moment from "moment";
 
-import { formatAmount, getTotalInflow, getTotalOutflow } from "@/lib/utils"
+import { formatAmount, formatFullName, getTotalInflow, getTotalOutflow } from "@/lib/utils"
 
 export default function Dashboard() {
   const router = useRouter()
@@ -219,7 +219,7 @@ export default function Dashboard() {
                       className="h-10 w-10 rounded-full object-cover"
                     />
                     <div>
-                      <p className="text-sm font-medium font-outfit">{item.name}</p>
+                      <p className="text-sm font-medium font-outfit">{formatFullName(item.name)}</p>
                       <p className="text-xs text-gray-500 font-outfit">{item.time}</p>
                     </div>
                   </div>
@@ -268,7 +268,7 @@ export default function Dashboard() {
                       className="h-10 w-10 rounded-full object-cover"
                     />
                     <div>
-                      <p className="text-sm font-medium font-outfit">{item.name}</p>
+                      <p className="text-sm font-medium font-outfit">{formatFullName(item.name)}</p>
                       <p className="text-xs text-gray-500 font-outfit">{item.time}</p>
                     </div>
                   </div>
@@ -422,7 +422,7 @@ export default function Dashboard() {
                         className="h-10 w-10 rounded-full object-cover"
                       />
                       <div>
-                        <p className="text-sm font-medium font-outfit">{item.name}</p>
+                        <p className="text-sm font-medium font-outfit">{formatFullName(item.name)}</p>
                         <p className="text-xs text-gray-500 font-outfit">{item.time}</p>
                       </div>
                     </div>

@@ -79,8 +79,7 @@ export default function LoanManagement() {
   }
 
   return (
-    <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
-
+    <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6">
       <div className="flex-1 space-y-6 p-6 min-w-[800px] ">
         <TabsSearchHeader
           tabs={statusTabs}
