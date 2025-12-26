@@ -137,6 +137,15 @@ export const getDateRange = (period: string) => {
   }
 }
 
-
 export const truncateText = (text: string, length = 30) =>
   text.length > length ? `${text.slice(0, length)}...` : text
+
+export const getBalanceAfterWithdrawal = (
+  balanceAtWithdrawal: number,
+  totalAmount: number
+) => {
+  if (!balanceAtWithdrawal || balanceAtWithdrawal === 0.00) {
+    return 0
+  }
+  return Math.max(balanceAtWithdrawal - totalAmount, 0)
+}

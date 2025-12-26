@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { toast } from "react-toastify"
-import { formatAmount, formatCurrency, formatDate, formatFullName, getDateRange, truncateText } from "@/lib/utils"
+import { formatAmount, formatCurrency, formatDate, formatFullName, getBalanceAfterWithdrawal, getDateRange, truncateText } from "@/lib/utils"
 import useGetQuery from "@/hooks/useGetQuery"
 import { useMutation } from "react-query"
 
@@ -191,20 +191,16 @@ export default function WithdrawalRequests() {
         isLoading={isLoading}
       />
       <div
-        className={`grid gap-4 min-w-[900px] px-6 py-3 font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit ${showActions
-            ? "grid-cols-7"
-            : isRejected
-              ? "grid-cols-7"
-              : "grid-cols-6"
-          }`}
+        className={`grid gap-4 min-w-[900px] px-6 py-3 font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit grid-cols-7`}
       >
         <div>Name</div>
         <div>Date Requested</div>
         <div>Scheme</div>
-        <div>Charge Amount (₦)</div>
         <div>Amount (₦)</div>
+        <div>Charge Amount (₦)</div>
 
         {isApproved && <div>Total Amount (₦)</div>}
+        {isApproved && <div>Balance After Withdrawal (₦)</div>}
         {isPending && <div>Balance (₦)</div>}
         {isRejected && <div>Rejected Date</div>}
         {isRejected && <div>Reason</div>}
@@ -226,12 +222,7 @@ export default function WithdrawalRequests() {
             <Card key={user.id} className="shadow-sm bg-white min-w-[900px]">
               <CardContent className="p-6">
                 <div
-                  className={`grid w-full gap-4 items-center font-outfit $  ${showActions
-                      ? "grid-cols-7"
-                      : isRejected
-                        ? "grid-cols-7"
-                        : "grid-cols-6"
-                    }`}
+                  className={`grid w-full gap-4 items-center font-outfit grid-cols-7`}
                 >
                   <span className="font-medium">
                     {formatFullName(user.requesterName)}
@@ -257,6 +248,16 @@ export default function WithdrawalRequests() {
                     </span>
                   )}
 
+                  {isApproved && (
+                    <span className="text-sm">
+                      {formatCurrency(
+                        getBalanceAfterWithdrawal(
+                          user.balanceAtWithdrawal,
+                          user.totalAmount
+                        )
+                      )}
+                    </span>
+                  )}
                   {isPending && (
                     <span className="text-sm">
                       {formatCurrency(user.balanceAtWithdrawal)}
@@ -271,17 +272,17 @@ export default function WithdrawalRequests() {
                     </span>
                   )}
 
-                 {isRejected && (
-  <div className="relative group max-w-[220px]">
-    <span className="cursor-pointer">
-      {user.rejectionReason
-        ? truncateText(user.rejectionReason, 25)
-        : "-"}
-    </span>
+                  {isRejected && (
+                    <div className="relative group max-w-[220px]">
+                      <span className="cursor-pointer">
+                        {user.rejectionReason
+                          ? truncateText(user.rejectionReason, 25)
+                          : "-"}
+                      </span>
 
-    {user.rejectionReason && (
-      <div
-        className="
+                      {user.rejectionReason && (
+                        <div
+                          className="
           absolute
           right-0
           top-full
@@ -300,12 +301,12 @@ export default function WithdrawalRequests() {
           break-words
           shadow-lg
         "
-      >
-        {user.rejectionReason}
-      </div>
-    )}
-  </div>
-)}
+                        >
+                          {user.rejectionReason}
+                        </div>
+                      )}
+                    </div>
+                  )}
 
 
                   {showActions && (
