@@ -5,6 +5,8 @@ export interface User {
   scheme: string;
   amountRequested: number;
   eligibleLoan: number;
+  chargeAmount: number;
+  balanceAtWithdrawal: number;
   totalAmount: number;
 }
 

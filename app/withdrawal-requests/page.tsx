@@ -36,7 +36,10 @@ export default function WithdrawalRequests() {
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  const showActions = selectedTab === "pending"
+  const isPending = selectedTab === "pending"
+  const isApproved = selectedTab === "approved"
+
+  const showActions = isPending
 
   const { data, status, error, refetch } = useGetQuery({
     endpoint: "adminwithdrawalrequests",
@@ -144,17 +147,19 @@ export default function WithdrawalRequests() {
         isLoading={isLoading}
       />
 
-      {/* Table Header */}
       <div
         className={`grid gap-4 min-w-[900px] px-6 py-3 font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit ${
-          showActions ? "grid-cols-6" : "grid-cols-5"
+          showActions ? "grid-cols-7" : "grid-cols-6"
         }`}
       >
         <div>Name</div>
         <div>Date Requested</div>
         <div>Scheme</div>
+        <div>Charge Amount (₦)</div>
         <div>Amount (₦)</div>
-        <div>Balance (₦)</div>
+
+        {isApproved && <div>Total Amount (₦)</div>}
+        {isPending && <div>Balance (₦)</div>}
         {showActions && <div>Actions</div>}
       </div>
 
@@ -174,22 +179,38 @@ export default function WithdrawalRequests() {
               <CardContent className="p-6">
                 <div
                   className={`grid w-full gap-4 items-center font-outfit ${
-                    showActions ? "grid-cols-6" : "grid-cols-5"
+                    showActions ? "grid-cols-7" : "grid-cols-6"
                   }`}
                 >
                   <span className="font-medium">
                     {formatFullName(user.requesterName)}
                   </span>
+
                   <span className="text-sm">
                     {formatDate(user.dateRequested)}
                   </span>
+
                   <span className="text-sm">{user.scheme}</span>
+
                   <span className="text-sm">
                     {formatCurrency(user.amountRequested)}
                   </span>
-                  <span className="text-sm">
-                    {formatCurrency(user.totalAmount)}
+
+                    <span className="text-sm">
+                    {formatCurrency(user.chargeAmount)}
                   </span>
+
+                  {isApproved && (
+                    <span className="text-sm">
+                      {formatCurrency(user.totalAmount)}
+                    </span>
+                  )}
+
+                  {isPending && (
+                    <span className="text-sm">
+                      {formatCurrency(user.balanceAtWithdrawal)}
+                    </span>
+                  )}
 
                   {showActions && (
                     <div className="flex gap-3">
