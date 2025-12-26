@@ -6,6 +6,8 @@ export interface User {
   amountRequested: number;
   eligibleLoan: number;
   chargeAmount: number;
+  rejectionReason?: string;
+  rejectedDate?: string;
   balanceAtWithdrawal: number;
   totalAmount: number;
 }
@@ -13,12 +15,13 @@ export interface User {
 interface Tab {
   id: string;
   label: string;
-  status: "pending" | "approved" ;
+  status: "pending" | "approved" | "rejected";
 }
 
 export const tabs: Tab[] = [
   { id: "pending", label: "Pending Requests", status: "pending" },
   { id: "approved", label: "Approved Requests", status: "approved" },
+  { id: "rejected", label: "Rejected Requests", status: "rejected" },
 ];
 
 export type ActionType = "Contribution" | "Withdrawal";

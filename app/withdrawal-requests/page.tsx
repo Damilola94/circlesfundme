@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { toast } from "react-toastify"
-import { formatAmount, formatCurrency, formatDate, formatFullName, getDateRange } from "@/lib/utils"
+import { formatAmount, formatCurrency, formatDate, formatFullName, getDateRange, truncateText } from "@/lib/utils"
 import useGetQuery from "@/hooks/useGetQuery"
 import { useMutation } from "react-query"
 
@@ -23,6 +23,7 @@ export default function WithdrawalRequests() {
   const [selectedTab, setSelectedTab] = useState<string | number>("pending")
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [rejectReason, setRejectReason] = useState("")
 
   const [chargePeriod, setChargePeriod] = useState("yearly")
   const chargeRange = getDateRange(chargePeriod)
@@ -43,7 +44,7 @@ export default function WithdrawalRequests() {
 
   const isPending = selectedTab === "pending"
   const isApproved = selectedTab === "approved"
-
+  const isRejected = selectedTab === "rejected"
   const showActions = isPending
 
   const { data, status, error, refetch } = useGetQuery({
@@ -101,7 +102,7 @@ export default function WithdrawalRequests() {
     },
   })
 
-  const handleConfirmAction = () => {
+  const handleConfirmAction = (comment?: string) => {
     if (!selectedId || !actionType) return
 
     const endpoint =
@@ -109,14 +110,24 @@ export default function WithdrawalRequests() {
         ? `adminwithdrawalrequests/${selectedId}/approve`
         : `adminwithdrawalrequests/${selectedId}/reject`
 
+    const payload =
+      actionType === "reject"
+        ? {
+          withdrawalRequestId: selectedId,
+          reason: comment || "",
+        }
+        : undefined
+
     actionMutation.mutate({
       endpoint,
       method: "POST",
+      body: payload,
       auth: true,
     })
 
     setIsActionModalOpen(false)
   }
+
 
   const openApprovalModal = (id: string) => {
     setSelectedId(id)
@@ -156,7 +167,7 @@ export default function WithdrawalRequests() {
   return (
     <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-         <StatsCard
+        <StatsCard
           title="Revenue from withdrawals"
           value={formatAmount(chargeMetrics?.data?.totalChargesFromWithdrawals || 0)}
           onPeriodChange={setChargePeriod}
@@ -179,9 +190,12 @@ export default function WithdrawalRequests() {
         onFilterClick={() => { }}
         isLoading={isLoading}
       />
-
       <div
-        className={`grid gap-4 min-w-[900px] px-6 py-3 font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit ${showActions ? "grid-cols-7" : "grid-cols-6"
+        className={`grid gap-4 min-w-[900px] px-6 py-3 font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit ${showActions
+            ? "grid-cols-7"
+            : isRejected
+              ? "grid-cols-7"
+              : "grid-cols-6"
           }`}
       >
         <div>Name</div>
@@ -192,6 +206,8 @@ export default function WithdrawalRequests() {
 
         {isApproved && <div>Total Amount (₦)</div>}
         {isPending && <div>Balance (₦)</div>}
+        {isRejected && <div>Rejected Date</div>}
+        {isRejected && <div>Reason</div>}
         {showActions && <div>Actions</div>}
       </div>
 
@@ -210,7 +226,11 @@ export default function WithdrawalRequests() {
             <Card key={user.id} className="shadow-sm bg-white min-w-[900px]">
               <CardContent className="p-6">
                 <div
-                  className={`grid w-full gap-4 items-center font-outfit ${showActions ? "grid-cols-7" : "grid-cols-6"
+                  className={`grid w-full gap-4 items-center font-outfit $  ${showActions
+                      ? "grid-cols-7"
+                      : isRejected
+                        ? "grid-cols-7"
+                        : "grid-cols-6"
                     }`}
                 >
                   <span className="font-medium">
@@ -241,6 +261,29 @@ export default function WithdrawalRequests() {
                     <span className="text-sm">
                       {formatCurrency(user.balanceAtWithdrawal)}
                     </span>
+                  )}
+
+                  {isRejected && (
+                    <span>
+                      {user.rejectedDate
+                        ? formatDate(user.rejectedDate)
+                        : "-"}
+                    </span>
+                  )}
+
+                  {isRejected && (
+                    <div className="relative group max-w-[220px]">
+                      <span className="cursor-pointer">
+                        {user.rejectionReason
+                          ? truncateText(user.rejectionReason, 25)
+                          : "-"}
+                      </span>
+                      {user.rejectionReason && (
+                        <div className="absolute z-50 hidden group-hover:block bg-black text-white text-xs rounded px-3 py-2 w-max max-w-xs top-full mt-1 shadow-lg">
+                          {user.rejectionReason}
+                        </div>
+                      )}
+                    </div>
                   )}
 
                   {showActions && (
@@ -292,6 +335,8 @@ export default function WithdrawalRequests() {
             ? "Are you sure you want to approve this withdrawal request?"
             : "Are you sure you want to reject this withdrawal request?"
         }
+        showCommentField={actionType === "reject"}
+        commentLabel="Rejection Reason"
         confirmButtonText={actionType === "approve" ? "Approve" : "Reject"}
       />
     </div>

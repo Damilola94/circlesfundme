@@ -128,7 +128,7 @@ export const getDateRange = (period: string) => {
         EndDate: now.endOf("year").format("YYYY-MM-DD"),
       }
 
-    default: // yearly
+    default:
       return {
         DateRangeType: "Yearly",
         StartDate: now.startOf("year").format("YYYY-MM-DD"),
@@ -136,3 +136,7 @@ export const getDateRange = (period: string) => {
       }
   }
 }
+
+
+export const truncateText = (text: string, length = 30) =>
+  text.length > length ? `${text.slice(0, length)}...` : text
