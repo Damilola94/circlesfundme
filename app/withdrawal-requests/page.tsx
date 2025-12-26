@@ -271,20 +271,42 @@ export default function WithdrawalRequests() {
                     </span>
                   )}
 
-                  {isRejected && (
-                    <div className="relative group max-w-[220px]">
-                      <span className="cursor-pointer">
-                        {user.rejectionReason
-                          ? truncateText(user.rejectionReason, 25)
-                          : "-"}
-                      </span>
-                      {user.rejectionReason && (
-                        <div className="absolute z-50 hidden group-hover:block bg-black text-white text-xs rounded px-3 py-2 w-max max-w-xs top-full mt-1 shadow-lg">
-                          {user.rejectionReason}
-                        </div>
-                      )}
-                    </div>
-                  )}
+                 {isRejected && (
+  <div className="relative group max-w-[220px]">
+    <span className="cursor-pointer">
+      {user.rejectionReason
+        ? truncateText(user.rejectionReason, 25)
+        : "-"}
+    </span>
+
+    {user.rejectionReason && (
+      <div
+        className="
+          absolute
+          right-0
+          top-full
+          mt-1
+          z-50
+          hidden
+          group-hover:block
+          bg-black
+          text-white
+          text-xs
+          rounded
+          px-3
+          py-2
+          w-max
+          max-w-xs
+          break-words
+          shadow-lg
+        "
+      >
+        {user.rejectionReason}
+      </div>
+    )}
+  </div>
+)}
+
 
                   {showActions && (
                     <div className="flex gap-1">
