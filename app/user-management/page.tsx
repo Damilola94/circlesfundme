@@ -135,7 +135,7 @@ export default function KYCReviews() {
         <div>Scheme</div>
         <div>Contribution Amount(₦)</div>
         <div>Amount Contributed(₦)</div>
-        <div>Loan-Ready Amount(₦)</div>
+        {/* <div>Loan-Ready Amount(₦)</div> */}
         <div>Eligible Loan (₦)</div>
         <div>Amount Repaid (₦)</div>
         <div></div>
@@ -169,7 +169,7 @@ export default function KYCReviews() {
                   <div className="text-sm text-gray-600">{user.scheme}</div>
                   <div className="text-sm text-gray-600">{formatCurrency(user.contribution)}</div>
                   <div className="text-sm text-gray-600">{formatCurrency(user.totalContribution)}</div>
-                  <div className="text-sm text-gray-600">{formatCurrency(user.loanEligibilityAmount)}</div>
+                  {/* <div className="text-sm text-gray-600">{formatCurrency(user.loanEligibilityAmount)}</div> */}
                   <div className="text-sm text-gray-600">{formatCurrency(user.eligibleLoan)}</div>
                   <div className="text-sm text-gray-600">{formatCurrency(user.totalRepaidAmount)}</div>
                   <div className="flex justify-start w-full">

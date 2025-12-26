@@ -76,7 +76,7 @@ export default function UserProfileTransaction() {
           <div>Date</div>
           <div>Action</div>
           <div>Amount (₦)</div>
-          <div>Withdrawal Charge (₦)</div>
+          <div>Charge (₦)</div>
           <div>Status</div>
         </div>
         {isLoading && <div className="flex-1 space-y-6 p-6">
