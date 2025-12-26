@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { InflowResponse } from "./type";
+import moment from "moment-timezone";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -100,4 +101,38 @@ export function formatFullName(name: string): string {
       (word) => word.charAt(0).toUpperCase() + word.slice(1)
     )
     .join(" ");
+}
+
+export const getDateRange = (period: string) => {
+  const now = moment()
+
+  switch (period) {
+    case "weekly":
+      return {
+        DateRangeType: "Weekly",
+        StartDate: now.startOf("week").format("YYYY-MM-DD"),
+        EndDate: now.endOf("week").format("YYYY-MM-DD"),
+      }
+
+    case "monthly":
+      return {
+        DateRangeType: "Monthly",
+        StartDate: now.startOf("month").format("YYYY-MM-DD"),
+        EndDate: now.endOf("month").format("YYYY-MM-DD"),
+      }
+
+    case "lastYear":
+      return {
+        DateRangeType: "Yearly",
+        StartDate: now.subtract(1, "year").startOf("year").format("YYYY-MM-DD"),
+        EndDate: now.endOf("year").format("YYYY-MM-DD"),
+      }
+
+    default: // yearly
+      return {
+        DateRangeType: "Yearly",
+        StartDate: now.startOf("year").format("YYYY-MM-DD"),
+        EndDate: now.endOf("year").format("YYYY-MM-DD"),
+      }
+  }
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { Key, } from "react"
+import { Key, useState, } from "react"
 import { StatsCard } from "@/components/dashboard/stats-card"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,10 +11,12 @@ import { useRouter } from "next/navigation"
 import useGetQuery from "@/hooks/useGetQuery"
 import moment from "moment";
 
-import { formatAmount, formatFullName, getTotalInflow, getTotalOutflow } from "@/lib/utils"
+import { formatAmount, formatFullName, getDateRange, getTotalInflow, getTotalOutflow } from "@/lib/utils"
 
 export default function Dashboard() {
   const router = useRouter()
+  const [chargePeriod, setChargePeriod] = useState("yearly")
+  const chargeRange = getDateRange(chargePeriod)
 
   const {
     data: metricsData,
@@ -25,7 +27,7 @@ export default function Dashboard() {
     auth: true,
   })
 
-   const {
+  const {
     data: paystackBalance,
   } = useGetQuery({
     endpoint: "adminwithdrawalrequests",
@@ -34,7 +36,7 @@ export default function Dashboard() {
     auth: true,
   })
 
-   const {
+  const {
     data: pendingKycData,
     status: pendingKycStatus,
   } = useGetQuery({
@@ -82,6 +84,21 @@ export default function Dashboard() {
     queryKey: ["pending-loan-requests"],
     auth: true,
   })
+
+  const {
+    data: chargeMetrics,
+  } = useGetQuery({
+    endpoint: "admindashboard",
+    extra: "charge-metrics",
+    pQuery: {
+      DateRangeType: chargeRange.DateRangeType,
+      StartDate: chargeRange.StartDate,
+      EndDate: chargeRange.EndDate,
+    },
+    queryKey: ["charge-metrics", chargePeriod],
+    auth: true,
+  })
+
 
   const kycQueue = pendingKycData?.isSuccess
     ? pendingKycData.data.map((user: { name: any; dateJoined: string; avatarUrl: any }) => ({
@@ -150,7 +167,7 @@ export default function Dashboard() {
         <StatsCard
           title="Paystack Balance"
           value={
-           formatAmount(paystackBalance?.data[0].balance)||
+            formatAmount(paystackBalance?.data[0].balance) ||
             (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
           }
           icon={<LoanIcon stroke="#00A86B" />}
@@ -185,6 +202,13 @@ export default function Dashboard() {
             metricsData?.data?.totalUsers?.toLocaleString() ||
             (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
           }
+          icon={<UserIcon stroke="#00A86B" />}
+        />
+        <StatsCard
+          title="Charges from Contributions"
+          value={formatAmount(chargeMetrics?.data?.totalChargesFromContributions || 0)}
+          onPeriodChange={setChargePeriod}
+          period={chargePeriod}
           icon={<UserIcon stroke="#00A86B" />}
         />
       </div>

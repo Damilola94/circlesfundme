@@ -5,17 +5,20 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Filter, Loader2 } from "lucide-react"
+import { Search, Filter, Loader2, UserIcon } from "lucide-react"
 import { TransactionStatus } from "@/components/ui/transactionstatus"
 import Pagination from "@/components/ui/pagination"
 import useGetQuery from "@/hooks/useGetQuery"
 import TabsSearchHeader from "@/components/ui/tabs-search-header"
-import { formatFullName } from "@/lib/utils"
+import { formatAmount, formatFullName, getDateRange } from "@/lib/utils"
+import { StatsCard } from "@/components/dashboard/stats-card"
 
 export type StatusType = "Approved" | "Pending" | "Rejected" | "Waitlist"
 
 export default function LoanManagement() {
   const [searchTerm, setSearchTerm] = useState("")
+  const [chargePeriod, setChargePeriod] = useState("yearly")
+  const chargeRange = getDateRange(chargePeriod)
   const [statusFilter, setStatusFilter] = useState<string | number>("all-loans")
   const [schemeFilter, setSchemeFilter] = useState<string | number>("all-scheme")
   const [pageNumber, setPageNumber] = useState(1)
@@ -37,6 +40,20 @@ export default function LoanManagement() {
     { id: "autofinance", label: "Auto Finance" },
     { id: "tricyclefinance", label: "Tricycle Finance" },
   ]
+
+  const {
+    data: chargeMetrics,
+  } = useGetQuery({
+    endpoint: "admindashboard",
+    extra: "charge-metrics",
+    pQuery: {
+      DateRangeType: chargeRange.DateRangeType,
+      StartDate: chargeRange.StartDate,
+      EndDate: chargeRange.EndDate,
+    },
+    queryKey: ["charge-metrics", chargePeriod],
+    auth: true,
+  })
 
   const {
     data: loanRequestsResponse,
@@ -80,8 +97,22 @@ export default function LoanManagement() {
   }
 
   return (
-    <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6">
-      <div className="flex-1 space-y-6 p-6 min-w-[800px] ">
+    <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6  p-6 min-w-[800px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <StatsCard
+          title="Charges from Loans"
+          value={formatAmount(chargeMetrics?.data?.totalChargesFromLoan || 0)}
+          onPeriodChange={setChargePeriod}
+          period={chargePeriod}
+          icon={<UserIcon stroke="#00A86B" />}
+        />
+        <StatsCard
+          title="Total Interest Earned"
+          value={formatAmount(chargeMetrics?.data?.totalInterest || 0)}
+          icon={<UserIcon stroke="#00A86B" />}
+        />
+      </div>
+      <div className=" flex-1 space-y-6 min-w-[800px]">
         <TabsSearchHeader
           tabs={statusTabs}
           selectedTab={statusFilter}
