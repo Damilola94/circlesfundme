@@ -169,7 +169,7 @@ export default function KYCReviews() {
                   <div className="text-sm text-gray-600">{user.scheme}</div>
                   <div className="text-sm text-gray-600">{formatCurrency(user.contribution)}</div>
                   <div className="text-sm text-gray-600">{formatCurrency(user.totalContribution)}</div>
-                  <div className="text-sm text-gray-600">{formatCurrency(user.loanEligibilityAmount)}</div>
+                  <div className="text-sm text-gray-600">{formatCurrency(user.contributionAmountToQualifyForLoan)}</div>
                   <div className="text-sm text-gray-600">{formatCurrency(user.eligibleLoan)}</div>
                   <div className="text-sm text-gray-600">{formatCurrency(user.totalRepaidAmount)}</div>
                   <div className="flex justify-start w-full">

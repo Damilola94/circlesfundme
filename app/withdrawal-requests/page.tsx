@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react"
 import { toast } from "react-toastify"
 import { formatAmount, formatCurrency, formatDate, formatFullName, getBalanceAfterWithdrawal, getDateRange, truncateText } from "@/lib/utils"
 import useGetQuery from "@/hooks/useGetQuery"
-import { useMutation } from "react-query"
+import { useMutation, useQueryClient } from "react-query"
 
 import Pagination from "@/components/ui/pagination"
 import TabsSearchHeader from "@/components/ui/tabs-search-header"
@@ -16,14 +16,22 @@ import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 import { User, tabs } from "./types"
 import handleFetch from "@/services/api/handleFetch"
 import { StatsCard } from "@/components/dashboard/stats-card"
-import { UserIcon } from "@/public/assets/icons"
+import { LoanIcon, UserIcon } from "@/public/assets/icons"
 
 export default function WithdrawalRequests() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedTab, setSelectedTab] = useState<string | number>("pending")
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-  const [rejectReason, setRejectReason] = useState("")
+  const queryClient = useQueryClient()
+
+  const paystackBalance = queryClient.getQueryData([
+    "paystack-balance",
+  ]) as {
+    data: {
+      balance: number;
+    }[];
+  }
 
   const [chargePeriod, setChargePeriod] = useState("yearly")
   const chargeRange = getDateRange(chargePeriod)
@@ -128,7 +136,6 @@ export default function WithdrawalRequests() {
     setIsActionModalOpen(false)
   }
 
-
   const openApprovalModal = (id: string) => {
     setSelectedId(id)
     setActionType("approve")
@@ -168,6 +175,13 @@ export default function WithdrawalRequests() {
     <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <StatsCard
+          title="Paystack Balance"
+          value={
+            formatAmount(paystackBalance?.data[0].balance) || "₦0.00"
+          }
+          icon={<LoanIcon stroke="#00A86B" />}
+        />
+        <StatsCard
           title="Revenue from withdrawals"
           value={formatAmount(chargeMetrics?.data?.totalChargesFromWithdrawals || 0)}
           onPeriodChange={setChargePeriod}
@@ -176,7 +190,7 @@ export default function WithdrawalRequests() {
         />
         <StatsCard
           title="Total Approved Withdrawals"
-          value={formatAmount(chargeMetrics?.data?.totalApprovedWithdrawals || 0)}
+          value={(chargeMetrics?.data?.totalApprovedWithdrawals || 0)}
           icon={<UserIcon stroke="#00A86B" />}
         />
       </div>

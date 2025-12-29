@@ -99,7 +99,6 @@ export default function Dashboard() {
     auth: true,
   })
 
-
   const kycQueue = pendingKycData?.isSuccess
     ? pendingKycData.data.map((user: { name: any; dateJoined: string; avatarUrl: any }) => ({
       name: user.name,

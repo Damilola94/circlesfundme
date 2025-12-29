@@ -6,7 +6,7 @@ export interface User {
   contribution: number;
   totalContribution: number;
   eligibleLoan: number;
-  loanEligibilityAmount: number;
+  contributionAmountToQualifyForLoan: number;
   totalRepaidAmount: number;
 }
 
