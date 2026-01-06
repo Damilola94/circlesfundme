@@ -253,7 +253,7 @@ export default function LoanCalculatorSection() {
                         placeholder="Enter amount"
                       />
                       {vehicleBreakdown.costOfVehicle && (
-                        <div className="bg-gray-50 p-4 rounded space-y-2 font-outfit">
+                        <div className="bg-gray-50 p-4 rounded space-y-2 font-outfit text-sm">
                           <div className="flex justify-between">
                             <span>Extra Engine:</span>
                             <span className="font-outfit font-semibold">
@@ -289,7 +289,7 @@ export default function LoanCalculatorSection() {
                           </div>
                           <div className="flex justify-between">
                             <span>Eligible Loan:</span>
-                            <span className="font-outfit font-semibold">
+                            <span className="font-outfit font-semibold text-sm">
                               ₦{vehicleBreakdown.eligibleLoan}
                             </span>
                           </div>
@@ -330,7 +330,7 @@ export default function LoanCalculatorSection() {
                         placeholder="Enter amount"
                       />
                       {vehicleBreakdown.costOfVehicle && (
-                        <div className="bg-gray-50 p-4 rounded-lg space-y-2 font-outfit">
+                        <div className="bg-gray-50 p-4 rounded-lg space-y-2 font-outfit text-sm">
                           <div className="flex justify-between">
                             <span>Insurance:</span>
                             <span className="font-outfit font-semibold">
@@ -414,7 +414,7 @@ export default function LoanCalculatorSection() {
                         placeholder="Enter amount"
                       />
                       {regularBreakdown.principalLoan && (
-                        <div className="bg-gray-50 p-4 rounded-2xl space-y-2 font-outfit">
+                        <div className="bg-gray-50 p-4 rounded-2xl space-y-2 font-outfit text-sm">
                           <div className="flex justify-between">
                             <span>Principal Loan:</span>
                             <span className="font-outfit font-semibold">
@@ -431,10 +431,10 @@ export default function LoanCalculatorSection() {
                             <span>Repayment Duration:</span>
                             <span className="font-outfit font-semibold">
                               {scheme.includes("Daily")
-                                ? "365 days/1 yr"
+                                ? "365 days"
                                 : scheme.includes("Weekly")
-                                ? "52 weeks/1 yr"
-                                : "12 months/1 yr"}
+                                ? "52 weeks"
+                                : "12 months"}
                             </span>
                           </div>
                           <div className="flex justify-between">

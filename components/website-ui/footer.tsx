@@ -9,7 +9,6 @@ export default function Footer() {
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Logo & Description */}
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-2 mb-6">
               <Image
@@ -25,7 +24,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Explore */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white font-outfit">
               Explore
@@ -52,7 +50,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Socials */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white font-outfit">
               Socials
@@ -71,7 +68,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact + Licensed By */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white font-outfit">
               Contact
@@ -97,7 +93,6 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Licensed By */}
             <div>
               <p className="text-sm font-semibold text-white mb-3 font-outfit">
                 Licensed by
