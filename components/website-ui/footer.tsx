@@ -9,6 +9,7 @@ export default function Footer() {
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Logo & Description */}
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-2 mb-6">
               <Image
@@ -20,125 +21,70 @@ export default function Footer() {
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed text-sm font-outfit">
               CirclesFundMe is a fully licensed, innovative, registered
-              cooperative society providing the best financial services.
+              cooperative society providing the best financial services.
             </p>
           </div>
 
+          {/* Explore */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white font-outfit">
               Explore
             </h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="/"
-                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/about"
-                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
-                >
-                  About
-                </Link>
-              </li>
-               <li>
-                <Link
-                  href="/schemes/daily"
-                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
-                >
-                  Daily Contribution
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/schemes/weekly"
-                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
-                >
-                  Weekly Contribution
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/schemes/monthly"
-                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
-                >
-                  Monthly Contribution
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/schemes/auto-finance"
-                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
-                >
-                  Auto Finance Contribution
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/schemes/tricycle-finance"
-                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
-                >
-                  Tricycle Finance Contribution
-                </Link>
-              </li>
+              {[
+                { label: "Home", href: "/" },
+                { label: "About", href: "/about" },
+                { label: "Daily Contribution", href: "/schemes/daily" },
+                { label: "Weekly Contribution", href: "/schemes/weekly" },
+                { label: "Monthly Contribution", href: "/schemes/monthly" },
+                { label: "Auto Finance Contribution", href: "/schemes/auto-finance" },
+                { label: "Tricycle Finance Contribution", href: "/schemes/tricycle-finance" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    className="text-gray-300 hover:text-primary transition-colors font-outfit"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
+          {/* Socials */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white font-outfit">
               Socials
             </h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
-                >
-                  Facebook
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
-                >
-                  Twitter
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
-                >
-                  WhatsApp
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-300 hover:text-primary transition-colors font-outfit"
-                >
-                  Instagram
-                </Link>
-              </li>
+              {["Facebook", "Twitter", "WhatsApp", "Instagram"].map((social) => (
+                <li key={social}>
+                  <Link
+                    href="#"
+                    className="text-gray-300 hover:text-primary transition-colors font-outfit"
+                  >
+                    {social}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
+          {/* Contact + Licensed By */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white font-outfit">
               Contact
             </h3>
-            <div className="space-y-3 text-sm">
+
+            <div className="space-y-3 text-sm mb-6">
               <div className="flex items-center text-gray-300">
-                <Phone className="h-4 w-4 mr-3 text-white flex-shrink-0 font-outfit" />
-                <span className="font-outfit">+234 703 331 9394,</span>
+                <Phone className="h-4 w-4 mr-3 text-white flex-shrink-0" />
+                <span className="font-outfit">+234 703 331 9394</span>
               </div>
+
               <div className="flex items-center text-gray-300">
-                <Phone className="h-4 w-4 mr-3 text-white flex-shrink-0 font-outfit" />
+                <Phone className="h-4 w-4 mr-3 text-white flex-shrink-0" />
                 <span className="font-outfit">+234 805 535 7592</span>
               </div>
 
@@ -148,6 +94,37 @@ export default function Footer() {
                   <p>Address</p>
                   <p>Road 116, House 8, Gwarimpa, Abuja, Nigeria</p>
                 </div>
+              </div>
+            </div>
+
+            {/* Licensed By */}
+            <div>
+              <p className="text-sm font-semibold text-white mb-3 font-outfit">
+                Licensed by
+              </p>
+
+              <div className="flex items-center gap-4">
+                <Image
+                  src="/assets/logo/ndpr.png"
+                  alt="NDPR"
+                  width={60}
+                  height={50}
+                  className="object-contain"
+                />
+                <Image
+                  src="/assets/logo/fccpc.png"
+                  alt="FCCPC"
+                  width={60}
+                  height={50}
+                  className="object-contain"
+                />
+                <Image
+                  src="/assets/logo/duns.png"
+                  alt="DUNS"
+                  width={60}
+                  height={50}
+                  className="object-contain"
+                />
               </div>
             </div>
           </div>
@@ -160,25 +137,13 @@ export default function Footer() {
             </div>
 
             <div className="flex space-x-4">
-              <Link
-                href="#"
-                className="text-gray-400 hover:text-primary transition-colors"
-                aria-label="Facebook"
-              >
+              <Link href="#" className="text-gray-400 hover:text-primary">
                 <Facebook className="h-5 w-5" />
               </Link>
-              <Link
-                href="#"
-                className="text-gray-400 hover:text-primary transition-colors"
-                aria-label="Twitter"
-              >
+              <Link href="#" className="text-gray-400 hover:text-primary">
                 <Twitter className="h-5 w-5" />
               </Link>
-              <Link
-                href="#"
-                className="text-gray-400 hover:text-primary transition-colors"
-                aria-label="Instagram"
-              >
+              <Link href="#" className="text-gray-400 hover:text-primary">
                 <Instagram className="h-5 w-5" />
               </Link>
             </div>
