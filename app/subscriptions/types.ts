@@ -27,6 +27,7 @@ interface ApiScheme {
   defaultPenaltyPercent: number;
   equityPercent: number;
   loanTerm: number;
+  downPaymentPercent: number;
   preLoanServiceChargePercent: number;
   postLoanServiceChargePercent: number;
   extraEnginePercent: number;
@@ -72,6 +73,7 @@ export const transformSubscriptionToApiPayload = (
       values.loanManagementFee || values.loanManagementFeeYear || "0"
     ),
     defaultPenaltyPercent: Number.parseFloat(values.defaultPenalty || "0"),
+    downPaymentPercent: Number.parseFloat(values.downPaymentPercent || "0"),
     equityPercent: Number.parseFloat(values.requiredEquity || "0"),
     loanTerm: Number.parseFloat(values.loanTermWeeks || "0"),
     preLoanServiceChargePercent:
@@ -111,6 +113,7 @@ export const transformApiDataToSubscriptions = (
           baseFee: (scheme.baseFee ).toString(),
           extraEngine: scheme.extraEnginePercent.toString(),
           extraTyre: scheme.extraTyrePercent.toString(),
+          downPaymentPercent: scheme.downPaymentPercent?.toString() ?? "0",
           insurance: scheme.insurancePerAnnumPercent.toString(),
           processingFee: scheme.processingFeePercent.toString(),
           preLoanServiceCharge: scheme.preLoanServiceChargePercent.toFixed(5),
@@ -155,6 +158,8 @@ export const transformApiDataToSubscriptions = (
           contributionPercent: scheme.contributionPercent.toString(),
           eligibleLoanMultiple: scheme.eligibleLoanMultiple.toString(),
           preLoanServiceCharge: roundTo(scheme.preLoanServiceChargePercent, 5).toString(),
+          insurance: scheme.insurancePerAnnumPercent.toString(),
+          downPaymentPercent: scheme.downPaymentPercent?.toString(),
           postLoanServiceCharge: roundTo(scheme.postLoanServiceChargePercent, 5).toString(),
           loanManagementFee: scheme.loanManagementFeePercent.toString(),
           defaultPenalty: scheme.defaultPenaltyPercent.toString(),
@@ -165,7 +170,6 @@ export const transformApiDataToSubscriptions = (
           baseFee: "",
           extraEngine: "",
           extraTyre: "",
-          insurance: "",
           processingFee: "",
           serviceCharge: "",
           eligibleLoanPercent: "",
@@ -176,6 +180,7 @@ export const transformApiDataToSubscriptions = (
           { label: "Pre Loan Service Charge", key: "preLoanServiceCharge", unit: "%" },
            { label: "Post Loan Service Charge", key: "postLoanServiceCharge", unit: "%" },
           { label: "Loan Mgmt Fee", key: "loanManagementFee", unit: "%" },
+           { label: "Insurance/Annum", key: "insurance", unit: "%" },
           { label: "Default Penalty", key: "defaultPenalty", unit: "%" },
         ],
       };

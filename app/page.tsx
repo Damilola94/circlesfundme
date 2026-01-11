@@ -8,6 +8,7 @@ import TestimonialsSection from "@/components/website-ui/testimonials-section";
 import FAQSection from "@/components/website-ui/faq-section";
 import CTASection from "@/components/website-ui/cta-section";
 import Footer from "@/components/website-ui/footer";
+import CompanyLicense from "@/components/website-ui/companylicense";
 
 export default function HomePage() {
   return (
@@ -17,6 +18,7 @@ export default function HomePage() {
       <LoanCalculatorSection />
       <WhatWeProvideSection />
       <HowItWorksSection />
+      <CompanyLicense/>
       <WhyChooseUsSection />
       <TestimonialsSection />
       <FAQSection />

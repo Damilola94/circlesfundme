@@ -7,7 +7,7 @@ import { Pencil, Check, Loader2 } from "lucide-react"
 import { useMutation } from "react-query"
 import { toast } from "react-toastify";
 import handleFetch from "@/services/api/handleFetch"
-import { transformApiDataToSubscriptions, transformSubscriptionToApiPayload , Subscription, sortSubscriptionsByOrder} from "./types"
+import { transformApiDataToSubscriptions, transformSubscriptionToApiPayload, Subscription, sortSubscriptionsByOrder } from "./types"
 
 export default function SubscriptionCard() {
   const [subscriptionTypes, setSubscriptionTypes] = useState<Subscription[]>([])
@@ -84,10 +84,6 @@ export default function SubscriptionCard() {
   const handleSaveChanges = (subIndex: number) => {
     const subscription = subscriptionTypes[subIndex]
     const payload = transformSubscriptionToApiPayload(subscription)
-console.log(subscription, "subscription");
-
-    console.log(`Saving changes for ${subscription.title}:`, payload)
-
     updateSchemeMutation.mutate({
       schemeId: subscription.id,
       payload: payload,

@@ -124,8 +124,10 @@ export default function LoanCalculatorSection() {
         loanManagementFee: breakdown.loanManagementFee,
         loanManagementFeeDescription: breakdown.loanManagementFeeDescription,
         eligibleLoan: breakdown.eligibleLoan,
+        eligibleLoanAfterInsurance: breakdown.eligibleLoanAfterInsurance,
         eligibleLoanDescription: breakdown.eligibleLoanDescription,
         preLoanServiceCharge: breakdown.preLoanServiceCharge,
+        insurance: breakdown.insurance,
         postLoanServiceCharge: breakdown.postLoanServiceCharge,
         totalRepayment: breakdown.totalRepayment,
         repaymentTerm: breakdown.repaymentTerm,
@@ -389,26 +391,24 @@ export default function LoanCalculatorSection() {
                     <>
                       <Input
                         type="money"
-                        label={`${
-                          scheme.includes("Daily")
+                        label={`${scheme.includes("Daily")
                             ? "Daily Sales Revenue"
                             : scheme.includes("Weekly")
-                            ? "Weekly Sales Revenue"
-                            : "Monthly Income"
-                        } `}
+                              ? "Weekly Sales Revenue"
+                              : "Monthly Income"
+                          } `}
                         value={income}
                         onChange={(e) => setIncome(e.target.value)}
                         placeholder="Enter amount"
                       />
                       <Input
                         type="money"
-                        label={`${
-                          scheme.includes("Daily")
+                        label={`${scheme.includes("Daily")
                             ? "Daily Contribution"
                             : scheme.includes("Weekly")
-                            ? "Weekly Contribution"
-                            : "Monthly Contribution"
-                        } `}
+                              ? "Weekly Contribution"
+                              : "Monthly Contribution"
+                          } `}
                         value={contribution}
                         onChange={(e) => setContribution(e.target.value)}
                         placeholder="Enter amount"
@@ -428,19 +428,25 @@ export default function LoanCalculatorSection() {
                             </span>
                           </div>
                           <div className="flex justify-between">
+                            <span>Insurance Fee:</span>
+                            <span className="font-outfit font-semibold">
+                              {regularBreakdown.insurance}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
                             <span>Repayment Duration:</span>
                             <span className="font-outfit font-semibold">
                               {scheme.includes("Daily")
                                 ? "365 days"
                                 : scheme.includes("Weekly")
-                                ? "52 weeks"
-                                : "12 months"}
+                                  ? "52 weeks"
+                                  : "12 months"}
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Eligible Loan:</span>
                             <span className="font-outfit font-semibold">
-                              {regularBreakdown.eligibleLoan}
+                              {regularBreakdown.eligibleLoanAfterInsurance}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -485,8 +491,8 @@ export default function LoanCalculatorSection() {
                       isTricycleFinance
                         ? handleAutoSubmit
                         : isAssetFinance
-                        ? handleAutoSubmit
-                        : handleRegularSubmit
+                          ? handleAutoSubmit
+                          : handleRegularSubmit
                     }
                   >
                     Calculate
