@@ -37,6 +37,20 @@ export default function Dashboard() {
   })
 
   const {
+    data: totalContributions,
+  } = useGetQuery({
+    endpoint: "admindashboard",
+    extra: "total-paid-contribution",
+    pQuery: {
+      DateRangeType: chargeRange.DateRangeType,
+      StartDate: chargeRange.StartDate,
+      EndDate: chargeRange.EndDate,
+    },
+    queryKey: ["total-contributions", chargePeriod],
+    auth: true,
+  })
+
+  const {
     data: pendingKycData,
     status: pendingKycStatus,
   } = useGetQuery({
@@ -172,6 +186,16 @@ export default function Dashboard() {
           icon={<LoanIcon stroke="#00A86B" />}
         />
         <StatsCard
+          title="Total Contributions Paid"
+          value={
+            formatAmount(totalContributions?.data?.totalAmount) ||
+            (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
+          }
+          onPeriodChange={setChargePeriod}
+          period={chargePeriod}
+          icon={<LoanIcon stroke="#00A86B" />}
+        />
+        <StatsCard
           title="Pending KYC"
           value={
             metricsData?.data?.totalPendingKYCs?.toLocaleString() ||
@@ -187,14 +211,14 @@ export default function Dashboard() {
           }
           icon={<LoanIcon stroke="#00A86B" />}
         />
-        <StatsCard
+        {/* <StatsCard
           title="Overdue Payments"
           value={
             metricsData?.data?.totalOverduePayments?.toLocaleString() ||
             (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
           }
           icon={<OverdueIcon stroke="#00A86B" />}
-        />
+        /> */}
         <StatsCard
           title="Total Users"
           value={
