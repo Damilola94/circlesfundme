@@ -14,13 +14,20 @@ import { useSearchParams } from "next/navigation"
 import TabsSearchHeader from "@/components/ui/tabs-search-header"
 
 export default function KYCReviews() {
+  /** 🔍 Search states */
+  const [searchInput, setSearchInput] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
-  const searchParams = useSearchParams();
-  const statusParams = searchParams.get("status");
 
-  const [selectedTab, setSelectedTab] = useState<string | number>(statusParams || "all-users");
+  const searchParams = useSearchParams()
+  const statusParams = searchParams.get("status")
+
+  const [selectedTab, setSelectedTab] = useState<string | number>(
+    statusParams || "all-users"
+  )
+
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+
   const [users, setUsers] = useState<User[]>([])
   const [metaData, setMetaData] = useState({
     totalCount: 0,
@@ -31,8 +38,21 @@ export default function KYCReviews() {
     hasPrevious: false,
   })
 
-  const currentTabStatus = tabs.find((tab) => tab.id === selectedTab)?.status;
+  const currentTabStatus = tabs.find(
+    (tab) => tab.id === selectedTab
+  )?.status
 
+  /** 🔁 Debounce search input */
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearchTerm(searchInput)
+      setPageNumber(1)
+    }, 600)
+
+    return () => clearTimeout(timeout)
+  }, [searchInput])
+
+  /** 📡 Fetch users */
   const { data, status, error, refetch } = useGetQuery({
     endpoint: "adminusermanagement/users",
     pQuery: {
@@ -45,6 +65,7 @@ export default function KYCReviews() {
     auth: true,
   })
 
+  /** 🧠 Handle API response */
   useEffect(() => {
     if (status === "success") {
       if (data?.isSuccess) {
@@ -53,52 +74,30 @@ export default function KYCReviews() {
       } else {
         toast.error(data?.message || "Failed to fetch users.")
         setUsers([])
-        setMetaData({
-          totalCount: 0,
-          pageSize: pageSize,
-          currentPage: pageNumber,
-          totalPages: 1,
-          hasNext: false,
-          hasPrevious: false,
-        })
       }
-    } else if (status === "error") {
+    }
+
+    if (status === "error") {
       toast.error(
         typeof error === "object" && error !== null && "message" in error
-          ? (error as { message?: string }).message || "Something went wrong while fetching users."
-          : "Something went wrong while fetching users."
+          ? (error as { message?: string }).message ||
+              "Something went wrong."
+          : "Something went wrong."
       )
       setUsers([])
-      setMetaData({
-        totalCount: 0,
-        pageSize: pageSize,
-        currentPage: pageNumber,
-        totalPages: 1,
-        hasNext: false,
-        hasPrevious: false,
-      })
     }
-  }, [data, status, error, pageNumber, pageSize])
+  }, [data, status, error])
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (pageNumber !== 1 && searchTerm) {
-        setPageNumber(1)
-      } else {
-        refetch()
-      }
-    }, 500)
-    return () => clearTimeout(timeoutId)
-  }, [searchTerm, pageNumber, refetch])
-
+  /** 🧭 Handlers */
   const handleTabChange = (tabId: string | number) => {
     setSelectedTab(tabId)
-    setPageNumber(1)
+    setSearchInput("")
     setSearchTerm("")
+    setPageNumber(1)
   }
 
   const handleSearchChange = (value: string) => {
-    setSearchTerm(value)
+    setSearchInput(value)
   }
 
   const handlePageChange = (page: number) => {
@@ -123,23 +122,27 @@ export default function KYCReviews() {
         tabs={tabs}
         selectedTab={selectedTab}
         onTabChange={handleTabChange}
-        searchTerm={searchTerm}
+        searchTerm={searchInput}
         onSearchChange={handleSearchChange}
-        onFilterClick={() => { }}
+        onFilterClick={() => {}}
         isLoading={isLoading}
-        secondaryFilter={true}
+        secondaryFilter
       />
+
+      {/* Table Header */}
       <div className="grid grid-cols-9 gap-4 min-w-[800px] px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit w-full">
         <div>Name</div>
         <div>Date Joined</div>
         <div>Scheme</div>
-        <div>Contribution Amount(₦)</div>
-        <div>Amount Contributed(₦)</div>
-        <div>Loan-Ready Amount(₦)</div>
+        <div>Contribution Amount (₦)</div>
+        <div>Amount Contributed (₦)</div>
+        <div>Loan-Ready Amount (₦)</div>
         <div>Eligible Loan (₦)</div>
         <div>Amount Repaid (₦)</div>
         <div></div>
       </div>
+
+      {/* Table Body */}
       <div className="space-y-3">
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
@@ -149,9 +152,7 @@ export default function KYCReviews() {
         ) : isError ? (
           <div className="text-center py-8">
             <p className="text-red-500 mb-4">
-              {typeof error === "object" && error !== null && "message" in error
-                ? (error as { message?: string }).message || "Failed to load users."
-                : "Failed to load users."}
+              Failed to load users.
             </p>
             <Button onClick={handleRetry} variant="outline">
               Try Again
@@ -162,38 +163,54 @@ export default function KYCReviews() {
             <Card key={user.userId} className="shadow-sm bg-white min-w-[800px]">
               <CardContent className="p-6">
                 <div className="grid grid-cols-9 w-full gap-4 items-center font-outfit">
-                  <div className="flex items-center space-x-3">
-                    <span className="font-medium text-gray-900">{formatFullName(user.name)}</span>
+                  <div className="font-medium text-gray-900">
+                    {formatFullName(user.name)}
                   </div>
-                  <div className="text-sm text-gray-600">{formatDate(user.dateJoined)}</div>
+                  <div className="text-sm text-gray-600">
+                    {formatDate(user.dateJoined)}
+                  </div>
                   <div className="text-sm text-gray-600">{user.scheme}</div>
-                  <div className="text-sm text-gray-600">{formatCurrency(user.contribution)}</div>
-                  <div className="text-sm text-gray-600">{formatCurrency(user.totalContribution)}</div>
-                  <div className="text-sm text-gray-600">{formatCurrency(user.contributionAmountToQualifyForLoan)}</div>
-                  <div className="text-sm text-gray-600">{formatCurrency(user.eligibleLoan)}</div>
-                  <div className="text-sm text-gray-600">{formatCurrency(user.totalRepaidAmount)}</div>
-                  <div className="flex justify-start w-full">
-                    <Link href={`/user-management/${user.userId}`}>
-                      <Button size="sm" className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-2 w-fit text-xs">
-                        View Profile
-                      </Button>
-                    </Link>
+                  <div className="text-sm text-gray-600">
+                    {formatCurrency(user.contribution)}
                   </div>
+                  <div className="text-sm text-gray-600">
+                    {formatCurrency(user.totalContribution)}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {formatCurrency(user.contributionAmountToQualifyForLoan)}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {formatCurrency(user.eligibleLoan)}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {formatCurrency(user.totalRepaidAmount)}
+                  </div>
+                  <Link href={`/user-management/${user.userId}`}>
+                    <Button
+                      size="sm"
+                      className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-3 text-xs"
+                    >
+                      View Profile
+                    </Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
           ))
         ) : (
-          <p className="text-center text-gray-500 py-8">No users found for this status.</p>
+          <p className="text-center text-gray-500 py-8">
+            No users found for this status.
+          </p>
         )}
       </div>
+
       {!isLoading && !isError && (
         <Pagination
-          current={metaData?.currentPage}
+          current={metaData.currentPage}
           onPageChange={handlePageChange}
           onRowChange={handlePageSizeChange}
-          pageSize={metaData?.pageSize}
-          total={metaData?.totalCount}
+          pageSize={metaData.pageSize}
+          total={metaData.totalCount}
         />
       )}
     </div>

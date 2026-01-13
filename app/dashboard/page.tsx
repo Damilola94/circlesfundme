@@ -6,7 +6,7 @@ import { StatsCard } from "@/components/dashboard/stats-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
-import { UserIcon, LoanIcon, KYCIcon, OverdueIcon } from "@/public/assets/icons"
+import { UserIcon, LoanIcon, KYCIcon } from "@/public/assets/icons"
 import { useRouter } from "next/navigation"
 import useGetQuery from "@/hooks/useGetQuery"
 import moment from "moment";
@@ -196,12 +196,27 @@ export default function Dashboard() {
           icon={<LoanIcon stroke="#00A86B" />}
         />
         <StatsCard
+          title="Total Users"
+          value={
+            metricsData?.data?.totalUsers?.toLocaleString() ||
+            (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
+          }
+          icon={<UserIcon stroke="#00A86B" />}
+        />
+        <StatsCard
           title="Pending KYC"
           value={
             metricsData?.data?.totalPendingKYCs?.toLocaleString() ||
             (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
           }
           icon={<KYCIcon stroke="#00A86B" />}
+        />
+        <StatsCard
+          title="Charges from Contributions"
+          value={formatAmount(chargeMetrics?.data?.totalChargesFromContributions || 0)}
+          onPeriodChange={setChargePeriod}
+          period={chargePeriod}
+          icon={<UserIcon stroke="#00A86B" />}
         />
         <StatsCard
           title="Active Loans"
@@ -219,21 +234,6 @@ export default function Dashboard() {
           }
           icon={<OverdueIcon stroke="#00A86B" />}
         /> */}
-        <StatsCard
-          title="Total Users"
-          value={
-            metricsData?.data?.totalUsers?.toLocaleString() ||
-            (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
-          }
-          icon={<UserIcon stroke="#00A86B" />}
-        />
-        <StatsCard
-          title="Charges from Contributions"
-          value={formatAmount(chargeMetrics?.data?.totalChargesFromContributions || 0)}
-          onPeriodChange={setChargePeriod}
-          period={chargePeriod}
-          icon={<UserIcon stroke="#00A86B" />}
-        />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>

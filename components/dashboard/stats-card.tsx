@@ -38,7 +38,6 @@ export function StatsCard({
                 <option value="weekly">Weekly</option>
                 <option value="monthly">Monthly</option>
                 <option value="yearly">Yearly</option>
-                <option value="lastYear">Last Year</option>
               </select>
             )}
             <div className="p-3 rounded-full bg-[#00A86B26]">
