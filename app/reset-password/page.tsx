@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,160 +14,141 @@ import { useMutation } from "react-query";
 import handleFetch from "@/services/api/handleFetch";
 import { toast } from "react-toastify";
 
-export default function ResetPasswordPage() {
-  const [password, setPassword] = useState("");
+export default function SetNewPassword() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const emailOrPhone = searchParams.get("email") || "";
+
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const router = useRouter();
 
   const resetPasswordMutation = useMutation(handleFetch, {
     onSuccess: (res: { statusCode: string; message: string }) => {
       if (res?.statusCode !== "200") {
-        toast.error(res?.message || "Failed to reset password.");
+        toast.error(res?.message || "Something went wrong.");
       } else {
-        toast.success(res?.message || "Password has been reset successfully.");
+        toast.success("Password reset successful");
         router.push("/login");
       }
     },
-    onError: (err: { statusCode?: string; message: string }) => {
+    onError: (err: { message: string }) => {
       toast.error(err?.message || "Something went wrong.");
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!password || !confirmPassword) {
-      toast.error("Please fill in both password fields.");
+    if (!otp || !newPassword || !confirmPassword) {
+      toast.error("Please fill all fields.");
       return;
     }
 
-    if (password !== confirmPassword) {
+    if (newPassword !== confirmPassword) {
       toast.error("Passwords do not match.");
       return;
     }
 
-    if (
-      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$#!%*?&~`'"])[A-Za-z\d@$#!%*?&~`'"]{8,}$/.test(
-        password
-      )
-    ) {
-      toast.error(
-        "Your password must be minimum of eight characters, with at least one uppercase letter, one lowercase letter, one digit and one special character (@$#!%*?&~`'\")"
-      );
-      return;
-    }
-
-    const body = {
-      password,
-      confirmPassword,
-    };
-
     resetPasswordMutation.mutate({
       endpoint: "auth/reset-password",
       method: "POST",
-      body,
+      body: {
+        email: emailOrPhone,
+        otp,
+        newPassword,
+      },
     });
   };
 
   const { isLoading } = resetPasswordMutation;
 
   return (
-    <div className="min-h-screen flex">
-      <div className="flex-1 flex items-center justify-center bg-white">
-        <div className="w-full space-y-8 max-w-2xl">
-          <div className="flex items-center space-x-2 mb-15 -mt-10">
-            <div className="flex pt-10 pl-10 mb-4">
-              <Link href="/">
-                <Image
-                  src="/assets/images/logo.png"
-                  alt="logo"
-                  width={250}
-                  height={100}
-                />
-              </Link>
-            </div>
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-white px-6">
+        <div className="w-full max-w-md space-y-8">
+          <div className="flex justify-center lg:justify-start pt-10">
+            <Link href="/">
+              <Image
+                src="/assets/images/logo.png"
+                alt="logo"
+                width={220}
+                height={80}
+              />
+            </Link>
           </div>
-          <Card className="border-0 shadow-none max-w-lg mx-auto">
-            <CardHeader className="text-center pb-8">
+
+          <Card className="border-0 shadow-none">
+            <CardHeader className="text-center pb-6">
               <CardTitle className="text-3xl font-bold text-gray-900">
-                Reset Password
+                Set New Password
               </CardTitle>
-              <p className="text-gray-600 mt-2 -m-6 text-sm font-outfit">
-                Set your new password.
+              <p className="text-gray-600 mt-2 text-sm">
+                Enter the OTP sent to your email and set a new password.
               </p>
             </CardHeader>
+
             <CardContent>
-              <form onSubmit={handleSubmit}>
-                <div className="space-y-4 mt-10">
-                  <div className="space-y-2">
-                    <div className="relative">
-                      <Input
-                        label="New Password"
-                        id="new-password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter New Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="h-12 pr-10"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-[70%] -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-6 w-6" />
-                        ) : (
-                          <Eye className="h-6 w-6" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="relative">
-                      <Input
-                        label="Confirm New Password"
-                        id="confirm-password"
-                        type={showConfirmPassword ? "text" : "password"}
-                        placeholder="Confirm New Password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="h-12 pr-10"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
-                        className="absolute right-3 top-[70%] -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        {showConfirmPassword ? (
-                          <EyeOff className="h-6 w-6" />
-                        ) : (
-                          <Eye className="h-6 w-6" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <Input
+                  label="OTP"
+                  placeholder="Enter OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  className="h-12"
+                  required
+                />
+
+                <div className="relative">
+                  <Input
+                    label="New Password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter new password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="h-12 pr-10"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-[70%] -translate-y-1/2 text-gray-400"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-6 w-6" />
+                    ) : (
+                      <Eye className="h-6 w-6" />
+                    )}
+                  </button>
                 </div>
+
+                <Input
+                  label="Confirm Password"
+                  type="password"
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="h-12"
+                  required
+                />
+
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-black hover:bg-primary-900 text-white mt-8"
+                  className="w-full h-12 bg-black text-white mt-4"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Resetting..." : "Reset Password"}
+                  {isLoading ? "Resetting Password..." : "Reset Password"}
                 </Button>
               </form>
             </CardContent>
           </Card>
+
         </div>
       </div>
-      <div className="flex-1 bg-primary-900 flex items-center justify-center">
-        <div className="relative w-80 h-80">
+
+      <div className="hidden lg:flex w-1/2 bg-primary-900 items-center justify-center">
+        <div className="relative w-96 h-96">
           <Image
             src="/assets/images/logo-v.png"
             alt="logo"

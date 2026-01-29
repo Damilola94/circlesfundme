@@ -9,7 +9,7 @@ import Pagination from "@/components/ui/pagination"
 import useGetQuery from "@/hooks/useGetQuery"
 import { toast } from "react-toastify"
 import { formatDate, formatCurrency, formatFullName } from "@/lib/utils"
-import { User, tabs } from "./types"
+import { User, AdminTabs } from "./types"
 import { useSearchParams } from "next/navigation"
 import TabsSearchHeader from "@/components/ui/tabs-search-header"
 
@@ -21,7 +21,7 @@ export default function KYCReviews() {
   const statusParams = searchParams.get("status")
 
   const [selectedTab, setSelectedTab] = useState<string | number>(
-    statusParams || "all-users"
+    statusParams || "pending-kyc"
   )
 
   const [pageNumber, setPageNumber] = useState(1)
@@ -37,7 +37,7 @@ export default function KYCReviews() {
     hasPrevious: false,
   })
 
-  const currentTabStatus = tabs.find(
+  const currentTabStatus = AdminTabs.find(
     (tab) => tab.id === selectedTab
   )?.status
 
@@ -55,6 +55,7 @@ export default function KYCReviews() {
     pQuery: {
       status: currentTabStatus,
       PageNumber: pageNumber,
+      Status: "PendingKYC",
       PageSize: pageSize,
       ...(searchTerm && { SearchKey: searchTerm }),
     },
@@ -115,7 +116,7 @@ export default function KYCReviews() {
   return (
     <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
       <TabsSearchHeader
-        tabs={tabs}
+        tabs={AdminTabs}
         selectedTab={selectedTab}
         onTabChange={handleTabChange}
         searchTerm={searchInput}

@@ -61,6 +61,8 @@ export const roundTo = (value: number, decimals: number) => {
 export const noLayoutRoutes = [
   "/",
   "/login",
+  "/set-password",
+  "/reset-password",
   "/forgot-password",
   "/reset-password",
   "/privacy-policy",

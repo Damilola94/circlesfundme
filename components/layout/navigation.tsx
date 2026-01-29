@@ -4,15 +4,49 @@ import {
   CommunicationIcon,
   KYCIcon,
   SubscriptionIcon,
-  WithdrawalIcon
+  ReferralIcon,
+  WithdrawalIcon,
+  UserLockIcon,
 } from "@/public/assets/icons";
 
-export const navigation = [
+type Role = "SuperAdmin" | "Admin" | "CreditRiskOfficer" | "Referrer";
+
+type NavItem = {
+  name: string;
+  href: string;
+  roles: Role[];
+  icon: (isActive: boolean, hoverClass?: string) => JSX.Element;
+};
+
+export const navigation: NavItem[] = [
   {
     name: "Dashboard",
     href: "/dashboard",
-    icon: (isActive: boolean, hoverClass = "") => (
+    roles: ["SuperAdmin"],
+    icon: (isActive, hoverClass = "") => (
       <DashboardIcon
+        stroke={isActive ? "#004C42" : "#ffffff"}
+        className={hoverClass}
+      />
+    ),
+  },
+   {
+    name: "Dashboard",
+    href: "/my-dashboard",
+    roles: ["Referrer"],
+    icon: (isActive, hoverClass = "") => (
+      <DashboardIcon
+        stroke={isActive ? "#004C42" : "#ffffff"}
+        className={hoverClass}
+      />
+    ),
+  },
+  {
+    name: "Referrals",
+    href: "/referrer-user-management",
+    roles: ["Referrer"],
+    icon: (isActive, hoverClass = "") => (
+      <KYCIcon
         stroke={isActive ? "#004C42" : "#ffffff"}
         className={hoverClass}
       />
@@ -21,7 +55,8 @@ export const navigation = [
   {
     name: "User Management",
     href: "/user-management",
-    icon: (isActive: boolean, hoverClass = "") => (
+    roles: ["SuperAdmin", "CreditRiskOfficer"],
+    icon: (isActive, hoverClass = "") => (
       <KYCIcon
         stroke={isActive ? "#004C42" : "#ffffff"}
         className={hoverClass}
@@ -31,7 +66,8 @@ export const navigation = [
   {
     name: "Withdrawal Requests",
     href: "/withdrawal-requests",
-    icon: (isActive: boolean, hoverClass = "") => (
+    roles: ["SuperAdmin"],
+    icon: (isActive, hoverClass = "") => (
       <WithdrawalIcon
         stroke={isActive ? "#004C42" : "#ffffff"}
         className={hoverClass}
@@ -41,7 +77,8 @@ export const navigation = [
   {
     name: "Subscriptions",
     href: "/subscriptions",
-    icon: (isActive: boolean, hoverClass = "") => (
+    roles: ["SuperAdmin"],
+    icon: (isActive, hoverClass = "") => (
       <SubscriptionIcon
         stroke={isActive ? "#004C42" : "#ffffff"}
         className={hoverClass}
@@ -51,8 +88,20 @@ export const navigation = [
   {
     name: "Loan Management",
     href: "/loan-management",
-    icon: (isActive: boolean, hoverClass = "") => (
+    roles: ["SuperAdmin", "CreditRiskOfficer"],
+    icon: (isActive, hoverClass = "") => (
       <LoanIcon
+        stroke={isActive ? "#004C42" : "#ffffff"}
+        className={hoverClass}
+      />
+    ),
+  },
+  {
+    name: "Admin User Management",
+    href: "/admin-user-management",
+    roles: ["Admin"],
+    icon: (isActive, hoverClass = "") => (
+      <KYCIcon
         stroke={isActive ? "#004C42" : "#ffffff"}
         className={hoverClass}
       />
@@ -61,8 +110,31 @@ export const navigation = [
   {
     name: "Communications",
     href: "/communications",
-    icon: (isActive: boolean, hoverClass = "") => (
+    roles: ["SuperAdmin", "Admin", "Referrer"],
+    icon: (isActive, hoverClass = "") => (
       <CommunicationIcon
+        stroke={isActive ? "#004C42" : "#ffffff"}
+        className={hoverClass}
+      />
+    ),
+  },
+  {
+    name: "Referrers",
+    href: "/referrers",
+    roles: ["SuperAdmin"],
+    icon: (isActive, hoverClass = "") => (
+      <ReferralIcon
+        stroke={isActive ? "#004C42" : "#ffffff"}
+        className={hoverClass}
+      />
+    ),
+  },
+  {
+    name: "Admin Users",
+    href: "/admin-user",
+    roles: ["SuperAdmin"],
+    icon: (isActive, hoverClass = "") => (
+      <UserLockIcon
         stroke={isActive ? "#004C42" : "#ffffff"}
         className={hoverClass}
       />

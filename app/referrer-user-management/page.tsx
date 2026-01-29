@@ -51,7 +51,8 @@ export default function KYCReviews() {
   }, [searchInput])
 
   const { data, status, error, refetch } = useGetQuery({
-    endpoint: "adminusermanagement/users",
+    endpoint: "referrers",
+    extra: "my-referred-users",
     pQuery: {
       status: currentTabStatus,
       PageNumber: pageNumber,
@@ -127,14 +128,13 @@ export default function KYCReviews() {
 
       {/* Table Header */}
       <div className="grid grid-cols-9 gap-4 min-w-[800px] px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit w-full">
-        <div>Name</div>
+        <div>Full Name</div>
+        <div>user Email</div>
         <div>Date Joined</div>
-        <div>Scheme</div>
-        <div>Contribution Amount (₦)</div>
-        <div>Amount Contributed (₦)</div>
-        <div>Loan-Ready Amount (₦)</div>
-        <div>Eligible Loan (₦)</div>
-        <div>Amount Repaid (₦)</div>
+        <div>Contribution Count (₦)</div>
+        <div>Loan Count (₦)</div>
+        <div>Total Contribution (₦)</div>
+        <div>Total Loan Value (₦)</div>
         <div></div>
       </div>
 
@@ -159,26 +159,23 @@ export default function KYCReviews() {
               <CardContent className="p-6">
                 <div className="grid grid-cols-9 w-full gap-4 items-center font-outfit">
                   <div className="font-medium text-gray-900">
-                    {formatFullName(user.name)}
+                    {formatFullName(user.fullName)}
                   </div>
+                  <div className="text-sm text-gray-600">{user.email}</div>
                   <div className="text-sm text-gray-600">
                     {formatDate(user.dateJoined)}
                   </div>
-                  <div className="text-sm text-gray-600">{user.scheme}</div>
                   <div className="text-sm text-gray-600">
-                    {formatCurrency(user.contribution)}
+                    {formatCurrency(user.contributionsCount)}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {formatCurrency(user.totalContribution)}
+                    {formatCurrency(user.loansCount)}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {formatCurrency(user.contributionAmountToQualifyForLoan)}
+                    {formatCurrency(user.totalContributed)}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {formatCurrency(user.eligibleLoan)}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {formatCurrency(user.totalRepaidAmount)}
+                    {formatCurrency(user.totalLoanValue)}
                   </div>
                   <Link href={`/user-management/${user.userId}`}>
                     <Button

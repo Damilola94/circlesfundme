@@ -5,7 +5,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { noLayoutRoutes } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import type React from "react";
-import { CookiesProvider, useCookies } from "react-cookie";
+import { CookiesProvider } from "react-cookie";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { ToastContainer } from "react-toastify";
@@ -31,7 +31,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
           {isNoLayout ? (
             <>{children}</>
           ) : (
-            <div className="flex h-screen bg-[#F5F5F5]">
+            <div className="flex bg-[#F5F5F5] min-h-screen">
               <Sidebar />
               <main className="flex-1 overflow-auto">
                 <Header />

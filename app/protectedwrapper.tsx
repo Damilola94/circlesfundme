@@ -14,18 +14,27 @@ interface ProtectedWrapperProps {
 export default function ProtectedWrapper({ children }: ProtectedWrapperProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthed, setIsAuthed] = useState(false);
-  const [cookies] = useCookies(["data"]); 
+  const [cookies] = useCookies(["data"]);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     const checkAuth = () => {
       const isPublicRoute = noLayoutRoutes.includes(pathname);
-      const token = cookies?.data?.accessToken; 
+      const token = cookies?.data?.accessToken;
+      const role = cookies?.data?.role;
 
+      const ROLE_REDIRECT_MAP: Record<string, string> = {
+        SuperAdmin: "/dashboard",
+        CreditRiskOfficer: "/user-management",
+        Admin: "/admin-user-management",
+        Referrer: "/my-dashboard",
+      };
+      
       if (isPublicRoute) {
         if (token && pathname === "/login") {
-          router.push("/dashboard");
+          const redirectPath = ROLE_REDIRECT_MAP[role] || "/dashboard";
+          router.push(redirectPath);
           return;
         }
         setIsAuthed(true);
@@ -36,10 +45,8 @@ export default function ProtectedWrapper({ children }: ProtectedWrapperProps) {
         }
         setIsAuthed(true);
       }
-
       setIsLoading(false);
     };
-
     checkAuth();
   }, [pathname, router, cookies]);
 

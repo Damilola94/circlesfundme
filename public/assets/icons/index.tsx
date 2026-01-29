@@ -19,5 +19,7 @@ export { default as MoneyIcon } from "./MoneyIcon";
 export { default as SecurityIcon } from "./SecurityIcon";
 export { default as PhoneIcon } from "./PhoneIcon";
 export { default as WithdrawalIcon } from "./WithdrawalIcon";
+export { default as ReferralIcon } from "./ReferralIcon";
 export { default as LogoutIcon } from "./LogoutIcon";
+export { default as UserLockIcon } from "./UserLockIcon";
 

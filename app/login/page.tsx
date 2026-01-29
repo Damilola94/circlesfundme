@@ -15,6 +15,14 @@ import handleFetch from "@/services/api/handleFetch";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
 
+
+const ROLE_REDIRECT_MAP: Record<string, string> = {
+  SuperAdmin: "/dashboard",
+  CreditRiskOfficer: "/user-management",
+  Admin: "/admin-user-management",
+  Referrer: "/my-dashboard",
+};
+
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -26,25 +34,36 @@ export default function Login() {
     onSuccess: (res: {
       statusCode: string;
       message: string;
-      data: { accessToken: string };
+      data: {
+        accessToken: string;
+        role: string;
+      };
     }) => {
       if (res?.statusCode !== "200") {
         toast.error(res?.message || "Something went wrong.");
-      } else {
-        toast.success("Login Successful");
-        setCookie("data", res?.data, { secure: true, sameSite: true });
-        router.push("/dashboard");
+        return;
       }
+      toast.success("Login Successful");
+      setCookie("data", res.data, {
+        secure: true,
+        sameSite: "strict",
+      });
+      const role = res.data.role;
+      const redirectPath =
+        ROLE_REDIRECT_MAP[role] || "/dashboard";
+
+      router.push(redirectPath);
     },
-    onError: (err: { statusCode?: string; message: string }) => {
+    onError: (err: { message?: string }) => {
       toast.error(err?.message || "Something went wrong.");
     },
   });
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!(email && password)) {
-      toast.error("Please, enter your email and password.");
+
+    if (!email || !password) {
+      toast.error("Please enter your email and password.");
       return;
     }
 
@@ -59,10 +78,8 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* LEFT SIDE (LOGIN FORM) */}
       <div className="w-full lg:flex-1 flex items-center justify-center bg-white px-4">
         <div className="w-full max-w-lg space-y-8">
-          {/* Logo */}
           <div className="flex justify-center lg:justify-start pt-10">
             <Link href="/">
               <Image
@@ -145,7 +162,6 @@ export default function Login() {
         </div>
       </div>
 
-      {/* RIGHT SIDE (HIDDEN ON MOBILE) */}
       <div className="hidden lg:flex lg:flex-1 bg-primary-900 items-center justify-center">
         <div className="relative w-80 h-80">
           <Image

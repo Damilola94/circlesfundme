@@ -117,7 +117,6 @@ export default function Communications() {
     }
     return []
   }, [templatesData, templatesStatus])
-  console.log(selectedMessageChannel, "selectedMessageChannel");
 
   useEffect(() => {
     if (selectedTemplateId) {

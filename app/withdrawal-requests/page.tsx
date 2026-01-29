@@ -149,6 +149,7 @@ export default function WithdrawalRequests() {
   }
 
   const handleTabChange = (tabId: string | number) => {
+    setUsers([])
     setSelectedTab(tabId)
     setPageNumber(1)
     setSearchTerm("")

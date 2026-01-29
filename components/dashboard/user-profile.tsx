@@ -81,7 +81,7 @@ export function UserProfile({ user }: UserProfileProps) {
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Scheme</span>
-            <span className="text-sm font-medium">{user.scheme}</span>
+            <span className="text-sm font-medium max-w-[120px] truncate">{user.scheme}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Contribution</span>
