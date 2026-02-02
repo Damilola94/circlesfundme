@@ -103,7 +103,7 @@ export default function DeactivationRequestsPage() {
                   </div>
 
                   <div className="text-sm text-gray-600 max-w-[200px] truncate">
-                    {request.userEmail}
+                    {request.userEmail.toLowerCase()}
                   </div>
 
                   <div>
@@ -133,7 +133,7 @@ export default function DeactivationRequestsPage() {
                       size="sm"
                       className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-3 text-xs"
                     >
-                      View
+                      View Profile
                     </Button>
                   </Link>
                 </div>

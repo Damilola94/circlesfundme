@@ -80,7 +80,7 @@ export function DeactivationActionModals({
                 Cancel
               </Button>
               <Button
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-primary hover:bg-primary/85"
                 onClick={onApprove}
                 disabled={isApproving}
               >
@@ -162,7 +162,7 @@ export function DeactivationActionModals({
                 Cancel
               </Button>
               <Button
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-primary hover:bg-primary/85"
                 onClick={onReverse}
                 disabled={isReversing}
               >

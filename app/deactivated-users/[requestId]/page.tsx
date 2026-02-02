@@ -220,7 +220,7 @@ export default function DeactivationDetailPage({
 
                 <div className="pt-4 border-t">
                   <Link href={`/user-management/${request.userId}`}>
-                    <Button variant="outline" className="w-full bg-transparent">
+                    <Button variant="outline"  className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-3 text-xs w-full">
                       View Full User Profile
                     </Button>
                   </Link>
