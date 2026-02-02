@@ -7,6 +7,8 @@ import {
   ReferralIcon,
   WithdrawalIcon,
   UserLockIcon,
+  UserRemoveIcon,
+  UserIcon,
 } from "@/public/assets/icons";
 
 type Role = "SuperAdmin" | "Admin" | "CreditRiskOfficer" | "Referrer";
@@ -58,6 +60,17 @@ export const navigation: NavItem[] = [
     roles: ["SuperAdmin", "CreditRiskOfficer"],
     icon: (isActive, hoverClass = "") => (
       <KYCIcon
+        stroke={isActive ? "#004C42" : "#ffffff"}
+        className={hoverClass}
+      />
+    ),
+  },
+  {
+    name: "Deactivated Users",
+    href: "/deactivated-users",
+    roles: ["SuperAdmin"],
+    icon: (isActive, hoverClass = "") => (
+      <UserIcon
         stroke={isActive ? "#004C42" : "#ffffff"}
         className={hoverClass}
       />

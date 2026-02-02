@@ -69,7 +69,7 @@ interface DialogTitleProps {
   children: React.ReactNode;
 }
 export const DialogTitle: React.FC<DialogTitleProps> = ({ children }) => (
-  <h2 className="text-xl font-semibold">{children}</h2>
+  <h2 className="text-xl font-semibold ff-regular">{children}</h2>
 );
 
 interface DialogDescriptionProps {

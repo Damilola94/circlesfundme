@@ -12,9 +12,8 @@ interface TabItem {
 
 interface TabsSearchHeaderProps {
     tabs: TabItem[];
-    selectedTab: string | number;
+    selectedTab?: string | number;
     onTabChange: (id: string | number) => void;
-
     searchTerm: string;
     onSearchChange: (value: string) => void;
 
@@ -27,7 +26,6 @@ export default function TabsSearchHeader({
     tabs,
     selectedTab,
     onTabChange,
-
     searchTerm,
     onSearchChange,
     onFilterClick,

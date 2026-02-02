@@ -129,7 +129,7 @@ export default function KYCReviews() {
       {/* Table Header */}
       <div className="grid grid-cols-9 gap-4 min-w-[800px] px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit w-full">
         <div>Full Name</div>
-        <div>user Email</div>
+        <div>User Email</div>
         <div>Date Joined</div>
         <div>Contribution Count (₦)</div>
         <div>Loan Count (₦)</div>
@@ -161,7 +161,7 @@ export default function KYCReviews() {
                   <div className="font-medium text-gray-900">
                     {formatFullName(user.fullName)}
                   </div>
-                  <div className="text-sm text-gray-600">{user.email}</div>
+                  <div className=" text-gray-600 max-w-[200px] truncate text-sm">{user.email}</div>
                   <div className="text-sm text-gray-600">
                     {formatDate(user.dateJoined)}
                   </div>
@@ -198,11 +198,11 @@ export default function KYCReviews() {
 
       {!isLoading && !isError && (
         <Pagination
-          current={metaData.currentPage}
+          current={metaData?.currentPage}
           onPageChange={handlePageChange}
           onRowChange={handlePageSizeChange}
-          pageSize={metaData.pageSize}
-          total={metaData.totalCount}
+          pageSize={metaData?.pageSize}
+          total={metaData?.totalCount}
         />
       )}
     </div>

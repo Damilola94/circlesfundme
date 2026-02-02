@@ -22,4 +22,5 @@ export { default as WithdrawalIcon } from "./WithdrawalIcon";
 export { default as ReferralIcon } from "./ReferralIcon";
 export { default as LogoutIcon } from "./LogoutIcon";
 export { default as UserLockIcon } from "./UserLockIcon";
+export { default as UserRemoveIcon } from "./UserRemoveIcon";
 

@@ -6,7 +6,7 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 const KYCIcon = ({ fill = "none", className = "",stroke = "#00A86B", ...props }: IconProps) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={29} height={30} fill={fill} {...props}>
+  <svg xmlns="http://www.w3.org/2000/svg" width={29} height={29} fill={fill} {...props}>
     <path
       stroke={stroke}
       strokeLinecap="round"
