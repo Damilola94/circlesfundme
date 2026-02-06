@@ -14,7 +14,9 @@ export type StatusType =
   | "Processing"
   | "Processed"
   | "Confirmed"
-  | "Queued";
+  | "Queued"
+  | "Disbursed";
+
 
 interface StatusProps {
   status: StatusType;
@@ -91,6 +93,11 @@ const statusConfig: Record<StatusType, { bg: string; text: string; dot: string }
     bg: "bg-stone-100",
     text: "text-stone-800",
     dot: "bg-stone-600",
+  },
+  Disbursed: {
+    bg: "bg-teal-100",
+    text: "text-teal-800",
+    dot: "bg-teal-600",
   },
 };
 

@@ -181,7 +181,7 @@ export default function KYCReviews() {
                   <div className="text-sm text-gray-600">
                     {formatCurrency(user.totalRepaidAmount)}
                   </div>
-                  <Link href={`/user-management/${user.userId}`}>
+                  <Link href={`/admin-user-management/${user.userId}`}>
                     <Button
                       size="sm"
                       className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-3 text-xs"

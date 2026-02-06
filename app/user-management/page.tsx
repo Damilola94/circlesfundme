@@ -125,7 +125,6 @@ export default function KYCReviews() {
         secondaryFilter
       />
 
-      {/* Table Header */}
       <div className="grid grid-cols-9 gap-4 min-w-[800px] px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit w-full">
         <div>Name</div>
         <div>Date Joined</div>

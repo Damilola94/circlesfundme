@@ -75,8 +75,6 @@ export default function ReferralScreen() {
       }),
     {
       onSuccess: (res: any) => {
-        console.log(res, "res");
-        
         if (res?.isSuccess && res?.data) {
           const newReferrer = res.data
           setCreatedReferrer({
@@ -87,7 +85,7 @@ export default function ReferralScreen() {
           setShowCreateModal(false)
           setShowSuccessModal(true)
           refetch()
-          toast.error("Referrer created successfulsssly!")
+          toast.success("Referrer created successfulsssly!")
         } else {
           toast.error(res?.message || "Failed to create referrer.")
         }

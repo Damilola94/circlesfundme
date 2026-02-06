@@ -163,7 +163,7 @@ export default function Login() {
       </div>
 
       <div className="hidden lg:flex lg:flex-1 bg-primary-900 items-center justify-center">
-        <div className="relative w-80 h-80">
+        <div className="relative w-64 h-72">
           <Image
             src="/assets/images/logo-v.png"
             alt="logo"

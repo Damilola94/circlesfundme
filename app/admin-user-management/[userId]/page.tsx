@@ -17,6 +17,7 @@ import moment from "moment"
 import type { KycStatusType, StatusType } from "../types"
 import { useMutation } from "react-query"
 import handleFetch from "@/services/api/handleFetch"
+import { useCookies } from "react-cookie"
 
 export default function UserProfilePage({ params }: { params: { userId: string } }) {
   const [pageNumber, setPageNumber] = useState(1)
@@ -201,11 +202,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
   }, [loanStatus, loanData, loanError])
 
   const handleTransHistory = async () => {
-    router.push(`/user-management/${userId}/transactions?userName=${userData.data.firstName} ${userData.data.lastName}`)
-  }
-
-  const handleDeactivateUser = () => {
-    setShowDeactivateModal(true)
+    router.push(`/admin-user-management/${userId}/transactions?userName=${userData.data.firstName} ${userData.data.lastName}`)
   }
 
   const confirmDeactivateUser = () => {
@@ -219,11 +216,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
     setShowDeactivateModal(false)
   }
 
-  const handleActivateUser = () => {
-    setShowActivateModal(true)
-  }
-
-  const confirmActivateUser = () => {
+   const confirmActivateUser = () => {
     activateUserMutation.mutate({
       endpoint: `adminusermanagement`,
       extra: `users/${userId}/reactivate`,
@@ -265,7 +258,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
         </div>
       )}
       <div className="flex items-center space-x-4">
-        <Link href="/user-management" className="w-10 h-10 bg-white rounded-full">
+        <Link href="/admin-user-management" className="w-10 h-10 bg-white rounded-full">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -354,7 +347,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
                             variant="outline"
                             className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full w-full border-primary-900 bg-transparent px-2"
                           >
-                            View Request 
+                            View Request
                           </Button>
                         </Link>
                       </div>
@@ -374,20 +367,15 @@ export default function UserProfilePage({ params }: { params: { userId: string }
         pageSize={pageSize}
         total={totalElements}
       />
+
       <div className="flex justify-end space-x-4">
-        {kycStatus === "active" && (
-          <Button variant="outline" onClick={handleDeactivateUser}>
-            Deactivate User
-          </Button>
-        )}
-        {kycStatus === "deactivated" && (
-          <Button className="bg-primary-900 hover:bg-primary-700" onClick={handleActivateUser}>
-            Activate User
-          </Button>
-        )}
         {kycStatus === "pending" && (
           <>
-            <Button variant="outline" onClick={handleSendReminder} disabled={isSendingReminder}>
+            <Button
+              variant="outline"
+              onClick={handleSendReminder}
+              disabled={isSendingReminder}
+            >
               {isSendingReminder ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -397,14 +385,9 @@ export default function UserProfilePage({ params }: { params: { userId: string }
                 "KYC Reminder"
               )}
             </Button>
-            <Button variant="outline" onClick={handleDeactivateUser}>
-              Deactivate User
-            </Button>
-            <Button className="bg-primary-900 hover:bg-primary-700" onClick={handleActivateUser}>
-              Activate User
-            </Button>
           </>
         )}
+
       </div>
       <ConfirmationModal
         isOpen={showDeactivateModal}

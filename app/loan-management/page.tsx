@@ -12,6 +12,7 @@ import useGetQuery from "@/hooks/useGetQuery"
 import TabsSearchHeader from "@/components/ui/tabs-search-header"
 import { formatAmount, formatFullName, getDateRange } from "@/lib/utils"
 import { StatsCard } from "@/components/dashboard/stats-card"
+import { useCookies } from "react-cookie"
 
 export type StatusType = "Approved" | "Pending" | "Rejected" | "Waitlist"
 
@@ -23,6 +24,8 @@ export default function LoanManagement() {
   const [schemeFilter, setSchemeFilter] = useState<string | number>("all-scheme")
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [cookies] = useCookies(["data"]);
+  const userRole = cookies?.data?.role;
 
   const statusTabs = [
     { id: "all-loans", label: "All Loans" },
@@ -30,7 +33,10 @@ export default function LoanManagement() {
     { id: "pending", label: "Pending" },
     { id: "rejected", label: "Rejected" },
     { id: "waitlist", label: "Waitlisted" },
-  ]
+    ...(userRole === "SuperAdmin"
+      ? [{ id: "disbursed", label: "Disbursed" }]
+      : []),
+  ];
 
   const schemeTabs = [
     { id: "all-scheme", label: "All Scheme" },

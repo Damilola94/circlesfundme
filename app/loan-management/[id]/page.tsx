@@ -20,6 +20,7 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false)
   const [isWaitlistModalOpen, setIsWaitlistModalOpen] = useState(false)
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false)
+  const [isDisbursedModalOpen, setIsDisbursedModalOpen] = useState(false)
 
   const {
     data: loanDetailsResponse,
@@ -111,6 +112,31 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
     },
   })
 
+  const disburseMutation = useMutation({
+    mutationFn: (approvedLoanId: string) =>
+      handleFetch({
+        endpoint: "loanapplications/disburse",
+        method: "POST",
+        auth: true,
+        body: { approvedLoanId },
+      }),
+    onSuccess: (response) => {
+      if (response.statusCode == "400") {
+        toast.error(response.message || "Failed to disburse loan")
+        return
+      }
+      toast.success("Loan disbursed successfully")
+      setIsDisbursedModalOpen(false)
+      refetch()
+    },
+    onError: (response: { message: string }) => {
+      console.log(response)
+      if (response) {
+        toast.error(response.message || "Failed to disburse loan")
+      }
+    },
+  })
+
   const handleRejectLoan = (rejectionReason: string) => {
     rejectMutation.mutate({ id: params.id, rejectionReason })
   }
@@ -121,6 +147,10 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
 
   const handleApproveLoan = () => {
     approveMutation.mutate(params.id)
+  }
+
+  const handleDisburseLoan = () => {
+    disburseMutation.mutate(params.id)
   }
 
   const loanData = loanDetailsResponse?.data
@@ -247,6 +277,17 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
                   )}
                 </div>
               )}
+              {loanData?.status === "approved" && (
+                <div className="flex justify-between space-x-4 pt-6">
+                  <Button
+                    className="bg-green-700 hover:bg-green-600 w-full"
+                    onClick={() => setIsDisbursedModalOpen(true)}
+                    disabled={disburseMutation.isLoading}
+                  >
+                    {disburseMutation.isLoading ? "Disbursing..." : "Disburse Loan"}
+                  </Button>
+                </div>
+              )}
             </CardContent>
           )}
         </Card>
@@ -278,6 +319,15 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
         title="Approve Loan Application"
         description={`Are you sure you want to approve this loan application for ${loanData?.fullname}? This will process the loan for ${formatAmount(loanData?.requestedAmount, "₦")}.`}
         confirmButtonText="Approve Loan"
+      />
+
+      <ConfirmationModal
+        isOpen={isDisbursedModalOpen}
+        onOpenChange={setIsDisbursedModalOpen}
+        onConfirm={handleDisburseLoan}
+        title="Disburse Loan"
+        description={`Are you sure you want to disburse this loan for ${loanData?.fullname}? The amount of ${formatAmount(loanData?.requestedAmount, "₦")} will be transferred to the borrower's account (${loanData?.accountNumber}).`}
+        confirmButtonText="Disburse Loan"
       />
     </div>
   )

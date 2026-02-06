@@ -5,25 +5,58 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
   stroke?: string;
 }
 
-const KYCIcon = ({ fill = "none", className = "",stroke = "#00A86B", ...props }: IconProps) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={29} height={29} fill={fill} {...props}>
+const ProfileCardIcon = ({
+  fill = "none",
+  stroke = "#163300",
+  className = "",
+  width = 24,
+  height = 24,
+  ...props
+}: IconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={width}
+    height={height}
+    viewBox="0 0 118 118"
+    fill={fill}
+    {...props}
+  >
     <path
+      d="M68.8334 44.25H88.5"
       stroke={stroke}
+      strokeWidth={8.5}
       strokeLinecap="round"
       className={className}
-      strokeLinejoin="round"
-      strokeWidth={1.773}
-      d="M20.16 25.636H8.34c-4.726 0-5.908-1.181-5.908-5.909v-9.454c0-4.728 1.182-5.91 5.909-5.91h11.818c4.727 0 5.91 1.182 5.91 5.91v9.454c0 4.727-1.183 5.91-5.91 5.91ZM16.614 10.273h5.909M17.796 15h4.727M20.16 19.727h2.363"
     />
     <path
+      d="M68.8334 61.4583H83.5834"
       stroke={stroke}
+      strokeWidth={8.5}
+      strokeLinecap="round"
       className={className}
+    />
+    <path
+      d="M83.5834 14.75H34.4167C20.8397 14.75 9.83337 25.7563 9.83337 39.3333V78.6667C9.83337 92.2437 20.8397 103.25 34.4167 103.25H83.5834C97.1604 103.25 108.167 92.2437 108.167 78.6667V39.3333C108.167 25.7563 97.1604 14.75 83.5834 14.75Z"
+      stroke={stroke}
+      strokeWidth={8.5}
+      strokeLinejoin="round"
+      className={className}
+    />
+    <path
+      d="M24.5834 78.6667C30.5242 65.9763 52.6684 65.1414 59 78.6667"
+      stroke={stroke}
+      strokeWidth={8.5}
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={1.773}
-      d="M10.114 14.16a2.14 2.14 0 1 0 0-4.277 2.14 2.14 0 0 0 0 4.278ZM14.25 20.117a3.57 3.57 0 0 0-3.238-3.214 9.122 9.122 0 0 0-1.797 0 3.58 3.58 0 0 0-3.238 3.214"
+      className={className}
+    />
+    <path
+      d="M51.625 44.25C51.625 49.681 47.2225 54.0833 41.7917 54.0833C36.3609 54.0833 31.9584 49.681 31.9584 44.25C31.9584 38.8192 36.3609 34.4167 41.7917 34.4167C47.2225 34.4167 51.625 38.8192 51.625 44.25Z"
+      stroke={stroke}
+      strokeWidth={8.5}
+      className={className}
     />
   </svg>
 );
 
-export default KYCIcon;
+export default ProfileCardIcon;

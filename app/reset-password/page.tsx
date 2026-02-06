@@ -23,6 +23,7 @@ export default function SetNewPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const resetPasswordMutation = useMutation(handleFetch, {
     onSuccess: (res: { statusCode: string; message: string }) => {
@@ -122,16 +123,29 @@ export default function SetNewPassword() {
                     )}
                   </button>
                 </div>
+                <div className="relative">
+                  <Input
+                    label="Confirm Password"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm new password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="h-12"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-[70%] -translate-y-1/2 text-gray-400"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-6 w-6" />
+                    ) : (
+                      <Eye className="h-6 w-6" />
+                    )}
+                  </button>
+                </div>
 
-                <Input
-                  label="Confirm Password"
-                  type="password"
-                  placeholder="Confirm new password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="h-12"
-                  required
-                />
 
                 <Button
                   type="submit"
@@ -148,7 +162,7 @@ export default function SetNewPassword() {
       </div>
 
       <div className="hidden lg:flex w-1/2 bg-primary-900 items-center justify-center">
-        <div className="relative w-96 h-96">
+        <div className="relative w-64 h-72">
           <Image
             src="/assets/images/logo-v.png"
             alt="logo"

@@ -78,7 +78,7 @@ export default function DeactivationRequestsPage() {
         isLoading={isLoading}
       />
 
-      <div className="grid grid-cols-6 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit w-full">
+      <div className="grid grid-cols-6 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit w-full min-w-[800px]">
         <div>User Name</div>
         <div>Email</div>
         <div>Status</div>
@@ -95,7 +95,7 @@ export default function DeactivationRequestsPage() {
           </div>
         ) : requests.length > 0 ? (
           requests.map((request: any) => (
-            <Card key={request.id} className="shadow-sm bg-white">
+            <Card key={request.id} className="shadow-sm bg-white min-w-[800px]">
               <CardContent className="p-6">
                 <div className="grid grid-cols-6 gap-4 items-center font-outfit">
                   <div className="font-medium text-gray-900">

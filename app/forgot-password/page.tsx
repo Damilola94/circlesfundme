@@ -22,9 +22,8 @@ export default function ForgotPasswordPage() {
       if (res?.statusCode !== "200") {
         toast.error(res?.message || "Failed to send reset link.");
       } else {
-        toast.success(
-          res?.message || "Password reset link sent to your email."
-        );
+        toast.success("OTP sent successfully");
+        router.push(`/reset-password?email=${email}`);
       }
     },
     onError: (err: { statusCode?: string; message: string }) => {
@@ -108,8 +107,8 @@ export default function ForgotPasswordPage() {
           </Card>
         </div>
       </div>
-      <div className="flex-1 bg-primary-900 flex items-center justify-center">
-        <div className="relative w-80 h-80">
+      <div className="hidden lg:flex lg:flex-1 bg-primary-900 items-center justify-center">
+        <div className="relative w-64 h-72">
           <Image
             src="/assets/images/logo-v.png"
             alt="logo"
