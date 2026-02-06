@@ -27,7 +27,7 @@ export default function Dashboard() {
         <StatsCard
           title="Total Referred Users"
           value={
-            formatAmount(metricsData?.data?.totalReferredUsers) ||
+            metricsData?.data?.totalReferredUsers ||
             (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
           }
           icon={<LoanIcon stroke="#00A86B" />}
@@ -35,23 +35,21 @@ export default function Dashboard() {
         <StatsCard
           title="Total Approved Loans"
           value={
-            formatAmount(metricsData?.data?.approvedLoanCount)  ||
+           metricsData?.data?.approvedLoanCount ||
             (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
           }
-          onPeriodChange={setChargePeriod}
-          period={chargePeriod}
           icon={<LoanIcon stroke="#00A86B" />}
         />
         <StatsCard
-          title="Total Users"
+          title="Total Loan Value"
           value={
-             formatAmount(metricsData?.data?.totalLoanValue)  ||
+             metricsData?.data?.totalLoanValue  ||
             (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
           }
           icon={<UserIcon stroke="#00A86B" />}
         />
         <StatsCard
-          title="Pending KYC"
+          title="Earned Commission"
           value={
             formatAmount(metricsData?.data?.earnedCommission) ||
             (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")

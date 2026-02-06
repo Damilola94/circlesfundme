@@ -126,7 +126,6 @@ export default function KYCReviews() {
         secondaryFilter
       />
 
-      {/* Table Header */}
       <div className="grid grid-cols-9 gap-4 min-w-[800px] px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit w-full">
         <div>Full Name</div>
         <div>User Email</div>
@@ -177,7 +176,7 @@ export default function KYCReviews() {
                   <div className="text-sm text-gray-600">
                     {formatCurrency(user.totalLoanValue)}
                   </div>
-                  <Link href={`/user-management/${user.userId}`}>
+                  <Link href={`/referrer-user-management/${user.userId}`}>
                     <Button
                       size="sm"
                       className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-3 text-xs"
