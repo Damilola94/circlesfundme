@@ -26,6 +26,7 @@ export default function LoanManagement() {
   const [pageSize, setPageSize] = useState(10)
   const [cookies] = useCookies(["data"]);
   const userRole = cookies?.data?.role;
+  const isDisbursedSelected = statusFilter === "disbursed";
 
   const statusTabs = [
     { id: "all-loans", label: "All Loans" },
@@ -68,7 +69,13 @@ export default function LoanManagement() {
   } = useGetQuery({
     endpoint: "loanapplications",
     pQuery: {
-      Status: statusFilter === "all-loans" ? undefined : statusFilter,
+     Status:
+      isDisbursedSelected
+        ? undefined
+        : statusFilter === "all-loans"
+        ? undefined
+        : statusFilter,
+      IsDisbursed: isDisbursedSelected ? true : undefined,
       SchemeType: schemeFilter === "all-scheme" ? undefined : schemeFilter,
       PageNumber: pageNumber,
       PageSize: pageSize,

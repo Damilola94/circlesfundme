@@ -16,7 +16,7 @@ interface TabsSearchHeaderProps {
     onTabChange: (id: string | number) => void;
     searchTerm: string;
     onSearchChange: (value: string) => void;
-
+    className?: string;
     onFilterClick?: () => void;
     secondaryFilter?: boolean;
     isLoading?: boolean;
@@ -28,13 +28,14 @@ export default function TabsSearchHeader({
     onTabChange,
     searchTerm,
     onSearchChange,
+    className = "",
     onFilterClick,
     secondaryFilter = false,
     isLoading = false,
 }: TabsSearchHeaderProps) {
     return (
-        <div className="flex min-w-[800px] justify-between items-end border-b-2 pb-0">
-            <div className="flex space-x-1 bg-gray-100 rounded-lg w-fit">
+        <div className={`flex min-w-[800px] justify-between items-end border-b-2 pb-0`}>
+            <div className={`flex space-x-1 bg-gray-100 rounded-lg w-fit ${className}`}>
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}

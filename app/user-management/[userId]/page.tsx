@@ -277,7 +277,6 @@ export default function UserProfilePage({ params }: { params: { userId: string }
         <h1 className="text-xl font-semibold font-outfit text-gray-900">User Management - View Profile</h1>
       </div>
       <UserProfile user={user} />
-
       {isLoading && (
         <div className="flex flex-1 items-center justify-center min-h-[80vh]">
           <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
