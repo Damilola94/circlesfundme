@@ -1,13 +1,12 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useMemo } from "react"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import Pagination from "@/components/ui/pagination"
 import useGetQuery from "@/hooks/useGetQuery"
-import { toast } from "react-toastify"
 import moment from "moment"
 import TabsSearchHeader from "@/components/ui/tabs-search-header"
 import { formatFullName } from "@/lib/utils"
@@ -24,7 +23,7 @@ export default function DeactivationRequestsPage() {
     (tab) => tab.id === selectedTab
   )?.status
 
-  const { data, status, error, refetch } = useGetQuery({
+  const { data, status } = useGetQuery({
     endpoint: "adminusermanagement/deactivation-requests",
     pQuery: {
       Status: currentStatus,
@@ -40,22 +39,18 @@ export default function DeactivationRequestsPage() {
     auth: true,
   })
 
-  const { requests, metaData } = useMemo(() => {
+  const requests = useMemo(() => {
     if (status === "success" && data?.isSuccess) {
-      return {
-        requests: data.data ?? [],
-        metaData: data.metadata ?? {
-          totalCount: 0,
-          currentPage: 1,
-          pageSize,
-        },
-      }
+      return data.data ?? []
     }
-    return {
-      requests: [],
-      metaData: { totalCount: 0, currentPage: 1, pageSize },
-    }
-  }, [data, status, pageSize])
+    return []
+  }, [data, status])
+
+  const metaData = data?.metaData ?? {
+    totalCount: 0,
+    pageSize,
+    currentPage: pageNumber,
+  }
 
   const handleTabChange = (tabId: string | number) => {
     setSelectedTab(tabId)

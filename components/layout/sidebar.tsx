@@ -132,8 +132,8 @@ export function Sidebar() {
           <Image
             src="/assets/images/logo-white.png"
             alt="logo"
-            width={200}
-            height={100}
+            width={170}
+            height={80}
           />
         </div>
 
