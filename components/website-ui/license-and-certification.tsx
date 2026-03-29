@@ -12,7 +12,7 @@ export default function WhyChooseUsSection() {
     const features = [
         {
             icon: <SecurityIcon />,
-            title: "DUNS Registered Business",
+            title: "Asset-backed finance platform",
             description:
                 "Advanced security, identity verification, and encrypted transactions keep your money and data safe.",
         },
