@@ -9,6 +9,7 @@ import FAQSection from "@/components/website-ui/faq-section";
 import CTASection from "@/components/website-ui/cta-section";
 import Footer from "@/components/website-ui/footer";
 import CompanyLicense from "@/components/website-ui/companylicense";
+import CompanyCertification from "@/components/website-ui/license-and-certification";
 
 export default function HomePage() {
   return (
@@ -19,6 +20,7 @@ export default function HomePage() {
       <WhatWeProvideSection />
       <HowItWorksSection />
       <CompanyLicense/>
+      <CompanyCertification/>
       <WhyChooseUsSection />
       <TestimonialsSection />
       <FAQSection />

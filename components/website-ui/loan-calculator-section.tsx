@@ -290,7 +290,7 @@ export default function LoanCalculatorSection() {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Eligible Loan:</span>
+                            <span>Eligible Loan(90%):</span>
                             <span className="font-outfit font-semibold text-sm">
                               ₦{vehicleBreakdown.eligibleLoan}
                             </span>
@@ -428,7 +428,7 @@ export default function LoanCalculatorSection() {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Insurance Fee:</span>
+                            <span>Insurance Fee (90%):</span>
                             <span className="font-outfit font-semibold">
                               {regularBreakdown.insurance}
                             </span>

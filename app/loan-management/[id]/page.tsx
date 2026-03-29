@@ -184,7 +184,7 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
     { label: "Loan Management Fee", value: `${formatAmount(loanData?.loanManagementFee, "₦")}` },
     {
       label: "Repayment Term",
-      value: `${formatAmount(loanData?.repaymentTerm, "₦")} Weeks`,
+      value: `${formatAmount(loanData?.repaymentTerm, "₦")} ${loanData?.scheme === "Monthly" ? "Monthly" : loanData?.scheme === "Daily" ? "Daily" : "Weekly"}`,
     },
     { label: "Eligibilty Status", value: loanData?.isEligible ? "Eligible" : "Not Eligible" },
     { label: "Default Penalty", value: loanData?.defaultPenalty || "N/A" },
@@ -248,13 +248,13 @@ export default function LoanDetails({ params }: { params: { id: string } }) {
               {loanData?.status !== "Active" && (
                 <div className="flex justify-between space-x-4 pt-6">
                   {loanData?.status === "Waitlist" && (
-                      <Button
-                        className="bg-primary-900 hover:bg-primary-700 w-full"
-                        onClick={() => setIsApproveModalOpen(true)}
-                        disabled={approveMutation.isLoading}
-                      >
-                        {approveMutation.isLoading ? "Approving..." : "Approve"}
-                      </Button>
+                    <Button
+                      className="bg-primary-900 hover:bg-primary-700 w-full"
+                      onClick={() => setIsApproveModalOpen(true)}
+                      disabled={approveMutation.isLoading}
+                    >
+                      {approveMutation.isLoading ? "Approving..." : "Approve"}
+                    </Button>
                   )}
                   {loanData?.status === "Pending" && (
                     <>
