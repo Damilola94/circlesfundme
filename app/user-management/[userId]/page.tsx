@@ -131,6 +131,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
       return {
         name: `${apiUser.firstName} ${apiUser.lastName}`,
         email: apiUser.email || "",
+        contributionWalletBalance: formatAmount(apiUser.contributionWalletBalance || 0, "N"),
         phone: apiUser.phoneNumber || "",
         image: apiUser.profilePictureUrl,
         dateOfBirth: apiUser.dateOfBirth ? moment(apiUser.dateOfBirth).format("MM/DD/YYYY") : "",
@@ -153,6 +154,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
     return {
       name: "User Not Found",
       email: "",
+      contributionWalletBalance: "",
       phone: "",
       image: "",
       dateOfBirth: "",

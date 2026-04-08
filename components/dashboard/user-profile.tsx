@@ -18,6 +18,7 @@ interface UserProfileProps {
     dateOfBirth: string;
     gender: string;
     scheme: string;
+    contributionWalletBalance: string;
     contribution: string;
     bvn: string;
     document: DocumentItem[];
@@ -86,6 +87,10 @@ export function UserProfile({ user }: UserProfileProps) {
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Contribution</span>
             <span className="text-sm font-medium">{user.contribution}</span>
+          </div>
+           <div className="flex justify-between">
+            <span className="text-sm text-gray-600">Contribution Wallet Balance</span>
+            <span className="text-sm font-medium">{user.contributionWalletBalance}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">BVN</span>
