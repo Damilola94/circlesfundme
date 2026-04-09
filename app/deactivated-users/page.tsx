@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -13,9 +13,14 @@ import { formatFullName } from "@/lib/utils"
 import { DeactivationTabs, getStatusBadge } from "./types"
 
 export default function DeactivationRequestsPage() {
-  const [selectedTab, setSelectedTab] = useState<string | number>("pending")
   const [searchInput, setSearchInput] = useState("")
+  const [searchTerm, setSearchTerm] = useState("")
 
+  const [selectedTab, setSelectedTab] = useState<string | number>("pending")
+
+  const handleSearchChange = (value: string) => {
+    setSearchInput(value)
+  }
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
 
@@ -29,15 +34,25 @@ export default function DeactivationRequestsPage() {
       Status: currentStatus,
       PageNumber: pageNumber,
       PageSize: pageSize,
+      ...(searchTerm && { SearchKey: searchTerm }),
     },
     queryKey: [
       "deactivation-requests",
       currentStatus,
       pageNumber,
       pageSize,
+      searchTerm,
     ],
     auth: true,
   })
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearchTerm(searchInput)
+      setPageNumber(1)
+    }, 600)
+
+    return () => clearTimeout(timeout)
+  }, [searchInput])
 
   const requests = useMemo(() => {
     if (status === "success" && data?.isSuccess) {
@@ -55,6 +70,8 @@ export default function DeactivationRequestsPage() {
   const handleTabChange = (tabId: string | number) => {
     setSelectedTab(tabId)
     setPageNumber(1)
+    setSearchInput("")
+    setSearchTerm("")
   }
 
   const isLoading = status === "loading"
@@ -68,9 +85,10 @@ export default function DeactivationRequestsPage() {
         selectedTab={selectedTab}
         onTabChange={handleTabChange}
         searchTerm={searchInput}
-        onSearchChange={setSearchInput}
+        onSearchChange={handleSearchChange}
         onFilterClick={() => { }}
         isLoading={isLoading}
+        secondaryFilter
       />
 
       <div className="grid grid-cols-6 gap-4 px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit w-full min-w-[800px]">

@@ -89,7 +89,7 @@ export function UserProfile({ user }: UserProfileProps) {
             <span className="text-sm font-medium">{user.contribution}</span>
           </div>
            <div className="flex justify-between">
-            <span className="text-sm text-gray-600">Contribution Wallet Balance</span>
+            <span className="text-sm text-gray-600">User's Balance</span>
             <span className="text-sm font-medium">{user.contributionWalletBalance}</span>
           </div>
           <div className="flex justify-between">
