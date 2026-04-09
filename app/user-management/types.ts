@@ -4,6 +4,7 @@ export interface User {
   dateJoined: string;
   scheme: string;
   contribution: number;
+  contributionWalletBalance: number;
   totalContribution: number;
   eligibleLoan: number;
   contributionAmountToQualifyForLoan: number;

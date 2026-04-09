@@ -18,7 +18,7 @@ interface UserProfileProps {
     dateOfBirth: string;
     gender: string;
     scheme: string;
-    contributionWalletBalance: string;
+    contributionWalletBalance?: string;
     contribution: string;
     bvn: string;
     document: DocumentItem[];
