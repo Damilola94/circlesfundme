@@ -113,6 +113,15 @@ export default function Dashboard() {
     auth: true,
   })
 
+  const {
+    data: withdrawalMetrics,
+    status: withdrawalMetricsStatus,
+  } = useGetQuery({
+    endpoint: "admindashboard/total-paid-withdrawal",
+    queryKey: ["total-paid-withdrawal", chargePeriod],
+    auth: true,
+  });
+
   const kycQueue = pendingKycData?.isSuccess
     ? pendingKycData.data.map((user: { name: any; dateJoined: string; avatarUrl: any }) => ({
       name: user.name,
@@ -147,6 +156,11 @@ export default function Dashboard() {
 
   const totalOutflow = getTotalOutflow(outflowData);
 
+  const totalContributionAmount = totalContributions?.data?.totalAmount || 0;
+  const totalWithdrawalAmount = withdrawalMetrics?.data?.totalAmount || 0;
+
+  const totalNetContribution = totalContributionAmount - totalWithdrawalAmount;
+
   const loanRequests = loanRequestsData?.isSuccess
     ? loanRequestsData.data.map((item: { applicantDetail: { firstName: string, lastName: string, imageUrl: string }; requestedAmount: number; dateApplied: string, }) => ({
       name: `${item.applicantDetail.firstName} ${item.applicantDetail.lastName}`,
@@ -176,7 +190,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex-1 space-y-6 p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
         <StatsCard
           title="Paystack Balance"
           value={
@@ -196,9 +210,37 @@ export default function Dashboard() {
           icon={<LoanIcon stroke="#00A86B" />}
         />
         <StatsCard
+          title="Total Net Contribution"
+          value={
+            formatAmount(totalNetContribution, "₦") ||
+            (withdrawalMetricsStatus === "loading" ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : "N/A")
+          }
+          onPeriodChange={setChargePeriod}
+          period={chargePeriod}
+          icon={<LoanIcon stroke="#00A86B" />}
+        />
+        <StatsCard
           title="Total Users"
           value={
             metricsData?.data?.totalUsers?.toLocaleString() ||
+            (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
+          }
+          icon={<UserIcon stroke="#00A86B" />}
+        />
+        <StatsCard
+          title="Total Active Users"
+          value={
+            metricsData?.data?.totalActiveUsers?.toLocaleString() ||
+            (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
+          }
+          icon={<UserIcon stroke="#00A86B" />}
+        />
+        <StatsCard
+          title="Total Deactivated Users"
+          value={
+            metricsData?.data?.totalDeactivatedUsers?.toLocaleString() ||
             (metricsStatus === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : "N/A")
           }
           icon={<UserIcon stroke="#00A86B" />}

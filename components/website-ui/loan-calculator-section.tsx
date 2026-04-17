@@ -33,6 +33,7 @@ export default function LoanCalculatorSection() {
     insurance: "",
     processingFee: "",
     totalAssetValue: "",
+    loanProtectionFund: "",
     downPayment: "",
     loanManagementFee: "",
     minimumWeeklyContribution: "",
@@ -48,6 +49,8 @@ export default function LoanCalculatorSection() {
     loanManagementFeeDescription: "",
     eligibleLoan: "",
     insurance: "",
+    processingFee: "",
+    loanProtectionFund: "",
     eligibleLoanDescription: "",
     preLoanServiceCharge: "",
     postLoanServiceCharge: "",
@@ -95,6 +98,7 @@ export default function LoanCalculatorSection() {
           processingFee: breakdown.processingFee,
           totalAssetValue: breakdown.totalAssetValue,
           downPayment: breakdown.downPayment,
+          loanProtectionFund: breakdown.loanProtectionFund || 0,
           loanManagementFee: breakdown.loanManagementFee,
           minimumWeeklyContribution: breakdown.minimumWeeklyContribution,
           preLoanServiceCharge: breakdown.preLoanServiceCharge,
@@ -128,6 +132,8 @@ export default function LoanCalculatorSection() {
         eligibleLoanDescription: breakdown.eligibleLoanDescription,
         preLoanServiceCharge: breakdown.preLoanServiceCharge,
         insurance: breakdown.insurance,
+        loanProtectionFund: breakdown.loanProtectionFund,
+        processingFee: breakdown.processingFee,
         postLoanServiceCharge: breakdown.postLoanServiceCharge,
         totalRepayment: breakdown.totalRepayment,
         repaymentTerm: breakdown.repaymentTerm,
@@ -154,7 +160,6 @@ export default function LoanCalculatorSection() {
       });
     }
   };
-  console.log(vehicleBreakdown);
 
   const { isLoading } = breakdownMutation;
   const { isLoading: regularIsLoading } = regualarBreakdownMutation;
@@ -281,18 +286,9 @@ export default function LoanCalculatorSection() {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span>
-                              User Contribution{" "}
-                              <span className="text-sm">(Down Payment):</span>
-                            </span>
+                            <span>Loan Protection Fund:</span>
                             <span className="font-outfit font-semibold">
-                              ₦{vehicleBreakdown.downPayment}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Eligible Loan(90%):</span>
-                            <span className="font-outfit font-semibold text-sm">
-                              ₦{vehicleBreakdown.eligibleLoan}
+                              ₦{vehicleBreakdown.loanProtectionFund}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -302,6 +298,21 @@ export default function LoanCalculatorSection() {
                             </span>
                           </div>
                           <div className="flex justify-between">
+                            <span>
+                              User Contribution{" "}
+                              <span className="text-sm">(Down Payment):</span>
+                            </span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.downPayment}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Eligible Loan (90%):</span>
+                            <span className="font-outfit font-semibold text-sm">
+                              ₦{vehicleBreakdown.eligibleLoan}
+                            </span>
+                          </div>
+                         <div className="flex justify-between">
                             <span>Pre-Loan Service Charge:</span>
                             <span className="font-outfit font-semibold">
                               ₦{vehicleBreakdown.preLoanServiceCharge}
@@ -340,6 +351,18 @@ export default function LoanCalculatorSection() {
                             </span>
                           </div>
                           <div className="flex justify-between">
+                            <span>Loan Mgt. Fee (2 years):</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.loanManagementFee}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Loan Protection Fund:</span>
+                            <span className="font-outfit font-semibold">
+                              ₦{vehicleBreakdown.loanProtectionFund}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
                             <span>Processing Fee:</span>
                             <span className="font-outfit font-semibold">
                               ₦{vehicleBreakdown.processingFee}
@@ -360,12 +383,7 @@ export default function LoanCalculatorSection() {
                               ₦{vehicleBreakdown.eligibleLoan}
                             </span>
                           </div>
-                          <div className="flex justify-between">
-                            <span>Loan Mgt. Fee (2 years):</span>
-                            <span className="font-outfit font-semibold">
-                              ₦{vehicleBreakdown.loanManagementFee}
-                            </span>
-                          </div>
+                          
                           <div className="flex justify-between">
                             <span>Pre-Loan Service Charge:</span>
                             <span className="font-outfit font-semibold">
@@ -392,10 +410,10 @@ export default function LoanCalculatorSection() {
                       <Input
                         type="money"
                         label={`${scheme.includes("Daily")
-                            ? "Daily Sales Revenue"
-                            : scheme.includes("Weekly")
-                              ? "Weekly Sales Revenue"
-                              : "Monthly Income"
+                          ? "Daily Sales Revenue"
+                          : scheme.includes("Weekly")
+                            ? "Weekly Sales Revenue"
+                            : "Monthly Income"
                           } `}
                         value={income}
                         onChange={(e) => setIncome(e.target.value)}
@@ -404,10 +422,10 @@ export default function LoanCalculatorSection() {
                       <Input
                         type="money"
                         label={`${scheme.includes("Daily")
-                            ? "Daily Contribution"
-                            : scheme.includes("Weekly")
-                              ? "Weekly Contribution"
-                              : "Monthly Contribution"
+                          ? "Daily Contribution"
+                          : scheme.includes("Weekly")
+                            ? "Weekly Contribution"
+                            : "Monthly Contribution"
                           } `}
                         value={contribution}
                         onChange={(e) => setContribution(e.target.value)}
@@ -428,9 +446,27 @@ export default function LoanCalculatorSection() {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Insurance Fee (90%):</span>
+                            <span>Insurance Fee:</span>
                             <span className="font-outfit font-semibold">
                               {regularBreakdown.insurance}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Proessing Fee:</span>
+                            <span className="font-outfit font-semibold">
+                              {regularBreakdown.processingFee}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Loan Protection Fund:</span>
+                            <span className="font-outfit font-semibold">
+                              {regularBreakdown.loanProtectionFund}
+                            </span>
+                          </div>
+                           <div className="flex justify-between">
+                            <span>Eligible Loan:</span>
+                            <span className="font-outfit font-semibold">
+                              {regularBreakdown.eligibleLoanAfterInsurance}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -441,12 +477,6 @@ export default function LoanCalculatorSection() {
                                 : scheme.includes("Weekly")
                                   ? "52 weeks"
                                   : "12 months"}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Eligible Loan:</span>
-                            <span className="font-outfit font-semibold">
-                              {regularBreakdown.eligibleLoanAfterInsurance}
                             </span>
                           </div>
                           <div className="flex justify-between">

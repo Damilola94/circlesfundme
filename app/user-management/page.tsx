@@ -12,6 +12,7 @@ import { formatDate, formatCurrency, formatFullName } from "@/lib/utils"
 import { User, tabs } from "./types"
 import { useSearchParams } from "next/navigation"
 import TabsSearchHeader from "@/components/ui/tabs-search-header"
+import { SchemeStatsCard } from "@/components/user-management/scheme-stats-card"
 
 export default function KYCReviews() {
   const [searchInput, setSearchInput] = useState("")
@@ -62,6 +63,18 @@ export default function KYCReviews() {
     auth: true,
   })
 
+  const {
+    data: schemeMetrics,
+    status: schemeMetricsStatus,
+  } = useGetQuery({
+    endpoint: "admindashboard/scheme-metrics",
+    queryKey: ["scheme-metrics"],
+    auth: true,
+  });
+
+  const schemes = schemeMetrics?.isSuccess
+    ? schemeMetrics.data.schemes
+    : [];
   useEffect(() => {
     if (status === "success") {
       if (data?.isSuccess) {
@@ -77,7 +90,7 @@ export default function KYCReviews() {
       toast.error(
         typeof error === "object" && error !== null && "message" in error
           ? (error as { message?: string }).message ||
-              "Something went wrong."
+          "Something went wrong."
           : "Something went wrong."
       )
       setUsers([])
@@ -114,13 +127,33 @@ export default function KYCReviews() {
 
   return (
     <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
+      <div className="">
+        {schemeMetricsStatus === "loading" ? (
+          <div className="flex items-center">
+            <Loader2 className="h-5 w-5 animate-spin mr-2" />
+            <span>Loading scheme metrics...</span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {schemes.map((scheme: any) => (
+              <SchemeStatsCard
+                key={scheme.schemeType}
+                name={scheme.schemeName}
+                total={scheme.totalUsers}
+                active={scheme.activeUsers}
+                inactive={scheme.deactivatedUsers}
+              />
+            ))}
+          </div>
+        )}
+      </div>
       <TabsSearchHeader
         tabs={tabs}
         selectedTab={selectedTab}
         onTabChange={handleTabChange}
         searchTerm={searchInput}
         onSearchChange={handleSearchChange}
-        onFilterClick={() => {}}
+        onFilterClick={() => { }}
         isLoading={isLoading}
         secondaryFilter
       />

@@ -18,7 +18,7 @@ export function StatsCard({
   return (
     <Card>
       <CardContent className="p-4">
-        <div className="flex justify-between">
+        <div className="flex justify-between font-outfit">
           <div>
             <p className="text-sm font-medium text-muted-foreground font-outfit">
               {title}
