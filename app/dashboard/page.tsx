@@ -117,7 +117,13 @@ export default function Dashboard() {
     data: withdrawalMetrics,
     status: withdrawalMetricsStatus,
   } = useGetQuery({
-    endpoint: "admindashboard/total-paid-withdrawal",
+    endpoint: "admindashboard",
+    extra: "total-paid-withdrawal",
+    pQuery: {
+      DateRangeType: chargeRange.DateRangeType,
+      StartDate: chargeRange.StartDate,
+      EndDate: chargeRange.EndDate,
+    },
     queryKey: ["total-paid-withdrawal", chargePeriod],
     auth: true,
   });
