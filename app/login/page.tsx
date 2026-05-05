@@ -35,7 +35,6 @@ export default function Login() {
   const router = useRouter();
   const [, setCookie] = useCookies(["data"]);
 
-  // LOGIN MUTATION
   const loginMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       if (res?.statusCode !== "200") {
@@ -67,7 +66,6 @@ export default function Login() {
     },
   });
 
-  // OTP MUTATION
   const verifyOtpMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       if (res?.statusCode !== "200") {
@@ -92,7 +90,6 @@ export default function Login() {
     },
   });
 
-  // HANDLERS
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -126,7 +123,6 @@ export default function Login() {
     });
   };
 
-  // OPTIONAL: AUTO SUBMIT WHEN OTP COMPLETE
   const handleOtpChange = (value: string) => {
     setOtp(value);
 
@@ -147,7 +143,6 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* LEFT */}
       <div className="w-full lg:flex-1 flex items-center justify-center bg-white px-4">
         <div className="w-full max-w-lg space-y-8">
           <div className="flex justify-center lg:justify-start pt-10">
@@ -284,7 +279,6 @@ export default function Login() {
         </div>
       </div>
 
-      {/* RIGHT */}
       <div className="hidden lg:flex lg:flex-1 bg-primary-900 items-center justify-center">
         <div className="relative w-64 h-72">
           <Image

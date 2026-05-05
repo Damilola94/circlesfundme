@@ -130,7 +130,6 @@ export const navigation: NavItem[] = [
 
   {
     name: "Subscriptions",
-    href: "/subscriptions",
     roles: ["SuperAdmin"],
     icon: (isActive, hoverClass = "") => (
       <SubscriptionIcon
@@ -138,7 +137,32 @@ export const navigation: NavItem[] = [
         className={hoverClass}
       />
     ),
+    children: [
+      {
+        name: "Savings",
+        href: "/subscriptions/savings",
+        roles: ["SuperAdmin"],
+        icon: (isActive, hoverClass = "") => (
+          <SubscriptionIcon
+            stroke={isActive ? "#004C42" : "#ffffff"}
+            className={hoverClass}
+          />
+        ),
+      },
+      {
+        name: "Full Scheme",
+        href: "/subscriptions/full-scheme",
+        roles: ["SuperAdmin"],
+        icon: (isActive, hoverClass = "") => (
+          <SubscriptionIcon
+            stroke={isActive ? "#004C42" : "#ffffff"}
+            className={hoverClass}
+          />
+        ),
+      },
+    ],
   },
+
   {
     name: "User Management",
     href: "/user-management",

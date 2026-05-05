@@ -17,7 +17,6 @@ import moment from "moment"
 import type { KycStatusType, StatusType } from "../types"
 import { useMutation } from "react-query"
 import handleFetch from "@/services/api/handleFetch"
-import { useCookies } from "react-cookie"
 
 export default function UserProfilePage({ params }: { params: { userId: string } }) {
   const [pageNumber, setPageNumber] = useState(1)
@@ -134,6 +133,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
         gender: apiUser.gender || "",
         scheme: apiUser.contributionScheme?.name || "N/A",
         contribution: formatAmount(apiUser.contributionAmount || 0, "N"),
+        contributionWalletBalance: apiUser.contributionWalletBalance,
         bvn: apiUser.bvn || "N/A",
         kycStatus,
         document: (apiUser.userDocuments || []).map((doc: any, index: number) => ({
@@ -155,6 +155,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
       dateOfBirth: "",
       gender: "",
       scheme: "",
+      contributionWalletBalance: 0,
       contribution: "",
       bvn: "",
       document: [],
