@@ -1,5 +1,3 @@
-// types.ts
-
 export interface ParamConfig {
   label: string;
   key: string;
@@ -11,7 +9,12 @@ export interface Subscription {
   title: string;
   description: string;
   type: "regular" | "asset";
-  values: { [key: string]: string };
+  isActive: boolean;
+
+  values: {
+    [key: string]: string;
+  };
+
   paramsConfig: ParamConfig[];
 }
 
@@ -21,6 +24,10 @@ export interface ApiSavingsScheme {
   description: string;
   schemeType: number;
   interestRatePerAnnumPercent: number;
+
+  immatureWithdrawalPenaltyPercent: number;
+  immatureWithdrawalPenaltyCap: number;
+
   isActive: boolean;
 }
 
@@ -32,10 +39,14 @@ export const transformSavingsApiToSubscriptions = (
     title: scheme.name,
     description: scheme.description,
     type: "regular",
-
+    isActive: scheme.isActive,
     values: {
       interestRate: scheme.interestRatePerAnnumPercent.toString(),
       schemeType: scheme.schemeType.toString(),
+      immatureWithdrawalPenaltyPercent:
+        scheme.immatureWithdrawalPenaltyPercent.toString(),
+      immatureWithdrawalPenaltyCap:
+        scheme.immatureWithdrawalPenaltyCap.toString(),
     },
 
     paramsConfig: [
@@ -44,19 +55,34 @@ export const transformSavingsApiToSubscriptions = (
         key: "interestRate",
         unit: "%",
       },
+
+      {
+        label: "Withdrawal Penalty",
+        key: "immatureWithdrawalPenaltyPercent",
+        unit: "%",
+      },
+
+      {
+        label: "Penalty Cap",
+        key: "immatureWithdrawalPenaltyCap",
+        unit: "₦",
+      },
     ],
   }));
 };
 
-export const transformSavingsToApiPayload = (
-  subscription: Subscription
-) => {
+export const transformSavingsToApiPayload = (subscription: Subscription) => {
   return {
     name: subscription.title,
     description: subscription.description,
     schemeType: Number(subscription.values.schemeType),
-    interestRatePerAnnumPercent: Number(
-      subscription.values.interestRate
+    interestRatePerAnnumPercent: Number(subscription.values.interestRate),
+    immatureWithdrawalPenaltyPercent: Number(
+      subscription.values.immatureWithdrawalPenaltyPercent
     ),
+    immatureWithdrawalPenaltyCap: Number(
+      subscription.values.immatureWithdrawalPenaltyCap
+    ),
+    isActive: subscription.isActive,
   };
 };
