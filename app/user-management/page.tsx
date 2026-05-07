@@ -13,9 +13,7 @@ import {
   User,
   tabs,
   schemeTabs,
-  savingsSubTabs,
   SchemeMode,
-  SavingsSubTab,
   FilterState,
 } from "./types";
 import { useSearchParams } from "next/navigation";

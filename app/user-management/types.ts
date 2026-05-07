@@ -53,7 +53,7 @@ export type StatusTab = {
 export const tabs: StatusTab[] = [
   { id: "all-users", label: "All Onbaorded Users", status: undefined },
   { id: "active", label: "Active Users", status: "active" },
-  { id: "pending", label: "Pending KYC Approvals", status: "pendingKyc" },
+  { id: "pending", label: "Pending KYC", status: "pendingKyc" },
   { id: "deactivated", label: "Deactivated Users", status: "deactivated" },
 ];
 
