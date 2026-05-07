@@ -1,42 +1,46 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
-import { toast } from "react-toastify"
-import { formatAmount, formatCurrency, formatDate, formatFullName, getBalanceAfterWithdrawal, getDateRange, truncateText } from "@/lib/utils"
-import useGetQuery from "@/hooks/useGetQuery"
-import { useMutation, useQueryClient } from "react-query"
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
+import {
+  formatAmount,
+  formatCurrency,
+  formatDate,
+  formatFullName,
+  getBalanceAfterWithdrawal,
+  getDateRange,
+  truncateText,
+} from "@/lib/utils";
+import useGetQuery from "@/hooks/useGetQuery";
+import { useMutation, useQueryClient } from "react-query";
 
-import Pagination from "@/components/ui/pagination"
-import TabsSearchHeader from "@/components/ui/tabs-search-header"
-import { ConfirmationModal } from "@/components/ui/confirmation-modal"
+import Pagination from "@/components/ui/pagination";
+import TabsSearchHeader from "@/components/ui/tabs-search-header";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 
-import { User, tabs } from "./types"
-import handleFetch from "@/services/api/handleFetch"
-import { StatsCard } from "@/components/dashboard/stats-card"
-import { LoanIcon, UserIcon } from "@/public/assets/icons"
+import { User, tabs } from "./types";
+import handleFetch from "@/services/api/handleFetch";
+import { StatsCard } from "@/components/dashboard/stats-card";
+import { LoanIcon, UserIcon } from "@/public/assets/icons";
 
 export default function WithdrawalRequests() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedTab, setSelectedTab] = useState<string | number>("pending")
-  const [pageNumber, setPageNumber] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
-  const queryClient = useQueryClient()
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTab, setSelectedTab] = useState<string | number>("pending");
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const queryClient = useQueryClient();
+  const [chargePeriod, setChargePeriod] = useState("yearly");
+  const chargeRange = getDateRange(chargePeriod);
+  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+  const [actionType, setActionType] = useState<"approve" | "reject" | null>(
+    null
+  );
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const paystackBalance = queryClient.getQueryData([
-    "paystack-balance",
-  ]) as {
-    data: {
-      balance: number;
-    }[];
-  }
-
-  const [chargePeriod, setChargePeriod] = useState("yearly")
-  const chargeRange = getDateRange(chargePeriod)
-
-  const [users, setUsers] = useState<User[]>([])
+  const [users, setUsers] = useState<User[]>([]);
   const [metaData, setMetaData] = useState({
     totalCount: 0,
     pageSize: 10,
@@ -44,16 +48,32 @@ export default function WithdrawalRequests() {
     totalPages: 1,
     hasNext: false,
     hasPrevious: false,
-  })
+  });
 
-  const [isActionModalOpen, setIsActionModalOpen] = useState(false)
-  const [actionType, setActionType] = useState<"approve" | "reject" | null>(null)
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const isPending = selectedTab === "pending";
+  const isApproved = selectedTab === "approved";
+  const isRejected = selectedTab === "rejected";
+  const showActions = isPending;
 
-  const isPending = selectedTab === "pending"
-  const isApproved = selectedTab === "approved"
-  const isRejected = selectedTab === "rejected"
-  const showActions = isPending
+  const { data: withdrawalMetrics, status: withdrawalMetricsStatus } =
+    useGetQuery({
+      endpoint: "admindashboard",
+      extra: "total-paid-withdrawal",
+      pQuery: {
+        DateRangeType: chargeRange.DateRangeType,
+        StartDate: chargeRange.StartDate,
+        EndDate: chargeRange.EndDate,
+      },
+      queryKey: ["total-paid-withdrawal", chargePeriod],
+      auth: true,
+    });
+
+  const { data: paystackBalance } = useGetQuery({
+    endpoint: "adminwithdrawalrequests",
+    extra: "paystack-balance",
+    queryKey: ["paystack-balance"],
+    auth: true,
+  });
 
   const { data, status, error, refetch } = useGetQuery({
     endpoint: "adminwithdrawalrequests",
@@ -63,13 +83,17 @@ export default function WithdrawalRequests() {
       PageSize: pageSize,
       ...(searchTerm && { SearchKey: searchTerm }),
     },
-    queryKey: ["withdrawal-requests", pageNumber, pageSize, selectedTab, searchTerm],
+    queryKey: [
+      "withdrawal-requests",
+      pageNumber,
+      pageSize,
+      selectedTab,
+      searchTerm,
+    ],
     auth: true,
-  })
+  });
 
-  const {
-    data: chargeMetrics,
-  } = useGetQuery({
+  const { data: chargeMetrics } = useGetQuery({
     endpoint: "admindashboard",
     extra: "charge-metrics",
     pQuery: {
@@ -79,119 +103,135 @@ export default function WithdrawalRequests() {
     },
     queryKey: ["charge-metrics", chargePeriod],
     auth: true,
-  })
+  });
 
   useEffect(() => {
     if (status === "success") {
       if (data?.isSuccess) {
-        setUsers(data.data)
-        setMetaData(data.metaData)
+        setUsers(data.data);
+        setMetaData(data.metaData);
       } else {
-        toast.error(data?.message || "Failed to fetch requests.")
+        toast.error(data?.message || "Failed to fetch requests.");
       }
     }
 
     if (status === "error") {
-      toast.error("Something went wrong while fetching requests.")
+      toast.error("Something went wrong while fetching requests.");
     }
-  }, [status, data, error])
+  }, [status, data, error]);
 
   const actionMutation = useMutation(handleFetch, {
     onSuccess: (res: any) => {
       if (res?.isSuccess) {
-        toast.success(res?.message || "Action completed.")
-        refetch()
+        toast.success(res?.message || "Action completed.");
+        refetch();
       } else {
-        toast.error(res?.message || "Action failed.")
+        toast.error(res?.message || "Action failed.");
       }
     },
     onError: (err: any) => {
-      toast.error(err?.message || "Something went wrong.")
+      toast.error(err?.message || "Something went wrong.");
     },
-  })
+  });
 
   const handleConfirmAction = (comment?: string) => {
-    if (!selectedId || !actionType) return
+    if (!selectedId || !actionType) return;
 
     const endpoint =
       actionType === "approve"
         ? `adminwithdrawalrequests/${selectedId}/approve`
-        : `adminwithdrawalrequests/${selectedId}/reject`
+        : `adminwithdrawalrequests/${selectedId}/reject`;
 
     const payload =
       actionType === "reject"
         ? {
-          withdrawalRequestId: selectedId,
-          reason: comment || "",
-        }
-        : undefined
+            withdrawalRequestId: selectedId,
+            reason: comment || "",
+          }
+        : undefined;
 
     actionMutation.mutate({
       endpoint,
       method: "POST",
       body: payload,
       auth: true,
-    })
+    });
 
-    setIsActionModalOpen(false)
-  }
+    setIsActionModalOpen(false);
+  };
 
   const openApprovalModal = (id: string) => {
-    setSelectedId(id)
-    setActionType("approve")
-    setIsActionModalOpen(true)
-  }
+    setSelectedId(id);
+    setActionType("approve");
+    setIsActionModalOpen(true);
+  };
 
   const openRejectModal = (id: string) => {
-    setSelectedId(id)
-    setActionType("reject")
-    setIsActionModalOpen(true)
-  }
+    setSelectedId(id);
+    setActionType("reject");
+    setIsActionModalOpen(true);
+  };
 
   const handleTabChange = (tabId: string | number) => {
-    setUsers([])
-    setSelectedTab(tabId)
-    setPageNumber(1)
-    setSearchTerm("")
-  }
+    setUsers([]);
+    setSelectedTab(tabId);
+    setPageNumber(1);
+    setSearchTerm("");
+  };
 
   const handleSearchChange = (value: string) => {
-    setSearchTerm(value)
-  }
+    setSearchTerm(value);
+  };
 
   const handlePageChange = (page: number) => {
-    setPageNumber(page)
-  }
+    setPageNumber(page);
+  };
 
   const handlePageSizeChange = (size: number) => {
-    setPageSize(size)
-    setPageNumber(1)
-  }
+    setPageSize(size);
+    setPageNumber(1);
+  };
+  console.log(withdrawalMetrics);
 
-  const isLoading = status === "loading"
+  const isLoading = status === "loading";
   const isError =
-    status === "error" || (status === "success" && data && !data.isSuccess)
+    status === "error" || (status === "success" && data && !data.isSuccess);
+  const totalWithdrawalAmount = withdrawalMetrics?.data?.totalAmount || 0;
 
   return (
     <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <StatsCard
           title="Paystack Balance"
+          value={formatAmount(paystackBalance?.data[0].balance) || "₦0.00"}
+          icon={<LoanIcon stroke="#00A86B" />}
+        />
+        <StatsCard
+          title="Total Withdrawal Amount"
           value={
-            formatAmount(paystackBalance?.data[0].balance) || "₦0.00"
+            formatAmount(totalWithdrawalAmount, "₦") ||
+            (withdrawalMetricsStatus === "loading" ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              "N/A"
+            ))
           }
+          onPeriodChange={setChargePeriod}
+          period={chargePeriod}
           icon={<LoanIcon stroke="#00A86B" />}
         />
         <StatsCard
           title="Revenue from withdrawals"
-          value={formatAmount(chargeMetrics?.data?.totalChargesFromWithdrawals || 0)}
+          value={formatAmount(
+            chargeMetrics?.data?.totalChargesFromWithdrawals || 0
+          )}
           onPeriodChange={setChargePeriod}
           period={chargePeriod}
           icon={<UserIcon stroke="#00A86B" />}
         />
         <StatsCard
           title="Total Approved Withdrawals"
-          value={(chargeMetrics?.data?.totalApprovedWithdrawals || 0)}
+          value={chargeMetrics?.data?.totalApprovedWithdrawals || 0}
           icon={<UserIcon stroke="#00A86B" />}
         />
       </div>
@@ -202,7 +242,7 @@ export default function WithdrawalRequests() {
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
         secondaryFilter={false}
-        onFilterClick={() => { }}
+        onFilterClick={() => {}}
         isLoading={isLoading}
       />
       <div
@@ -281,9 +321,7 @@ export default function WithdrawalRequests() {
 
                   {isRejected && (
                     <span>
-                      {user.rejectedDate
-                        ? formatDate(user.rejectedDate)
-                        : "-"}
+                      {user.rejectedDate ? formatDate(user.rejectedDate) : "-"}
                     </span>
                   )}
 
@@ -322,7 +360,6 @@ export default function WithdrawalRequests() {
                       )}
                     </div>
                   )}
-
 
                   {showActions && (
                     <div className="flex gap-1">
@@ -367,7 +404,9 @@ export default function WithdrawalRequests() {
         isOpen={isActionModalOpen}
         onOpenChange={setIsActionModalOpen}
         onConfirm={handleConfirmAction}
-        title={actionType === "approve" ? "Approve Withdrawal" : "Reject Withdrawal"}
+        title={
+          actionType === "approve" ? "Approve Withdrawal" : "Reject Withdrawal"
+        }
         description={
           actionType === "approve"
             ? "Are you sure you want to approve this withdrawal request?"
@@ -378,5 +417,5 @@ export default function WithdrawalRequests() {
         confirmButtonText={actionType === "approve" ? "Approve" : "Reject"}
       />
     </div>
-  )
+  );
 }
