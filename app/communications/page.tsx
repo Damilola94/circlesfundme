@@ -14,7 +14,7 @@ import {
   SendIcon,
   SmsIcon,
   EmailIcon,
-  NotificationIcon,
+  // NotificationIcon,
 } from "@/public/assets/icons";
 import useGetQuery from "@/hooks/useGetQuery";
 import { useMutation } from "react-query";
@@ -208,7 +208,7 @@ export default function Communications() {
       channel: string;
     }) =>
       handleFetch({
-        endpoint: "admincommunications/send",
+        endpoint: "admincommusnications/send",
         method: "POST",
         body: payload,
         auth: true,
@@ -275,7 +275,7 @@ export default function Communications() {
       title: messageTitle.trim(),
       body: messageContent.trim(),
       target: selectedTargetGroup,
-      channel: selectedMessageChannel.toUpperCase(),
+      channel: selectedMessageChannel
     };
 
     sendCommunicationMutation.mutate(payload);
@@ -342,7 +342,7 @@ export default function Communications() {
                     ? "border-primary-700 bg-primary-50"
                     : "border-primary-700 bg-transparent"
                 }`}
-                onClick={() => setSelectedMessageChannel("sms")}
+                onClick={() => setSelectedMessageChannel("SMS")}
               >
                 <SmsIcon />
                 <span>SMS</span>
@@ -355,7 +355,7 @@ export default function Communications() {
                     ? "border-primary-700 bg-primary-50"
                     : "border-primary-700 bg-transparent"
                 }`}
-                onClick={() => setSelectedMessageChannel("email")}
+                onClick={() => setSelectedMessageChannel("Email")}
               >
                 <EmailIcon />
                 <span>Email</span>
@@ -370,8 +370,8 @@ export default function Communications() {
             <Select
               label="Select Channels"
               options={[
-                { value: "email", label: "Email" },
-                { value: "sms", label: "SMS" },
+                { value: "Email", label: "Email" },
+                { value: "SMS", label: "SMS" },
               ]}
               placeholder={selectedMessageChannel || "Select Channel"}
               value={selectedMessageChannel}
