@@ -27,6 +27,7 @@ export interface ApiSavingsScheme {
 
   immatureWithdrawalPenaltyPercent: number;
   immatureWithdrawalPenaltyCap: number;
+  paystackFeeCap: number;
 
   isActive: boolean;
 }
@@ -40,13 +41,19 @@ export const transformSavingsApiToSubscriptions = (
     description: scheme.description,
     type: "regular",
     isActive: scheme.isActive,
+
     values: {
       interestRate: scheme.interestRatePerAnnumPercent.toString(),
+
       schemeType: scheme.schemeType.toString(),
+
       immatureWithdrawalPenaltyPercent:
         scheme.immatureWithdrawalPenaltyPercent.toString(),
+
       immatureWithdrawalPenaltyCap:
         scheme.immatureWithdrawalPenaltyCap.toString(),
+
+      paystackFeeCap: scheme.paystackFeeCap.toString(),
     },
 
     paramsConfig: [
@@ -67,22 +74,46 @@ export const transformSavingsApiToSubscriptions = (
         key: "immatureWithdrawalPenaltyCap",
         unit: "₦",
       },
+
+      {
+        label: "Paystack Fee Cap",
+        key: "paystackFeeCap",
+        unit: "₦",
+      },
     ],
   }));
 };
 
-export const transformSavingsToApiPayload = (subscription: Subscription) => {
+export const transformSavingsToApiPayload = (
+  subscription: Subscription
+) => {
   return {
     name: subscription.title,
+
     description: subscription.description,
-    schemeType: Number(subscription.values.schemeType),
-    interestRatePerAnnumPercent: Number(subscription.values.interestRate),
+
+    schemeType: Number(
+      subscription.values.schemeType
+    ),
+
+    interestRatePerAnnumPercent: Number(
+      subscription.values.interestRate
+    ),
+
     immatureWithdrawalPenaltyPercent: Number(
-      subscription.values.immatureWithdrawalPenaltyPercent
+      subscription.values
+        .immatureWithdrawalPenaltyPercent
     ),
+
     immatureWithdrawalPenaltyCap: Number(
-      subscription.values.immatureWithdrawalPenaltyCap
+      subscription.values
+        .immatureWithdrawalPenaltyCap
     ),
+
+    paystackFeeCap: Number(
+      subscription.values.paystackFeeCap
+    ),
+
     isActive: subscription.isActive,
   };
 };

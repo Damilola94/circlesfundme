@@ -47,6 +47,9 @@ export default function UserProfilePage({
     auth: true,
   });
 
+  const schemeMode = userData?.data?.schemeMode;
+  const isSavingsMode = schemeMode === 2;
+
   const {
     data: loanData,
     status: loanStatus,
@@ -65,7 +68,18 @@ export default function UserProfilePage({
       pageNumber.toString(),
       pageSize.toString(),
     ],
-    enabled: !!userId,
+    enabled: !!userId && !isSavingsMode,
+    auth: true,
+  });
+
+  const {
+    data: savingsHistoryData,
+    status: savingsHistoryStatus,
+    refetch: refetchSavingsHistory,
+  } = useGetQuery({
+    endpoint: `adminusermanagement/users/${userId}/savings-history`,
+    queryKey: ["user-savings-history", userId],
+    enabled: !!userId && isSavingsMode,
     auth: true,
   });
 
@@ -166,6 +180,7 @@ export default function UserProfilePage({
       contribution: "",
       bvn: "",
       document: [],
+      kycStatus: "unknown" as KycStatusType,
     };
   }, [userData, userStatus]);
 
@@ -188,6 +203,29 @@ export default function UserProfilePage({
     }
     return [];
   }, [loanData, loanStatus]);
+
+  const savingsHistory = useMemo(() => {
+    if (
+      savingsHistoryStatus === "success" &&
+      savingsHistoryData?.isSuccess &&
+      savingsHistoryData.data
+    ) {
+      return savingsHistoryData.data.map((item: any) => ({
+        id: item.id,
+        eventType: item.eventType,
+        amount: formatAmount(item.amount || 0, "N"),
+        occurredAt: moment(item.occurredAt).format("MMM D, YYYY h:mm A"),
+        status: item.status,
+        planName: item.planName,
+        savingsSchemeName: item.savingsSchemeName,
+        schemeType: item.schemeType,
+        isCredit:
+          item.eventType?.toLowerCase().includes("contribution") ||
+          item.eventType?.toLowerCase().includes("deposit"),
+      }));
+    }
+    return [];
+  }, [savingsHistoryData, savingsHistoryStatus]);
 
   const kycStatus = user.kycStatus;
 
@@ -295,16 +333,11 @@ export default function UserProfilePage({
       extra: `users/${userId}/wallet/credit`,
       method: "POST",
       auth: true,
-      body: {
-        userId,
-        walletType,
-        amount,
-        reason,
-      },
+      body: { userId, walletType, amount, reason },
     });
   };
 
-  const handleDebitUser= ({
+  const handleDebitUser = ({
     amount,
     walletType,
     reason,
@@ -318,12 +351,7 @@ export default function UserProfilePage({
       extra: `users/${userId}/wallet/debit`,
       method: "POST",
       auth: true,
-      body: {
-        userId,
-        walletType,
-        amount,
-        reason,
-      },
+      body: { userId, walletType, amount, reason },
     });
   };
 
@@ -335,10 +363,15 @@ export default function UserProfilePage({
   const isLoanError =
     loanStatus === "error" ||
     (loanStatus === "success" && loanData && !loanData.isSuccess);
+  const isSavingsHistoryLoading = savingsHistoryStatus === "loading";
 
   function handleRetry() {
     refetchUser();
-    refetchLoans();
+    if (isSavingsMode) {
+      refetchSavingsHistory();
+    } else {
+      refetchLoans();
+    }
   }
 
   const { isLoading: isDeactivating } = deactivateUserMutation;
@@ -355,6 +388,7 @@ export default function UserProfilePage({
           <span className="text-gray-500">Loading</span>
         </div>
       )}
+
       <div className="flex items-center space-x-4">
         <Link
           href="/user-management"
@@ -365,9 +399,10 @@ export default function UserProfilePage({
           </Button>
         </Link>
         <h1 className="text-xl font-semibold font-outfit text-gray-900">
-          User Management - View Profsssile
+          User Management - View Profile
         </h1>
       </div>
+
       <UserProfile user={user} />
 
       {isLoading && (
@@ -376,6 +411,7 @@ export default function UserProfilePage({
           <span className="ml-2 text-gray-500">Loading user profile...</span>
         </div>
       )}
+
       {isError && (
         <div className="flex flex-1 flex-col items-center justify-center text-center">
           <p className="text-red-500 text-lg mb-4">
@@ -392,148 +428,233 @@ export default function UserProfilePage({
           </Button>
         </div>
       )}
-      <div className="flex justify-end gap-3">
-        {!isLoading && !isError && (
-          <Button
-            variant="outline"
-            className="border-primary-900 text-primary-900 hover:bg-[#00A86B26] font-outfit"
-            onClick={() => setShowCreditModal(true)}
-            disabled={isCreditingUser}
-          >
-            Credit User
-          </Button>
-        )}
-        {!isLoading && !isError && (
-          <Button
-            variant="outline"
-            className="border-red-600 text-red-600 hover:bg-red-50 font-outfit"
-            onClick={() => setShowDebitModal(true)}
-            disabled={isDebitingUser}
-          >
-            Debit User
-          </Button>
-        )}
-        <Button
-          className="bg-primary-900 hover:bg-primary-700 font-outfit"
-          onClick={handleTransHistory}
-        >
-          View Transaction History
-        </Button>
-      </div>
 
-      <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
-        <div className="grid grid-cols-6 gap-4 px-6 py-3 min-w-[800px] text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
-          <div>Date Applied</div>
-          <div>Status</div>
-          <div>Loan Amount (₦)</div>
-          <div>Amount Repaid (₦)</div>
-          <div>Amount Remaining (₦)</div>
-          <div className="text-right"> </div>
-        </div>
-
-        {isLoanLoading && (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
-            <span className="ml-2 text-gray-500">Loading loan data...</span>
-          </div>
-        )}
-
-        {isLoanError && (
-          <div className="flex flex-col items-center justify-center text-center py-8">
-            <p className="text-red-500 mb-4">
-              {(loanError &&
-              typeof loanError === "object" &&
-              "message" in loanError
-                ? (loanError as { message?: string }).message
-                : undefined) ||
-                loanData?.message ||
-                "Failed to load loan data."}
-            </p>
-            <Button onClick={() => refetchLoans()} variant="outline" size="sm">
-              Retry
+      {/* Action buttons — hidden for savings mode */}
+      {!isSavingsMode && (
+        <div className="flex justify-end gap-3">
+          {!isLoading && !isError && (
+            <Button
+              variant="outline"
+              className="border-primary-900 text-primary-900 hover:bg-[#00A86B26] font-outfit"
+              onClick={() => setShowCreditModal(true)}
+              disabled={isCreditingUser}
+            >
+              Credit User
             </Button>
-          </div>
-        )}
+          )}
+          {!isLoading && !isError && (
+            <Button
+              variant="outline"
+              className="border-red-600 text-red-600 hover:bg-red-50 font-outfit"
+              onClick={() => setShowDebitModal(true)}
+              disabled={isDebitingUser}
+            >
+              Debit User
+            </Button>
+          )}
+          <Button
+            className="bg-primary-900 hover:bg-primary-700 font-outfit"
+            onClick={handleTransHistory}
+          >
+            View Transaction History
+          </Button>
+        </div>
+      )}
 
-        {!isLoanLoading && !isLoanError && (
-          <div className="space-y-3">
-            {loans.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                No loan applications found for this user.
-              </div>
-            ) : (
-              loans.map((loanItem: any) => (
-                <Card
-                  key={loanItem.id}
-                  className="shadow-sm bg-white min-w-[800px]"
-                >
-                  <CardContent className="p-6">
-                    <div className="grid grid-cols-6 gap-4 items-center">
-                      <div className="text-sm text-gray-600 font-outfit">
-                        {loanItem.dateJoined}
-                      </div>
-                      <div className="text-sm text-gray-600 font-outfit">
-                        <TransactionStatus
-                          status={loanItem.status as StatusType}
-                        />
-                      </div>
-                      <div className="text-sm   text-gray-600 font-outfit">
-                        {loanItem.loanAmount}
-                      </div>
-                      <div className="text-sm text-gray-600 font-outfit">
-                        {loanItem.amountRepaid}
-                      </div>
-                      <div className="text-sm text-gray-600 font-outfit">
-                        {loanItem.amountRemaining}
-                      </div>
-                      <div className="text-right">
-                        <Link href={`/loan-management/${loanItem.id}`}>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full w-full border-primary-900 bg-transparent px-2"
-                          >
-                            View Request
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
+      {/* Loan history — non-savings mode */}
+      {!isSavingsMode && (
+        <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
+          <div className="grid grid-cols-6 gap-4 px-6 py-3 min-w-[800px] text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
+            <div>Date Applied</div>
+            <div>Status</div>
+            <div>Loan Amount (₦)</div>
+            <div>Amount Repaid (₦)</div>
+            <div>Amount Remaining (₦)</div>
+            <div className="text-right"> </div>
           </div>
-        )}
-      </div>
 
-      <Pagination
-        current={pageNumber}
-        onPageChange={setPageNumber}
-        onRowChange={setPageSize}
-        pageSize={pageSize}
-        total={totalElements}
-      />
+          {isLoanLoading && (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+              <span className="ml-2 text-gray-500">Loading loan data...</span>
+            </div>
+          )}
+
+          {isLoanError && (
+            <div className="flex flex-col items-center justify-center text-center py-8">
+              <p className="text-red-500 mb-4">
+                {(loanError &&
+                typeof loanError === "object" &&
+                "message" in loanError
+                  ? (loanError as { message?: string }).message
+                  : undefined) ||
+                  loanData?.message ||
+                  "Failed to load loan data."}
+              </p>
+              <Button
+                onClick={() => refetchLoans()}
+                variant="outline"
+                size="sm"
+              >
+                Retry
+              </Button>
+            </div>
+          )}
+
+          {!isLoanLoading && !isLoanError && (
+            <div className="space-y-3">
+              {loans.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  No loan applications found for this user.
+                </div>
+              ) : (
+                loans.map((loanItem: any) => (
+                  <Card
+                    key={loanItem.id}
+                    className="shadow-sm bg-white min-w-[800px]"
+                  >
+                    <CardContent className="p-6">
+                      <div className="grid grid-cols-6 gap-4 items-center">
+                        <div className="text-sm text-gray-600 font-outfit">
+                          {loanItem.dateJoined}
+                        </div>
+                        <div className="text-sm text-gray-600 font-outfit">
+                          <TransactionStatus
+                            status={loanItem.status as StatusType}
+                          />
+                        </div>
+                        <div className="text-sm text-gray-600 font-outfit">
+                          {loanItem.loanAmount}
+                        </div>
+                        <div className="text-sm text-gray-600 font-outfit">
+                          {loanItem.amountRepaid}
+                        </div>
+                        <div className="text-sm text-gray-600 font-outfit">
+                          {loanItem.amountRemaining}
+                        </div>
+                        <div className="text-right">
+                          <Link href={`/loan-management/${loanItem.id}`}>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-primary-600 hover:bg-[#00A86B26] hover:text-primary-900 rounded-full w-full border-primary-900 bg-transparent px-2"
+                            >
+                              View Request
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+          )}
+
+          <Pagination
+            current={pageNumber}
+            onPageChange={setPageNumber}
+            onRowChange={setPageSize}
+            pageSize={pageSize}
+            total={totalElements}
+          />
+        </div>
+      )}
+
+      {/* Savings history — savings mode only */}
+      {isSavingsMode && (
+        <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
+          <h2 className="text-base font-semibold font-outfit text-gray-800 mb-2">
+            Savings History
+          </h2>
+
+          <div className="grid grid-cols-5 gap-4 px-6 py-3 min-w-[700px] text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
+            <div>Date</div>
+            <div>Event</div>
+            <div>Plan</div>
+            <div>Amount (₦)</div>
+            <div>Status</div>
+          </div>
+
+          {isSavingsHistoryLoading && (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+              <span className="ml-2 text-gray-500">
+                Loading savings history...
+              </span>
+            </div>
+          )}
+
+          {!isSavingsHistoryLoading && (
+            <div className="space-y-3">
+              {savingsHistory.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  No savings history found for this user.
+                </div>
+              ) : (
+                savingsHistory.map((item: any) => (
+                  <Card
+                    key={item.id}
+                    className="shadow-sm bg-white min-w-[700px]"
+                  >
+                    <CardContent className="p-6">
+                      <div className="grid grid-cols-5 gap-4 items-center">
+                        <div className="text-sm text-gray-600 font-outfit">
+                          {item.occurredAt}
+                        </div>
+                        <div className="text-sm text-gray-600 font-outfit">
+                          {item.eventType}
+                        </div>
+                        <div className="text-sm text-gray-600 font-outfit">
+                          <span className="font-medium">{item.planName}</span>
+                          {item.savingsSchemeName && (
+                            <span className="block text-xs text-gray-400">
+                              {item.savingsSchemeName}
+                            </span>
+                          )}
+                        </div>
+                        <div
+                          className={`text-sm font-outfit font-medium ${
+                            item.isCredit ? "text-green-600" : "text-red-500"
+                          }`}
+                        >
+                          {item.isCredit ? "+" : "-"}
+                          {item.amount}
+                        </div>
+                        <div className="text-sm text-gray-600 font-outfit">
+                          <TransactionStatus
+                            status={item.status as StatusType}
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="flex justify-end space-x-4">
         {kycStatus === "pending" && (
-          <>
-            <Button
-              variant="outline"
-              onClick={handleSendReminder}
-              disabled={isSendingReminder}
-            >
-              {isSendingReminder ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Sending...
-                </>
-              ) : (
-                "KYC Reminder"
-              )}
-            </Button>
-          </>
+          <Button
+            variant="outline"
+            onClick={handleSendReminder}
+            disabled={isSendingReminder}
+          >
+            {isSendingReminder ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                Sending...
+              </>
+            ) : (
+              "KYC Reminder"
+            )}
+          </Button>
         )}
       </div>
+
       <ConfirmationModal
         isOpen={showDeactivateModal}
         onOpenChange={setShowDeactivateModal}
@@ -554,21 +675,24 @@ export default function UserProfilePage({
         cancelButtonText="Cancel"
       />
 
-      <CreditUserModal
-        isOpen={showCreditModal}
-        onOpenChange={setShowCreditModal}
-        onConfirm={handleCreditUser}
-        userName={user.name}
-        isLoading={isCreditingUser}
-      />
-
-      <DebitUserModal
-        isOpen={showDebitModal}
-        onOpenChange={setShowDebitModal}
-        onConfirm={handleDebitUser}
-        userName={user.name}
-        isLoading={isDebitingUser}
-      />
+      {!isSavingsMode && (
+        <>
+          <CreditUserModal
+            isOpen={showCreditModal}
+            onOpenChange={setShowCreditModal}
+            onConfirm={handleCreditUser}
+            userName={user.name}
+            isLoading={isCreditingUser}
+          />
+          <DebitUserModal
+            isOpen={showDebitModal}
+            onOpenChange={setShowDebitModal}
+            onConfirm={handleDebitUser}
+            userName={user.name}
+            isLoading={isDebitingUser}
+          />
+        </>
+      )}
     </div>
   );
 }
