@@ -13,13 +13,43 @@ export default function HeroSection() {
           <div className="space-y-8 animate-slide-in-left">
             <div className="space-y-6">
               <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight font-outfit">
-                Get Access to Loans{" "}
-                <span className="text-primary-350">Without Stress</span>
+                Save Together,{" "}
+                <span className="text-primary-350">Grow Together</span>
               </h1>
               <p className="text-lg text-gray-600 leading-relaxed max-w-lg font-outfit">
                 Join a trusted digital cooperative where your savings unlock
-                opportunity, from loans to auto financing and more.
+                opportunity — from loans to auto financing and more. Start
+                saving today and watch your future grow.
               </p>
+            </div>
+
+            <div className="flex flex-row gap-6">
+              <div className="space-y-1">
+                <p className="text-2xl font-bold text-primary-350 font-outfit">
+                  10,000+
+                </p>
+                <p className="text-sm text-gray-500 font-outfit">
+                  Active Savers
+                </p>
+              </div>
+              <div className="w-px bg-gray-200" />
+              <div className="space-y-1">
+                <p className="text-2xl font-bold text-primary-350 font-outfit">
+                  ₦500M+
+                </p>
+                <p className="text-sm text-gray-500 font-outfit">
+                  Total Savings
+                </p>
+              </div>
+              <div className="w-px bg-gray-200" />
+              <div className="space-y-1">
+                <p className="text-2xl font-bold text-primary-350 font-outfit">
+                  100%
+                </p>
+                <p className="text-sm text-gray-500 font-outfit">
+                  Secure & Trusted
+                </p>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -62,6 +92,34 @@ export default function HeroSection() {
                 className="rounded-lg w-full h-auto"
                 priority
               />
+
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-lg p-4 flex items-center gap-3 w-52">
+                <div className="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center shrink-0">
+                  <span className="text-lg">🏦</span>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 font-outfit">
+                    Monthly Savings
+                  </p>
+                  <p className="text-sm font-bold text-gray-900 font-outfit">
+                    ₦25,000 saved
+                  </p>
+                </div>
+              </div>
+
+              <div className="absolute -top-6 -right-6 bg-white rounded-2xl shadow-lg p-4 flex items-center gap-3 w-48">
+                <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center shrink-0">
+                  <span className="text-lg">📈</span>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 font-outfit">
+                    Interest Earned
+                  </p>
+                  <p className="text-sm font-bold text-green-600 font-outfit">
+                    +12% p.a.
+                  </p>
+                </div>
+              </div>
             </div>
             <div className="absolute -top-4 -right-4 w-full h-full bg-primary/10 rounded-lg -z-10"></div>
           </div>

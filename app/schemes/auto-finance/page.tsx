@@ -22,8 +22,6 @@ export default function AutoFinancePage() {
   const loanCoverage = [
     "One brand new or foreign-used vehicle.",
     "Four years of comprehensive insurance.",
-    "One additional engine.",
-    "Two complete sets of tires.",
     "A life insurance coverage of #2 ,500,000 in event of death .",
     "A credit life insurance that will cover your outstanding debt in the event of death.",
     "An Annual health insurance benefit of #1 million for 4 years .",
