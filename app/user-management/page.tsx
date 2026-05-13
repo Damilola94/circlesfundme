@@ -15,11 +15,37 @@ import {
   schemeTabs,
   SchemeMode,
   FilterState,
+  FREQUENCY_LABELS,
 } from "./types";
 import { useSearchParams } from "next/navigation";
 import TabsSearchHeader from "@/components/ui/tabs-search-header";
 import { SchemeStatsCard } from "@/components/user-management/scheme-stats-card";
 import FilterModal from "@/components/ui/user-filter-modal";
+
+// ── Column definitions ────────────────────────────────────────
+const LOAN_COLUMNS = [
+  { key: "name", label: "Name" },
+  { key: "dateJoined", label: "Date Joined" },
+  { key: "scheme", label: "Scheme" },
+  { key: "contribution", label: "Contribution Amount (₦)" },
+  { key: "totalContribution", label: "Amount Contributed (₦)" },
+  { key: "contributionAmountToQualifyForLoan", label: "Loan-Ready Amount (₦)" },
+  { key: "eligibleLoan", label: "Eligible Loan (₦)" },
+  { key: "totalRepaidAmount", label: "Amount Repaid (₦)" },
+  { key: "action", label: "" },
+];
+
+const SAVINGS_COLUMNS = [
+  { key: "name", label: "Name" },
+  { key: "dateJoined", label: "Date Joined" },
+  { key: "savingsSchemeName", label: "Savings Scheme" },
+  { key: "proposedSavingsAmount", label: "Savings Amount (₦)" },
+  { key: "savingsFrequency", label: "Frequency" },
+  { key: "savingsBalance", label: "Balance (₦)" },
+  { key: "interestRatePerAnnum", label: "Interest Rate" },
+  { key: "totalFutureValue", label: "Future Value (₦)" },
+  { key: "action", label: "" },
+];
 
 export default function UserManagement() {
   const [schemeMode, setSchemeMode] = useState<SchemeMode>(undefined);
@@ -31,10 +57,8 @@ export default function UserManagement() {
 
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState<FilterState>({
     email: "",
@@ -54,6 +78,8 @@ export default function UserManagement() {
     hasPrevious: false,
   });
 
+  const isSavingsMode = schemeMode === "SavingsOnly";
+  const columns = isSavingsMode ? SAVINGS_COLUMNS : LOAN_COLUMNS;
   const currentTabStatus = tabs.find((tab) => tab.id === selectedTab)?.status;
 
   useEffect(() => {
@@ -71,12 +97,10 @@ export default function UserManagement() {
       PageNumber: pageNumber,
       PageSize: pageSize,
     };
-
     if (searchTerm) q.SearchKey = searchTerm;
     if (activeFilters.email) q.SearchKey = activeFilters.email;
     if (activeFilters.fromDate) q.FromDate = activeFilters.fromDate;
     if (activeFilters.toDate) q.ToDate = activeFilters.toDate;
-
     return q;
   };
 
@@ -107,7 +131,6 @@ export default function UserManagement() {
     if (status === "success") {
       if (data?.isSuccess) {
         setUsers(data.data);
-
         setMetaData(data.metaData);
       } else {
         toast.error(data?.message || "Failed to fetch users.");
@@ -154,8 +177,85 @@ export default function UserManagement() {
   const isError =
     status === "error" || (status === "success" && data && !data.isSuccess);
 
+  const renderUserRow = (user: User) => {
+    if (isSavingsMode) {
+      return (
+        <div className="grid grid-cols-9 w-full gap-4 items-center font-outfit">
+          <div className="font-medium text-gray-900">
+            {formatFullName(user.name)}
+          </div>
+          <div className="text-sm text-gray-600">
+            {formatDate(user.dateJoined)}
+          </div>
+          <div className="text-sm text-gray-600">
+            {user.savingsSchemeName || "—"}
+          </div>
+          <div className="text-sm text-gray-600">
+            {formatCurrency(user.proposedSavingsAmount)}
+          </div>
+          <div className="text-sm text-gray-600">
+            {FREQUENCY_LABELS[user.savingsFrequency] || "—"}
+          </div>
+          <div className="text-sm text-gray-600">
+            {formatCurrency(user.savingsBalance)}
+          </div>
+          <div className="text-sm text-gray-600">
+            {user.interestRatePerAnnum}% p.a.
+          </div>
+          <div className="text-sm font-medium text-green-600">
+            {formatCurrency(user.totalFutureValue)}
+          </div>
+          <Link href={`/user-management/${user.userId}`}>
+            <Button
+              size="sm"
+              className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-3 text-xs"
+            >
+              View Profile
+            </Button>
+          </Link>
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-9 w-full gap-4 items-center font-outfit">
+        <div className="font-medium text-gray-900">
+          {formatFullName(user.name)}
+        </div>
+        <div className="text-sm text-gray-600">
+          {formatDate(user.dateJoined)}
+        </div>
+        <div className="text-sm text-gray-600">{user.scheme}</div>
+        <div className="text-sm text-gray-600">
+          {formatCurrency(user.contribution)}
+        </div>
+        <div className="text-sm text-gray-600">
+          {formatCurrency(user.totalContribution)}
+        </div>
+        <div className="text-sm text-gray-600">
+          {formatCurrency(user.contributionAmountToQualifyForLoan)}
+        </div>
+        <div className="text-sm text-gray-600">
+          {formatCurrency(user.eligibleLoan)}
+        </div>
+        <div className="text-sm text-gray-600">
+          {formatCurrency(user.totalRepaidAmount)}
+        </div>
+        <Link href={`/user-management/${user.userId}`}>
+          <Button
+            size="sm"
+            className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-3 text-xs"
+          >
+            View Profile
+          </Button>
+        </Link>
+      </div>
+    );
+  };
+
   return (
     <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
+
       <div>
         {schemeMetricsStatus === "loading" ? (
           <div className="flex items-center">
@@ -184,7 +284,7 @@ export default function UserManagement() {
             onClick={() => handleSchemeModeChange(tab.id)}
             className={`px-5 py-2 rounded-full text-sm font-medium border transition-all font-outfit ${
               schemeMode === tab.id
-                ? "bg-white text-primary-600  border-primary-600  shadow-sm"
+                ? "bg-white text-primary-600 border-primary-600 shadow-sm"
                 : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
             }`}
           >
@@ -192,6 +292,7 @@ export default function UserManagement() {
           </button>
         ))}
       </div>
+
       <TabsSearchHeader
         tabs={tabs}
         selectedTab={selectedTab}
@@ -240,15 +341,9 @@ export default function UserManagement() {
       )}
 
       <div className="grid grid-cols-9 gap-4 min-w-[800px] px-6 py-3 text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit w-full">
-        <div>Name</div>
-        <div>Date Joined</div>
-        <div>Scheme</div>
-        <div>Contribution Amount (₦)</div>
-        <div>Amount Contributed (₦)</div>
-        <div>Loan-Ready Amount (₦)</div>
-        <div>Eligible Loan (₦)</div>
-        <div>Amount Repaid (₦)</div>
-        <div></div>
+        {columns.map((col) => (
+          <div key={col.key}>{col.label}</div>
+        ))}
       </div>
 
       <div className="space-y-3">
@@ -271,38 +366,7 @@ export default function UserManagement() {
               className="shadow-sm bg-white min-w-[800px]"
             >
               <CardContent className="p-6">
-                <div className="grid grid-cols-9 w-full gap-4 items-center font-outfit">
-                  <div className="font-medium text-gray-900">
-                    {formatFullName(user.name)}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {formatDate(user.dateJoined)}
-                  </div>
-                  <div className="text-sm text-gray-600">{user.scheme}</div>
-                  <div className="text-sm text-gray-600">
-                    {formatCurrency(user.contribution)}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {formatCurrency(user.totalContribution)}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {formatCurrency(user.contributionAmountToQualifyForLoan)}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {formatCurrency(user.eligibleLoan)}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {formatCurrency(user.totalRepaidAmount)}
-                  </div>
-                  <Link href={`/user-management/${user.userId}`}>
-                    <Button
-                      size="sm"
-                      className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-3 text-xs"
-                    >
-                      View Profile
-                    </Button>
-                  </Link>
-                </div>
+                {renderUserRow(user)}
               </CardContent>
             </Card>
           ))

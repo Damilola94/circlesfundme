@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { UserProfile } from "@/components/dashboard/user-profile";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, TrendingUp, Wallet, Calendar, Percent } from "lucide-react";
 import Pagination from "@/components/ui/pagination";
 import { TransactionStatus } from "@/components/ui/transactionstatus";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
@@ -19,6 +19,23 @@ import { useMutation } from "react-query";
 import handleFetch from "@/services/api/handleFetch";
 import CreditUserModal from "@/components/ui/user-modal/credit-user-modal";
 import { DebitUserModal } from "@/components/ui/user-modal/debit-user-modal";
+
+type SavingsSchemeEntry = {
+  id: string;
+  savingsSchemeId: string;
+  savingsScheme: {
+    id: string;
+    name: string;
+    description: string;
+    schemeType: number;
+    interestRatePerAnnumPercent: number;
+  };
+  walletId: string;
+  walletBalance: number;
+  joinedDate: string;
+  activePlansCount: number;
+  totalAccruedInterest: number;
+};
 
 export default function UserProfilePage({
   params,
@@ -50,6 +67,9 @@ export default function UserProfilePage({
   const schemeMode = userData?.data?.schemeMode;
   const isSavingsMode = schemeMode === 2;
 
+  const savingsSchemes: SavingsSchemeEntry[] =
+    userData?.data?.savingsSchemes ?? [];
+
   const {
     data: loanData,
     status: loanStatus,
@@ -62,12 +82,7 @@ export default function UserProfilePage({
       PageNumber: pageNumber,
       PageSize: pageSize,
     },
-    queryKey: [
-      "user-loans",
-      userId,
-      pageNumber.toString(),
-      pageSize.toString(),
-    ],
+    queryKey: ["user-loans", userId, pageNumber.toString(), pageSize.toString()],
     enabled: !!userId && !isSavingsMode,
     auth: true,
   });
@@ -129,12 +144,8 @@ export default function UserProfilePage({
       const apiUser = userData.data;
       let kycStatus: KycStatusType = "unknown";
 
-      if (apiUser.isActive) {
-        kycStatus = "active";
-      } else if (!apiUser.isActive) {
-        kycStatus = "deactivated";
-      }
-
+      if (apiUser.isActive) kycStatus = "active";
+      if (!apiUser.isActive) kycStatus = "deactivated";
       if (apiUser.isActive && apiUser.onboardingStatus === "Incomplete") {
         kycStatus = "pending";
       }
@@ -190,10 +201,7 @@ export default function UserProfilePage({
         id: loan.id,
         dateJoined: moment(loan.dateApplied).format("MMM D, YYYY"),
         status: loan.status,
-        loanAmount: formatAmount(
-          loan.approvedAmount || loan.requestedAmount,
-          "N"
-        ),
+        loanAmount: formatAmount(loan.approvedAmount || loan.requestedAmount, "N"),
         amountRepaid: formatAmount(loan.amountRepaid, "N"),
         amountRemaining: formatAmount(
           (loan.approvedAmount || loan.requestedAmount) - loan.amountRepaid,
@@ -231,11 +239,11 @@ export default function UserProfilePage({
 
   useEffect(() => {
     if (userStatus === "error") {
-      const errorMessage =
+      const msg =
         (userError && typeof userError === "object" && "message" in userError
           ? (userError as { message?: string }).message
           : undefined) || "Failed to load user profile.";
-      toast.error(errorMessage);
+      toast.error(msg);
     } else if (userStatus === "success" && userData && !userData.isSuccess) {
       toast.error(userData.message || "Failed to load user profile.");
     }
@@ -243,11 +251,11 @@ export default function UserProfilePage({
 
   useEffect(() => {
     if (loanStatus === "error") {
-      const errorMessage =
+      const msg =
         (loanError && typeof loanError === "object" && "message" in loanError
           ? (loanError as { message?: string }).message
           : undefined) || "Failed to load loan data.";
-      toast.error(errorMessage);
+      toast.error(msg);
     } else if (loanStatus === "success" && loanData && !loanData.isSuccess) {
       toast.error(loanData.message || "Failed to load loan data.");
     }
@@ -355,6 +363,12 @@ export default function UserProfilePage({
     });
   };
 
+  function handleRetry() {
+    refetchUser();
+    if (isSavingsMode) refetchSavingsHistory();
+    else refetchLoans();
+  }
+
   const isLoading = userStatus === "loading";
   const isError =
     userStatus === "error" ||
@@ -364,15 +378,6 @@ export default function UserProfilePage({
     loanStatus === "error" ||
     (loanStatus === "success" && loanData && !loanData.isSuccess);
   const isSavingsHistoryLoading = savingsHistoryStatus === "loading";
-
-  function handleRetry() {
-    refetchUser();
-    if (isSavingsMode) {
-      refetchSavingsHistory();
-    } else {
-      refetchLoans();
-    }
-  }
 
   const { isLoading: isDeactivating } = deactivateUserMutation;
   const { isLoading: isActivating } = activateUserMutation;
@@ -390,10 +395,7 @@ export default function UserProfilePage({
       )}
 
       <div className="flex items-center space-x-4">
-        <Link
-          href="/user-management"
-          className="w-10 h-10 bg-white rounded-full"
-        >
+        <Link href="/user-management" className="w-10 h-10 bg-white rounded-full">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -429,7 +431,6 @@ export default function UserProfilePage({
         </div>
       )}
 
-      {/* Action buttons — hidden for savings mode */}
       {!isSavingsMode && (
         <div className="flex justify-end gap-3">
           {!isLoading && !isError && (
@@ -461,7 +462,174 @@ export default function UserProfilePage({
         </div>
       )}
 
-      {/* Loan history — non-savings mode */}
+{isSavingsMode && !isLoading && !isError && (
+        <div className="space-y-6">
+
+          {savingsSchemes.length > 0 && (
+            <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {savingsSchemes.map((entry) => (
+                  <Card
+                    key={entry.id}
+                    className="shadow-sm bg-white border border-blue-100"
+                  >
+                    <CardContent className="p-5 space-y-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-sm font-semibold font-outfit text-gray-900">
+                            {entry.savingsScheme.name}
+                          </p>
+                          <p className="text-xs text-gray-400 font-outfit mt-0.5 leading-relaxed">
+                            {entry.savingsScheme.description}
+                          </p>
+                        </div>
+                        <span className="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full font-outfit whitespace-nowrap ml-2">
+                          {entry.savingsScheme.schemeType === 1
+                            ? "Flex"
+                            : "Lock"}
+                        </span>
+                      </div>
+
+                      {/* Stats grid */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <Wallet className="h-3.5 w-3.5 text-gray-400" />
+                            <span className="text-xs text-gray-500 font-outfit">
+                              Wallet Balance
+                            </span>
+                          </div>
+                          <p className="text-sm font-semibold font-outfit text-gray-900">
+                            {formatAmount(entry.walletBalance, "N")}
+                          </p>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <Percent className="h-3.5 w-3.5 text-gray-400" />
+                            <span className="text-xs text-gray-500 font-outfit">
+                              Interest Rate
+                            </span>
+                          </div>
+                          <p className="text-sm font-semibold font-outfit text-gray-900">
+                            {entry.savingsScheme.interestRatePerAnnumPercent}%
+                            p.a.
+                          </p>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <TrendingUp className="h-3.5 w-3.5 text-gray-400" />
+                            <span className="text-xs text-gray-500 font-outfit">
+                              Accrued Interest
+                            </span>
+                          </div>
+                          <p className="text-sm font-semibold font-outfit text-green-600">
+                            {formatAmount(entry.totalAccruedInterest, "N")}
+                          </p>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <Calendar className="h-3.5 w-3.5 text-gray-400" />
+                            <span className="text-xs text-gray-500 font-outfit">
+                              Active Plans
+                            </span>
+                          </div>
+                          <p className="text-sm font-semibold font-outfit text-gray-900">
+                            {entry.activePlansCount}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Joined date */}
+                      <p className="text-xs text-gray-400 font-outfit">
+                        Joined{" "}
+                        {moment(entry.joinedDate).format("MMM D, YYYY")}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="overflow-x-auto 1140:overflow-visible space-y-4">
+            <h2 className="text-base font-semibold font-outfit text-gray-800">
+              Savings History
+            </h2>
+
+            <div className="grid grid-cols-5 gap-4 px-6 py-3 min-w-[700px] text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
+              <div>Date</div>
+              <div>Event</div>
+              <div>Plan</div>
+              <div>Amount (₦)</div>
+              <div>Status</div>
+            </div>
+
+            {isSavingsHistoryLoading && (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+                <span className="ml-2 text-gray-500">
+                  Loading savings history...
+                </span>
+              </div>
+            )}
+
+            {!isSavingsHistoryLoading && (
+              <div className="space-y-3">
+                {savingsHistory.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500 font-outfit">
+                    No savings history found for this user.
+                  </div>
+                ) : (
+                  savingsHistory.map((item: any) => (
+                    <Card
+                      key={item.id}
+                      className="shadow-sm bg-white min-w-[700px]"
+                    >
+                      <CardContent className="p-6">
+                        <div className="grid grid-cols-5 gap-4 items-center">
+                          <div className="text-sm text-gray-600 font-outfit">
+                            {item.occurredAt}
+                          </div>
+                          <div className="text-sm text-gray-600 font-outfit">
+                            {item.eventType}
+                          </div>
+                          <div className="text-sm text-gray-600 font-outfit">
+                            <span className="font-medium">{item.planName}</span>
+                            {item.savingsSchemeName && (
+                              <span className="block text-xs text-gray-400">
+                                {item.savingsSchemeName}
+                              </span>
+                            )}
+                          </div>
+                          <div
+                            className={`text-sm font-outfit font-medium ${
+                              item.isCredit
+                                ? "text-green-600"
+                                : "text-red-500"
+                            }`}
+                          >
+                            {item.isCredit ? "+" : "-"}
+                            {item.amount}
+                          </div>
+                          <div className="text-sm text-gray-600 font-outfit">
+                            <TransactionStatus
+                              status={item.status as StatusType}
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {!isSavingsMode && (
         <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
           <div className="grid grid-cols-6 gap-4 px-6 py-3 min-w-[800px] text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
@@ -491,11 +659,7 @@ export default function UserProfilePage({
                   loanData?.message ||
                   "Failed to load loan data."}
               </p>
-              <Button
-                onClick={() => refetchLoans()}
-                variant="outline"
-                size="sm"
-              >
+              <Button onClick={() => refetchLoans()} variant="outline" size="sm">
                 Retry
               </Button>
             </div>
@@ -558,81 +722,6 @@ export default function UserProfilePage({
             pageSize={pageSize}
             total={totalElements}
           />
-        </div>
-      )}
-
-      {/* Savings history — savings mode only */}
-      {isSavingsMode && (
-        <div className="overflow-x-auto 1140:overflow-visible flex-1 space-y-6 p-6">
-          <h2 className="text-base font-semibold font-outfit text-gray-800 mb-2">
-            Savings History
-          </h2>
-
-          <div className="grid grid-cols-5 gap-4 px-6 py-3 min-w-[700px] text-sm font-medium text-gray-500 border-b-2 rounded-t-lg font-outfit">
-            <div>Date</div>
-            <div>Event</div>
-            <div>Plan</div>
-            <div>Amount (₦)</div>
-            <div>Status</div>
-          </div>
-
-          {isSavingsHistoryLoading && (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
-              <span className="ml-2 text-gray-500">
-                Loading savings history...
-              </span>
-            </div>
-          )}
-
-          {!isSavingsHistoryLoading && (
-            <div className="space-y-3">
-              {savingsHistory.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  No savings history found for this user.
-                </div>
-              ) : (
-                savingsHistory.map((item: any) => (
-                  <Card
-                    key={item.id}
-                    className="shadow-sm bg-white min-w-[700px]"
-                  >
-                    <CardContent className="p-6">
-                      <div className="grid grid-cols-5 gap-4 items-center">
-                        <div className="text-sm text-gray-600 font-outfit">
-                          {item.occurredAt}
-                        </div>
-                        <div className="text-sm text-gray-600 font-outfit">
-                          {item.eventType}
-                        </div>
-                        <div className="text-sm text-gray-600 font-outfit">
-                          <span className="font-medium">{item.planName}</span>
-                          {item.savingsSchemeName && (
-                            <span className="block text-xs text-gray-400">
-                              {item.savingsSchemeName}
-                            </span>
-                          )}
-                        </div>
-                        <div
-                          className={`text-sm font-outfit font-medium ${
-                            item.isCredit ? "text-green-600" : "text-red-500"
-                          }`}
-                        >
-                          {item.isCredit ? "+" : "-"}
-                          {item.amount}
-                        </div>
-                        <div className="text-sm text-gray-600 font-outfit">
-                          <TransactionStatus
-                            status={item.status as StatusType}
-                          />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              )}
-            </div>
-          )}
         </div>
       )}
 

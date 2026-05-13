@@ -1,9 +1,3 @@
-interface Tab {
-  id: string;
-  label: string;
-  status: "active" | "deactivated" | "pendingKyc" | undefined;
-}
-
 export type ActionType = "Contribution" | "Withdrawal";
 
 export type StatusType =
@@ -18,23 +12,46 @@ export type KycStatusType = "active" | "deactivated" | "pending" | "unknown";
 export type User = {
   userId: string;
   name: string;
+  email: string;
   dateJoined: string;
   scheme: string;
+  schemeMode: number;
   gender: string;
+
+  // ── Loan fields ───────────────────────────────
   contribution: number;
   totalContribution: number;
   contributionAmountToQualifyForLoan: number;
   eligibleLoan: number;
   totalRepaidAmount: number;
+
+  // ── Savings fields ────────────────────────────
+  savingsSchemeName: string;
+  savingsSchemeType: number;
+  proposedSavingsAmount: number;
+  savingsFrequency: number;
+  interestRatePerAnnum: number;
+  savingsBalance: number;
+  accruedInterest: number;
+  totalInterestCredited: number;
+  totalFutureValue: number;
+  savingsDurationInMonths: number;
+
+  isActive: boolean;
 };
 
-export type SchemeMode = "Both" | "SavingsOnly" | "FullScheme" | undefined;
+// ✅ Single SchemeMode type — string-based to match API
+export type SchemeMode = "SavingsOnly" | "FullScheme" | "Both" | undefined;
 
 export const schemeTabs: { id: SchemeMode; label: string }[] = [
   { id: undefined, label: "All Users" },
   { id: "SavingsOnly", label: "Savings Only" },
   { id: "FullScheme", label: "Full Scheme" },
 ];
+
+// ✅ isSavingsMode helper — true when schemeMode is savings-related
+export const isSavingsSchemeMode = (mode: SchemeMode): boolean =>
+  mode === "SavingsOnly";
 
 export type SavingsSubTab = "all" | "FlexSavings" | "LockSavings";
 
@@ -51,7 +68,7 @@ export type StatusTab = {
 };
 
 export const tabs: StatusTab[] = [
-  { id: "all-users", label: "All Onbaorded Users", status: undefined },
+  { id: "all-users", label: "All Onboarded Users", status: undefined },
   { id: "active", label: "Active Users", status: "active" },
   { id: "pending", label: "Pending KYC", status: "pendingKyc" },
   { id: "deactivated", label: "Deactivated Users", status: "deactivated" },
@@ -65,4 +82,12 @@ export type FilterState = {
   fromDate: string;
   toDate: string;
   month: string;
+};
+
+// ── Frequency label map ───────────────────────────────────────
+export const FREQUENCY_LABELS: Record<number, string> = {
+  1: "Daily",
+  2: "Weekly",
+  3: "Monthly",
+  4: "Lump Sum",
 };
